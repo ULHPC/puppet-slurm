@@ -1,0 +1,30 @@
+{
+  "name": "slurm",
+  "version": "0.0.1",
+  "author": "UL HPC Team",
+  "mail": "hpc-sysadmins@uni.lu",
+  "summary": "Configure and manage Slurm: A Highly Scalable Resource Manager",
+  "description": "Configure and manage Slurm: A Highly Scalable Resource Manager",
+  "license": "Apache-2.0",
+  "source": "https://github.com/ULHPC/puppet-slurm",
+  "docs_project": "ulhpc-puppet-slurm",
+  "project_page": "https://github.com/ULHPC/puppet-slurm",
+  "issues_url": "https://github.com/ULHPC/puppet-slurm/issues",
+  "forge_url": "https://forge.puppet.com/ULHPC/slurm",
+  "dependencies": [
+    {
+      "name": "puppetlabs-stdlib",
+      "version_requirement": ">=4.2.2 <5.0.0"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    }
+  ],
+  "tags": ["slurmd", "slurmctld", "slurmdbd"]
+}
