@@ -29,7 +29,7 @@ different daemons and components of a typical Slurm architecture, depicted below
 In particular, this module implements the following elements:
 
 * __Puppet classes__:
-    - `slurm`:  The main puppet class, responsible for validating the parameters, and instantiating the `slurm::repo`, `slurm::slurmd`, `slurm::slurmctld` and/or `slurm::slurmdbd` classes
+    - `slurm`:  The main slurm class, responsible for validating the parameters, and instantiating the `slurm::repo`, `slurm::slurmd`, `slurm::slurmctld` and/or `slurm::slurmdbd` classes
     - `slurm::slurmd`: takes care of [Slurmd](https://slurm.schedmd.com/slurmd.html), the compute node daemon for Slurm.
     - `slurm::slurmctld`: handles [Slurmctld](https://slurm.schedmd.com/slurmctld.html) - The central management daemon of Slurm.
     - `slurm::slurmdbd`: manages [slurmdbd](https://slurm.schedmd.com/slurmdbd.html), the Slurm Database Daemon.
