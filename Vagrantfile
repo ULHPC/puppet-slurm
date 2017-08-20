@@ -1,6 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-# Time-stamp: <Sun 2017-08-20 19:04 svarrette>
+# Time-stamp: <Sun 2017-08-20 20:45 svarrette>
 ###########################################################################################
 #              __     __                          _    __ _ _
 #              \ \   / /_ _  __ _ _ __ __ _ _ __ | |_ / _(_) | ___
@@ -11,10 +11,13 @@
 ###########################################################################################
 require 'yaml'
 require 'ipaddr'
+require 'deep_merge'
 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 TOP_SRCDIR = File.expand_path File.dirname(__FILE__)
+TOP_VAGRANT_TESTDIR  = File.join(TOP_SRCDIR, 'tests', 'vagrant')
+config_file   = File.join(TOP_VAGRANT_TESTDIR, 'config.yaml')
 
 ###### Expected Vagrant plugins detection ######
 # For more information on the below plugins:
@@ -57,13 +60,16 @@ DEFAULT_SETTINGS = {
 
 # List of default provisioning scripts
 DEFAULT_PROVISIONING_SCRIPTS = [
-    ".vagrant_puppet_bootstrap.sh",
-#    ".vagrant_init.rb"
+    "tests/vagrant/bootstrap.sh",
+    "tests/vagrant/puppet_modules_setup.rb"
 ]
 
-# Load the settings (eventually overwritten using values from the yaml file 'config/vagrant.yaml')
+# Load the settings (eventually overwritten using values from the yaml file 'config.yaml')
 settings = DEFAULT_SETTINGS.clone
-
+if File.exist?(config_file)
+    config = YAML::load_file config_file
+    settings.deep_merge!( config ) if config
+end
 abort "Undefined settings" if settings.nil?
 
 
