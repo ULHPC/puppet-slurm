@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-08-21 16:48 svarrette>
+# Time-stamp: <Mon 2017-08-21 21:31 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -72,10 +72,15 @@ class slurm::params {
 
   ### MUNGE authentication service
   # see https://github.com/dun/munge
-  # We assume it will be used for shared key authentication, and the shared key can be provided to puppet via a URI.
-  # Munge user/group identifiers
-  $munge_uid = 992
-  $munge_gid = $munge_uid
+  # We assume it will be used for shared key authentication, and the shared key
+  # can be provided to puppet via a URI.
+  # Munge user/group identifiers, and attributes for the munge user
+  $munge_username = 'munge'
+  $munge_uid      = 992
+  $munge_group    = $munge_username
+  $munge_gid      = $munge_uid
+  $munge_home     = '/var/lib/munge'
+  $munge_comment  = "MUNGE Uid 'N' Gid Emporium"
   # Packages to install
   $munge_package = $::operatingsystem ? {
     default => 'munge'
@@ -85,10 +90,25 @@ class slurm::params {
     /(?i-mx:centos|fedora|redhat)/ => [ 'munge-libs', 'munge-devel' ],
     default => [ ]
   }
-  $munge_servicename = $::operatingsystem ? {
-    default => 'slurm'
+  $munge_configdir = $::operatingsystem ? {
+    default => "/etc/munge",
   }
+  $munge_logdir = $::operatingsystem ? {
+    default => "/var/log/munge",
+  }
+  $munge_piddir = $::operatingsystem ? {
+    default => "/var/run/munge",
+  }
+  $munge_servicename = $::operatingsystem ? {
+    default => 'munge'
+  }
+  $munge_processname = $::operatingsystem ? {
+    default => 'munge'
+  }
+  # Should the key be created if absent ?
+  $munge_create_key = true #false
 
+  $munge_key = '/etc/munge/munge.key'
 
   ### Pluggable Authentication Modules (PAM) ###
   $use_pam = true
