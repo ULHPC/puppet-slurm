@@ -1,0 +1,51 @@
+# -*- mode: yaml; -*-
+# Time-stamp: <Mon 2017-08-21 23:15 svarrette>
+################################################################################
+# Complementary configuration for Vagrant
+# You can overwrite here the default settings defined in ../../Vagrantfile and
+# define additional VMs (agents) to deploy upon vagrant up (in addition to the
+# puppet master 'master')
+
+#___________________________________________
+# Complete / re-define the default boxes below
+# Format:
+#   :<os><version>: <username>/<box> # see https://vagrantcloud.com
+# :boxes:
+#   :windows2012: 'opentable/win-2012r2-standard-amd64-nocm'
+#   :freebsd12:   'freebsd/FreeBSD-12.0-RELEASE'
+#   :centos7:     'centos/7',
+#   :debian8:     'debian/contrib-jessie64',
+#   :ubuntu14:    'ubuntu/trusty64'
+
+#_________________
+# Default settings
+# :defaults:
+#   :os: :centos7         # Default OS from the above box definition
+#   :ram: 512             # Default RAM
+#   :vcpus: 1             # Default number of virtual CPUs
+#   :vbguest_auto_update: 1  # check/update box guest additions
+
+#____________________
+# Network settings
+# :network:
+#   :domain: 'vagrant.dev'      # network domain to use
+#   :range: '10.10.1.0/24'      # IP range to use
+#   :ip_offset: 10
+#   # client / VMs defined below will start on xx.xx.xx.<ip_offset>
+
+#___________________________________________________________
+# VMs / Vagrant boxes to define apart from the puppet master
+# Format:
+# <name>:
+#   :hostname: <hostname>
+#   :desc: <VM-description>
+#   :os: <os>
+#   :ram: <ram>
+#   :vcpus: <vcpus>
+#   :role: <role>
+#   :roles:
+#     - <role1>
+#     - <role2>
+# :vms:
+#   'default':
+#     :os: :debian8
