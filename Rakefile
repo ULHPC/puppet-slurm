@@ -1,6 +1,6 @@
 ##############################################################################
 # Rakefile - Configuration file for rake (http://rake.rubyforge.org/)
-# Time-stamp: <Mon 2017-08-21 10:22 svarrette>
+# Time-stamp: <Mon 2017-08-21 22:42 svarrette>
 #
 # Copyright (c) 2017  UL HPC Team <hpc-sysadmins@uni.lu>
 #                       ____       _         __ _ _
@@ -37,7 +37,7 @@ FalkorLib.config.gitflow do |c|
 end
 
 
-#require 'falkorlib/tasks/git'
+require 'falkorlib/tasks/git'
 #require 'falkorlib/tasks/puppet'
 
 ##############################################################################
