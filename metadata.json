@@ -1,0 +1,53 @@
+{
+  "name": "ULHPC-slurm",
+  "version": "0.1.0",
+  "author": "UL HPC Team",
+  "mail": "hpc-sysadmins@uni.lu",
+  "summary": "Configure and manage Slurm: A Highly Scalable Resource Manager",
+  "description": "Slurm is an open source, fault-tolerant, and highly scalable cluster management and job scheduling system for large and small Linux clusters. This puppet module is designed to configure and manage the different daemons (slurmd, slurmctld, slurmdbd) and components of a typical Slurm architecture",
+  "license": "Apache-2.0",
+  "source": "https://github.com/ULHPC/puppet-slurm",
+  "docs_project": "ulhpc-puppet-slurm",
+  "project_page": "https://github.com/ULHPC/puppet-slurm",
+  "issues_url": "https://github.com/ULHPC/puppet-slurm/issues",
+  "forge_url": "https://forge.puppet.com/ULHPC/slurm",
+  "dependencies": [
+    {
+      "name": "puppetlabs-stdlib",
+      "version_requirement": ">=4.2.2 <5.0.0"
+    },
+    {
+      "name": "stahnma-epel",
+      "version_requirement": ">=1.2.2 <2.0.0"
+    },
+    {
+      "name": "bodgit-rngd",
+      "version_requirement": ">=2.0.0 <3.0.0"
+    },
+    {
+      "name": "ghoneycutt-pam",
+      "version_requirement": ">= 2.30.0 < 3.0.0"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "7"
+      ]
+    }
+  ],
+  "tags": [
+    "slurm",
+    "munge",
+    "slurmd",
+    "slurmctld",
+    "slurmdbd"
+  ]
+}
