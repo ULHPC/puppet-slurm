@@ -13,8 +13,9 @@ The `Vagrantfile` at the root of the repository pilot the provisioning a vagrant
 It can run any OS you set in `tests/vagrant/config.yaml` as follows:
 
 ```yaml
-
-
+:vms:
+  'default':
+    :os: :debian8
 ```
 
 You can list the available vagrant box as follows:

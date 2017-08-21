@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-08-21 22:22 svarrette>
+# Time-stamp: <Mon 2017-08-21 23:01 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -106,19 +106,9 @@ class slurm::params {
     default => '/var/run/munge',
   }
   $munge_sysconfigdir = $::operatingsystem ? {
-      /(?i-mx:ubuntu|debian)/ => '/etc/default/munge',
-      default                 => '/etc/sysconfig/munge'
-    }
-  # $configfile_mode = $::operatingsystem ? {
-    #   default => '0600',
-    # }
-  # $configfile_owner = $::operatingsystem ? {
-    #   default => 'root',
-    # }
-  # $configfile_group = $::operatingsystem ? {
-    #   default => 'root',
-    # }
-
+    /(?i-mx:ubuntu|debian)/ => '/etc/default/munge',
+    default                 => '/etc/sysconfig/munge'
+  }
   $munge_servicename = $::operatingsystem ? {
     default => 'munge'
   }
@@ -126,8 +116,9 @@ class slurm::params {
     default => 'munge'
   }
 
-
+  ##############################################
   ### Pluggable Authentication Modules (PAM) ###
+  ##############################################
   $use_pam = true
   $pam_servicename = 'slurm'
   # Default content of /etc/pam.d/slurm
