@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-08-21 21:38 svarrette>
+# Time-stamp: <Mon 2017-08-21 22:06 svarrette>
 #
 # File::      <tt>munge.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -27,8 +27,26 @@
 #
 # == Parameters
 #
-# @param ensure  [String]  Default: 'present'
+# @param ensure       [String]  Default: 'present'
 #        Ensure the presence (or absence) of sysctl
+# @param create_key   [Boolean] Default: true
+#        Whether or not to generate a new key if it does not exists
+# @param key_filename [String] Default: '/etc/munge/munge.key'
+#        The secret key filename
+# @param key_source   [String] Default: undef
+#        A source file, which will be copied into place on the local system.
+#        This attribute is mutually exclusive with content.
+#        The normal form of a puppet: URI is
+#                  puppet:///modules/<MODULE NAME>/<FILE PATH>
+# @param key_content  [String] Default: undef
+#        The desired contents of a file, as a string. This attribute is mutually
+#        exclusive with source and target.
+# @param daemon_args  [String] Default: ''
+#        Set the content of the DAEMON_ARGS variable, which permits to set
+#        additional command-line options to the daemon. For example, this can be
+#        used to override the location of the secret key (--key-file) or set the
+#        number of worker threads (--num-threads)
+#        See https://github.com/dun/munge/wiki/Installation-Guide#starting-the-daemon
 #
 # /!\ We assume the RPM 'slurm-munge' has been already installed -- this class
 # does not care about it
@@ -39,6 +57,7 @@ class slurm::munge(
   String $key_filename = $slurm::params::munge_key,
   $key_source          = undef,
   $key_content         = undef,
+  String $daemon_args  = ''
 )
 inherits slurm::params
 {
@@ -85,30 +104,30 @@ inherits slurm::params
   }
 
   if $ensure == 'present' {
-    file { [ "${slurm::params::munge_configdir}", "${slurm::params::munge_logdir}" ]:
-      ensure => 'directory',
-      owner  => "${slurm::params::munge_username}",
-      group  => "${slurm::params::munge_group}",
-      mode   => "0700",
+    file { [ $slurm::params::munge_configdir, $slurm::params::munge_logdir ]:
+      ensure  => 'directory',
+      owner   => $slurm::params::munge_username,
+      group   => $slurm::params::munge_group,
+      mode    => '0700',
       require => Package['munge'],
     }
-    file { "${slurm::params::munge_piddir}":
-      ensure => 'directory',
-      owner  => "${slurm::params::munge_username}",
-      group  => "${slurm::params::munge_group}",
-      mode   => "0755",
+    file { $slurm::params::munge_piddir:
+      ensure  => 'directory',
+      owner   => $slurm::params::munge_username,
+      group   => $slurm::params::munge_group,
+      mode    => '0755',
       require => Package['munge'],
     }
   }
   else {
     file {
       [
-        "${slurm::params::munge_configdir}",
-        "${slurm::params::munge_logdir}",
-        "${slurm::params::munge_piddir}"
+        $slurm::params::munge_configdir,
+        $slurm::params::munge_logdir,
+        $slurm::params::munge_piddir,
       ]:
         ensure => $ensure,
-        force  => true
+        force  => true,
     }
   }
 
@@ -122,7 +141,7 @@ inherits slurm::params
       command => "dd if=/dev/urandom bs=1 count=1024 > ${key_filename}", # OR "create-munge-key",
       unless  => "test -f ${key_filename}",
       user    => 'root',
-      before  => File["${key_filename}"],
+      before  => File[$key_filename],
       require => [
         File[dirname($key_filename)],
         Package['munge'],
@@ -132,30 +151,29 @@ inherits slurm::params
   }
   # ensure the munge key /etc/munge/munge.key
   file { $key_filename:
-    ensure => $ensure,
-    owner   => "${slurm::params::munge_username}",
-    group   => "${slurm::params::munge_group}",
+    ensure  => $ensure,
+    owner   => $slurm::params::munge_username,
+    group   => $slurm::params::munge_group,
     mode    => '0400',
     content => $key_content,
-    source  => $key_source
+    source  => $key_source,
   }
-
   # Run munge service
   service { 'munge':
-    name       => "${slurm::params::munge_servicename}",
-    enable     => ($ensure == 'present'),
     ensure     => ($ensure == 'present'),
-    pattern    => "${slurm::params::munge_processname}",
-    hasrestart => "${slurm::params::hasrestart}",
-    hasstatus  => "${slurm::params::hasstatus}",
+    name       => $slurm::params::munge_servicename,
+    enable     => ($ensure == 'present'),
+    pattern    => $slurm::params::munge_processname,
+    hasrestart => $slurm::params::hasrestart,
+    hasstatus  => $slurm::params::hasstatus,
     require    => [
       Package['munge'],
-      File["${key_filename}"],
-      File["${slurm::params::munge_configdir}"],
-      File["${slurm::params::munge_logdir}"],
-      File["${slurm::params::munge_piddir}"]
+      File[$key_filename],
+      File[$slurm::params::munge_configdir],
+      File[$slurm::params::munge_logdir],
+      File[$slurm::params::munge_piddir]
     ],
-    subscribe  => File["${key_filename}"]
+    subscribe  => File[$key_filename],
   }
 
 

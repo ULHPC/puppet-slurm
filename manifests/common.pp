@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-08-21 21:42 svarrette>
+# Time-stamp: <Mon 2017-08-21 21:44 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -30,7 +30,6 @@ class slurm::common {
       #ensure        => 'absent' #$slurm::ensure,
     }
   }
-
 
   # package { 'slurm':
     #     name    => "${slurm::params::packagename}",
