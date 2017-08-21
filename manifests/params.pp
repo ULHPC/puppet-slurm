@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-08-21 23:01 svarrette>
+# Time-stamp: <Tue 2017-08-22 00:17 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -78,15 +78,17 @@ class slurm::params {
   # We assume it will be used for shared key authentication, and the shared key
   # can be provided to puppet via a URI.
   # Munge user/group identifiers, and attributes for the munge user
-  $munge_username = 'munge'
-  $munge_uid      = 992
-  $munge_group    = $munge_username
-  $munge_gid      = $munge_uid
-  $munge_home     = '/var/lib/munge'
-  $munge_comment  = "MUNGE Uid 'N' Gid Emporium"
+  $munge_username   = 'munge'
+  $munge_uid        = 992
+  $munge_group      = $munge_username
+  $munge_gid        = $munge_uid
+  $munge_home       = '/var/lib/munge'
+  $munge_comment    = "MUNGE Uid 'N' Gid Emporium"
   # Should the key be created if absent ?
   $munge_create_key = true #false
-  $munge_key = '/etc/munge/munge.key'
+  $munge_key        = '/etc/munge/munge.key'
+  # Set the content of the DAEMON_ARGS variable
+  $munge_daemon_args = []
   # Packages to install
   $munge_package = $::operatingsystem ? {
     default => 'munge'
@@ -124,8 +126,11 @@ class slurm::params {
   # Default content of /etc/pam.d/slurm
   $pam_content = template('slurm/pam_slurm.erb')
   # Source file for /etc/security/limits.d/slurm.conf
-  $pam_limits_source = 'puppet:///modules/slurm/limits.memlock'
-
+  $pam_limits_source   = 'puppet:///modules/slurm/limits.memlock'
+  # Whether or not use the pam_slurm_adopt  module (to Adopt incoming
+  # connections into jobs) -- see
+  # https://github.com/SchedMD/slurm/tree/master/contribs/pam_slurm_adopt
+  $use_pam_slurm_adopt = false
 
   # # slurm packages
   # $packagename = $::operatingsystem ? {

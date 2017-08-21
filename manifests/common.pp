@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-08-21 21:44 svarrette>
+# Time-stamp: <Mon 2017-08-21 23:44 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -22,6 +22,7 @@ class slurm::common {
       ensure        => $slurm::ensure,
       content       => $slurm::pam_content,
       limits_source => $slurm::pam_limits_source,
+      allowed_users => $slurm::pam_allowed_users
     }
   }
 

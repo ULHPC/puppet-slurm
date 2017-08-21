@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-08-21 16:44 svarrette>
+# Time-stamp: <Tue 2017-08-22 00:25 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -51,15 +51,22 @@
 # [Remember: No empty lines between comments and class definition]
 #
 class slurm(
-  String  $ensure            = $slurm::params::ensure,
-  Integer $uid               = $slurm::params::uid,
-  Integer $gid               = $slurm::params::gid,
-  String  $auth_type         = $slurm::params::auth_type,
-  Integer $munge_uid         = $slurm::params::munge_uid,
-  Integer $munge_gid         = $slurm::params::munge_gid,
-  Boolean $use_pam           = $slurm::params::use_pam,
-  String  $pam_content       = $slurm::params::pam_content,
-  String  $pam_limits_source = $slurm::params::pam_limits_source,
+  String  $ensure              = $slurm::params::ensure,
+  Integer $uid                 = $slurm::params::uid,
+  Integer $gid                 = $slurm::params::gid,
+  String  $auth_type           = $slurm::params::auth_type,
+  Integer $munge_uid           = $slurm::params::munge_uid,
+  Integer $munge_gid           = $slurm::params::munge_gid,
+  Boolean $munge_create_key    = $slurm::params::munge_create_key,
+  String  $munge_key_filename  = $slurm::params::munge_key,
+  $munge_key_source            = undef,
+  $munge_key_content           = undef,
+  Array   $munge_daemon_args   = $slurm::params::munge_daemon_args,
+  Boolean $use_pam             = $slurm::params::use_pam,
+  String  $pam_content         = $slurm::params::pam_content,
+  Array   $pam_allowed_users   = $slurm::params::pam_allowed_users,
+  String  $pam_limits_source   = $slurm::params::pam_limits_source,
+  Boolean $use_pam_slurm_adopt = $slurm::params::use_pam_slurm_adopt,
 )
 inherits slurm::params
 {

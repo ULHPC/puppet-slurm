@@ -16,9 +16,8 @@
 #      sudo puppet apply -t /vagrant/tests/init.pp
 #
 node default {
-  class { 'pam':
-    allowed_users => 'vagrant',
-  }
 
-  include slurm
+  class { 'slurm':
+    pam_allowed_users => [ 'vagrant' ]
+  }
 }
