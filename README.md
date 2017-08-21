@@ -33,6 +33,9 @@ In particular, this module implements the following elements:
     - `slurm::slurmd`: takes care of [Slurmd](https://slurm.schedmd.com/slurmd.html), the compute node daemon for Slurm.
     - `slurm::slurmctld`: handles [Slurmctld](https://slurm.schedmd.com/slurmctld.html) - The central management daemon of Slurm.
     - `slurm::slurmdbd`: manages [slurmdbd](https://slurm.schedmd.com/slurmdbd.html), the Slurm Database Daemon.
+    - `slurm::pam`: Handle PAM aspects  for SLURM (Memlock for MPI etc.)
+
+
 
 * __Puppet definitions__:
 
@@ -45,11 +48,16 @@ _Note_: the various operations that can be conducted from this repository are pi
 See `docs/contributing.md` for more details on the steps you shall follow to have this `Rakefile` working properly.
 
 
+
 ### Setup Requirements
 
 This module currently only works completely on Redhat / CentOS 7 over Puppet 4.x.
 Over operating systems and support for Puppet 5.x will eventually be added.
 Yet feel free to contribute to this module to help us extending the usage of this module.
+
+For simplicity, some key configuration decisions have been assumed, namely:
+
+* [MUNGE](https://github.com/dun/munge) will be used for shared key authentication, and the shared key can be provided to puppet via a URI.
 
 
 ## Forge Module Dependencies

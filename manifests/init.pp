@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-08-21 14:30 svarrette>
+# Time-stamp: <Mon 2017-08-21 16:44 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -51,10 +51,15 @@
 # [Remember: No empty lines between comments and class definition]
 #
 class slurm(
-  String $ensure            = $slurm::params::ensure,
-  String $use_pam           = $slurm::params::use_pam,
-  String $pam_content       = $slurm::params::pam_content,
-  String $pam_limits_source = $slurm::params::pam_limits_source
+  String  $ensure            = $slurm::params::ensure,
+  Integer $uid               = $slurm::params::uid,
+  Integer $gid               = $slurm::params::gid,
+  String  $auth_type         = $slurm::params::auth_type,
+  Integer $munge_uid         = $slurm::params::munge_uid,
+  Integer $munge_gid         = $slurm::params::munge_gid,
+  Boolean $use_pam           = $slurm::params::use_pam,
+  String  $pam_content       = $slurm::params::pam_content,
+  String  $pam_limits_source = $slurm::params::pam_limits_source,
 )
 inherits slurm::params
 {

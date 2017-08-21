@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-08-21 14:25 svarrette>
+# Time-stamp: <Mon 2017-08-21 16:48 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -31,62 +31,97 @@ class slurm::params {
   # ensure the presence (or absence) of slurm
   $ensure = 'present'
 
+  # Authentication method for communications between Slurm components.
+  $auth_type = 'munge'
 
+  #### MODULE INTERNAL VARIABLES  #########
+  # (Modify to adapt to unsupported OSes)
+  #########################################
+  $pre_requisite_packages = $::operatingsystem ? {
+    #/(?i-mx:ubuntu|debian)/        => [],
+    /(?i-mx:centos|fedora|redhat)/ => [
+      # epel-release vim screen htop wget mailx rng-tools rpm-build gcc gcc-c++ readline-devel openssl openssl-devel pam-devel numactl numactl-devel hwloc hwloc-devel lua lua-devel readline-devel rrdtool-devel ncurses-devel man2html libibmad libibumad perl-devel perl-CPAN hdf5-devel.x86_64 lz4-devel freeipmi-devel hwloc-devel hwloc-plugins rrdtool-devel
+    ],
+    default => []
+  }
+
+  ### SLURM Daemons
+  # Make sure the clocks, users and groups (UIDs and GIDs) are synchronized
+  # across the cluster.
+  # Slurm user / group identifiers
+  $uid = 991
+  $gid = $uid
+
+  # Slurmd associated services
+  $servicename = $::operatingsystem ? {
+    default                 => 'slurm'
+  }
+  # used for pattern in a service ressource
+  $processname = $::operatingsystem ? {
+    default                 => 'slurm'
+  }
+  $hasstatus = $::operatingsystem ? {
+    /(?i-mx:ubuntu|debian)/        => false,
+    /(?i-mx:centos|fedora|redhat)/ => true,
+    default => true,
+  }
+  $hasrestart = $::operatingsystem ? {
+    default => true,
+  }
+
+
+  ### MUNGE authentication service
+  # see https://github.com/dun/munge
+  # We assume it will be used for shared key authentication, and the shared key can be provided to puppet via a URI.
+  # Munge user/group identifiers
+  $munge_uid = 992
+  $munge_gid = $munge_uid
+  # Packages to install
+  $munge_package = $::operatingsystem ? {
+    default => 'munge'
+  }
+  $munge_extra_packages = $::operatingsystem ? {
+    /(?i-mx:ubuntu|debian)/        => [ 'libmunge-dev' ],
+    /(?i-mx:centos|fedora|redhat)/ => [ 'munge-libs', 'munge-devel' ],
+    default => [ ]
+  }
+  $munge_servicename = $::operatingsystem ? {
+    default => 'slurm'
+  }
 
 
   ### Pluggable Authentication Modules (PAM) ###
   $use_pam = true
+  $pam_servicename = 'slurm'
   # Default content of /etc/pam.d/slurm
   $pam_content = template('slurm/pam_slurm.erb')
   # Source file for /etc/security/limits.d/slurm.conf
   $pam_limits_source = 'puppet:///modules/slurm/limits.memlock'
 
 
-
-  # The Protocol used. Used by monitor and firewall class. Default is 'tcp'
-  $protocol = 'tcp'
-
-  # The port number. Used by monitor and firewall class. The default is 22.
-  $port = 22
-
-  # example of an array/hash variable
-  $array_variable = []
-  $hash_variable  = {}
-
-  # undef variable
-  $undefvar = undef
-
-  #### MODULE INTERNAL VARIABLES  #########
-  # (Modify to adapt to unsupported OSes)
-  #########################################
-
-  # Pluggable Authentication Modules (PAM) parameters
-  $pam_servicename = 'slurm'
-
-
-  # slurm packages
-  $packagename = $::operatingsystem ? {
-    default => 'slurm',
-  }
+  # # slurm packages
+  # $packagename = $::operatingsystem ? {
+    #   default => 'slurm',
+    # }
   # $extra_packages = $::operatingsystem ? {
     #     /(?i-mx:ubuntu|debian)/        => [],
     #     /(?i-mx:centos|fedora|redhat)/ => [],
     #     default => []
     # }
 
-  # Log directory
-  $logdir = $::operatingsystem ? {
-    default => '/var/log/slurm'
-  }
-  $logdir_mode = $::operatingsystem ? {
-    default => '750',
-  }
-  $logdir_owner = $::operatingsystem ? {
-    default => 'root',
-  }
-  $logdir_group = $::operatingsystem ? {
-    default => 'adm',
-  }
+  ### Log directory
+  # $logdir = $::operatingsystem ? {
+    #   default => '/var/log/slurm'
+    # }
+  # $logdir_mode = $::operatingsystem ? {
+    #   default => '750',
+    # }
+  # $logdir_owner = $::operatingsystem ? {
+    #   default => 'root',
+    # }
+  # $logdir_group = $::operatingsystem ? {
+    #   default => 'adm',
+    # }
 
   # PID for daemons
   # $piddir = $::operatingsystem ? {
@@ -105,24 +140,7 @@ class slurm::params {
     #     default => '/var/run/slurm/slurm.pid'
     # }
 
-  # slurm associated services
-  $servicename = $::operatingsystem ? {
-    /(?i-mx:ubuntu|debian)/ => 'slurm',
-    default                 => 'slurm'
-  }
-  # used for pattern in a service ressource
-  $processname = $::operatingsystem ? {
-    /(?i-mx:ubuntu|debian)/ => 'slurm',
-    default                 => 'slurm'
-  }
-  $hasstatus = $::operatingsystem ? {
-    /(?i-mx:ubuntu|debian)/        => false,
-    /(?i-mx:centos|fedora|redhat)/ => true,
-    default => true,
-  }
-  $hasrestart = $::operatingsystem ? {
-    default => true,
-  }
+
 
   # Configuration directory & file
   # $configdir = $::operatingsystem ? {
@@ -138,22 +156,22 @@ class slurm::params {
     #     default => 'root',
     # }
 
-  $configfile = $::operatingsystem ? {
-    default => '/etc/slurm.conf',
-  }
-  $configfile_init = $::operatingsystem ? {
-    /(?i-mx:ubuntu|debian)/ => '/etc/default/slurm',
-    default                 => '/etc/sysconfig/slurm'
-  }
-  $configfile_mode = $::operatingsystem ? {
-    default => '0600',
-  }
-  $configfile_owner = $::operatingsystem ? {
-    default => 'root',
-  }
-  $configfile_group = $::operatingsystem ? {
-    default => 'root',
-  }
+  # $configfile = $::operatingsystem ? {
+    #   default => '/etc/slurm/slurm.conf',
+    # }
+  # $configfile_init = $::operatingsystem ? {
+    #   /(?i-mx:ubuntu|debian)/ => '/etc/default/slurm',
+    #   default                 => '/etc/sysconfig/slurm'
+    # }
+  # $configfile_mode = $::operatingsystem ? {
+    #   default => '0600',
+    # }
+  # $configfile_owner = $::operatingsystem ? {
+    #   default => 'root',
+    # }
+  # $configfile_group = $::operatingsystem ? {
+    #   default => 'root',
+    # }
 
 
 }
