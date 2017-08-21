@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-08-21 22:06 svarrette>
+# Time-stamp: <Mon 2017-08-21 22:40 svarrette>
 #
 # File::      <tt>munge.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -41,7 +41,7 @@
 # @param key_content  [String] Default: undef
 #        The desired contents of a file, as a string. This attribute is mutually
 #        exclusive with source and target.
-# @param daemon_args  [String] Default: ''
+# @param daemon_args  [Array] Default: []
 #        Set the content of the DAEMON_ARGS variable, which permits to set
 #        additional command-line options to the daemon. For example, this can be
 #        used to override the location of the secret key (--key-file) or set the
@@ -57,7 +57,7 @@ class slurm::munge(
   String $key_filename = $slurm::params::munge_key,
   $key_source          = undef,
   $key_content         = undef,
-  String $daemon_args  = ''
+  Array $daemon_args   = []
 )
 inherits slurm::params
 {
@@ -158,6 +158,22 @@ inherits slurm::params
     content => $key_content,
     source  => $key_source,
   }
+
+  # Eventually prepare /etc/{default,sysconfig}/munge
+  if ($key_filename == '/etc/munge/munge.key') {
+    $options = $daemon_args
+  }
+  else {
+    $options = concat($daemon_args, "--key-file ${key_filename}")
+  }
+  file { $slurm::params::munge_sysconfigdir:
+    ensure  => $ensure,
+    owner   => $slurm::params::munge_username,
+    group   => $slurm::params::munge_group,
+    mode    => '0644',
+    content => template('slurm/munge_sysconfig.erb'),
+  }
+
   # Run munge service
   service { 'munge':
     ensure     => ($ensure == 'present'),

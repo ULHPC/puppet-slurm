@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-08-21 22:06 svarrette>
+# Time-stamp: <Mon 2017-08-21 22:22 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -105,6 +105,20 @@ class slurm::params {
   $munge_piddir = $::operatingsystem ? {
     default => '/var/run/munge',
   }
+  $munge_sysconfigdir = $::operatingsystem ? {
+      /(?i-mx:ubuntu|debian)/ => '/etc/default/munge',
+      default                 => '/etc/sysconfig/munge'
+    }
+  # $configfile_mode = $::operatingsystem ? {
+    #   default => '0600',
+    # }
+  # $configfile_owner = $::operatingsystem ? {
+    #   default => 'root',
+    # }
+  # $configfile_group = $::operatingsystem ? {
+    #   default => 'root',
+    # }
+
   $munge_servicename = $::operatingsystem ? {
     default => 'munge'
   }
