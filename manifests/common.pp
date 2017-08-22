@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-08-21 23:44 svarrette>
+# Time-stamp: <Tue 2017-08-22 13:44 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -28,9 +28,46 @@ class slurm::common {
 
   if ($slurm::auth_type =~ /munge/) {
     class { '::slurm::munge':
-      #ensure        => 'absent' #$slurm::ensure,
+      ensure       => $slurm::ensure,
+      create_key   => $slurm::munge_create_key,
+      daemon_args  => $slurm::munge_daemon_args,
+      uid          => $slurm::munge_uid,
+      gid          => $slurm::munge_gid,
+      key_source   => $slurm::munge_key_source,
+      key_content  => $slurm::munge_key_content,
+      key_filename => $slurm::munge_key_filename,
     }
   }
+
+  # Order
+  if ($slurm::ensure == 'present') {
+    Group['slurm'] -> User['slurm']
+  }
+  else {
+    User['slurm'] -> Group['slurm']
+  }
+
+  # Prepare the user and group
+  group { 'slurm':
+    ensure => $slurm::ensure,
+    name   => $slurm::params::group,
+    gid    => $slurm::gid,
+  }
+  user { 'slurm':
+    ensure     => $slurm::ensure,
+    name       => $slurm::params::username,
+    uid        => $slurm::uid,
+    gid        => $slurm::gid,
+    comment    => $slurm::params::comment,
+    home       => $slurm::params::home,
+    managehome => true,
+    system     => true,
+    shell      => $slurm::params::shell,
+  }
+
+  # Download and build from sources
+
+
 
   # package { 'slurm':
     #     name    => "${slurm::params::packagename}",

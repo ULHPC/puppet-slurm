@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-22 00:27 svarrette>
+# Time-stamp: <Tue 2017-08-22 11:11 svarrette>
 #
 # File::      <tt>munge.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -28,29 +28,29 @@
 # == Parameters
 #
 # @param ensure       [String]  Default: 'present'
-#        Ensure the presence (or absence) of sysctl
+#          Ensure the presence (or absence) of the Munge service
 # @param create_key   [Boolean] Default: true
-#        Whether or not to generate a new key if it does not exists
+#          Whether or not to generate a new key if it does not exists
 # @param daemon_args  [Array] Default: []
-#        Set the content of the DAEMON_ARGS variable, which permits to set
-#        additional command-line options to the daemon. For example, this can be
-#        used to override the location of the secret key (--key-file) or set the
-#        number of worker threads (--num-threads)
-#        See https://github.com/dun/munge/wiki/Installation-Guide#starting-the-daemon
+#          Set the content of the DAEMON_ARGS variable, which permits to set
+#          additional command-line options to the daemon. For example, this can
+#          be used to override the location of the secret key (--key-file) or
+#          set the number of worker threads (--num-threads) See
+#          https://github.com/dun/munge/wiki/Installation-Guide#starting-the-daemon
 # @param gid [Integer] Default: 992
-#        GID of the munge group
-# @param key_filename [String] Default: '/etc/munge/munge.key'
-#        The secret key filename
-# @param key_source   [String] Default: undef
-#        A source file, which will be copied into place on the local system.
-#        This attribute is mutually exclusive with content.
-#        The normal form of a puppet: URI is
-#                  puppet:///modules/<MODULE NAME>/<FILE PATH>
+#          GID of the munge group
 # @param key_content  [String] Default: undef
-#        The desired contents of a file, as a string. This attribute is mutually
-#        exclusive with source and target.
+#          The desired contents of a file, as a string. This attribute is mutually
+#          exclusive with source and target.
+# @param key_filename [String] Default: '/etc/munge/munge.key'
+#          The secret key filename
+# @param key_source   [String] Default: undef
+#          A source file, which will be copied into place on the local system.
+#          This attribute is mutually exclusive with content.
+#          The normal form of a puppet: URI is
+#                  puppet:///modules/<MODULE NAME>/<FILE PATH>
 # @param uid [Integer] Default: 992
-#        UID of the munge user
+#          UID of the munge user
 #
 # /!\ We assume the RPM 'slurm-munge' has been already installed -- this class
 # does not care about it
@@ -59,11 +59,11 @@ class slurm::munge(
   String  $ensure      = $slurm::params::ensure,
   Boolean $create_key  = $slurm::params::munge_create_key,
   Array $daemon_args   = $slurm::params::munge_daemon_args,
+  Integer $uid         = $slurm::params::munge_uid,
   Integer $gid         = $slurm::params::munge_gid,
+  String $key_filename = $slurm::params::munge_key,
   $key_source          = undef,
   $key_content         = undef,
-  String $key_filename = $slurm::params::munge_key,
-  Integer $uid         = $slurm::params::munge_uid,
 )
 inherits slurm::params
 {
@@ -95,7 +95,7 @@ inherits slurm::params
   # Prepare the user and group
   group { 'munge':
     ensure => $ensure,
-    name   => $slurm::params::group,
+    name   => $slurm::params::munge_group,
     gid    => $gid,
   }
   user { 'munge':
@@ -107,7 +107,7 @@ inherits slurm::params
     home       => $slurm::params::munge_home,
     managehome => true,
     system     => true,
-    shell      => '/sbin/nologin',
+    shell      => $slurm::params::munge_shell,
   }
 
   if $ensure == 'present' {

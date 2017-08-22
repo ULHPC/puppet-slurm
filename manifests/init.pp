@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-22 00:25 svarrette>
+# Time-stamp: <Tue 2017-08-22 00:48 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -55,13 +55,16 @@ class slurm(
   Integer $uid                 = $slurm::params::uid,
   Integer $gid                 = $slurm::params::gid,
   String  $auth_type           = $slurm::params::auth_type,
-  Integer $munge_uid           = $slurm::params::munge_uid,
-  Integer $munge_gid           = $slurm::params::munge_gid,
+  String  $version             = $slurm::params::version,
+  # Munge authentication service
   Boolean $munge_create_key    = $slurm::params::munge_create_key,
-  String  $munge_key_filename  = $slurm::params::munge_key,
+  Array   $munge_daemon_args   = $slurm::params::munge_daemon_args,
   $munge_key_source            = undef,
   $munge_key_content           = undef,
-  Array   $munge_daemon_args   = $slurm::params::munge_daemon_args,
+  String  $munge_key_filename  = $slurm::params::munge_key,
+  Integer $munge_uid           = $slurm::params::munge_uid,
+  Integer $munge_gid           = $slurm::params::munge_gid,
+  # PAM settings
   Boolean $use_pam             = $slurm::params::use_pam,
   String  $pam_content         = $slurm::params::pam_content,
   Array   $pam_allowed_users   = $slurm::params::pam_allowed_users,

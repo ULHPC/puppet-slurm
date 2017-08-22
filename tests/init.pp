@@ -20,4 +20,13 @@ node default {
   class { 'slurm':
     pam_allowed_users => [ 'vagrant' ]
   }
+
+  slurm::download { $::slurm::params::version:
+    #checksum => '64009c1ed120b9ce5d79424dca743a06'
+  }
+  slurm::download { 'slurm-16.05.10.tar.bz2':
+    archived => true,
+    checksum => '8216a75830ba6aa72df6ae49cdfaa725',
+  }
+
 }

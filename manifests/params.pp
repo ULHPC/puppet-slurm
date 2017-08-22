@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-22 00:17 svarrette>
+# Time-stamp: <Tue 2017-08-22 14:11 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -23,17 +23,6 @@
 #
 class slurm::params {
 
-  ######## DEFAULTS FOR VARIABLES USERS CAN SET ##########################
-  # (Here are set the defaults, provide your custom variables externally)
-  # (The default used is in the line with '')
-  ###########################################
-
-  # ensure the presence (or absence) of slurm
-  $ensure = 'present'
-
-  # Authentication method for communications between Slurm components.
-  $auth_type = 'munge'
-
   #### MODULE INTERNAL VARIABLES  #########
   # (Modify to adapt to unsupported OSes)
   #########################################
@@ -48,11 +37,37 @@ class slurm::params {
   #####################
   ### SLURM Daemons ###
   #####################
+  # ensure the presence (or absence) of slurm
+  $ensure = 'present'
+
+  # Which version to (eventually) build
+  $version = '17.02.7'
+
+  # From where the Slurm sources can be downloaded
+  $download_baseurl    = 'https://www.schedmd.com/downloads'
+  $download_latestdir  = 'latest'
+  $download_archivedir = 'archive'
+  # Where to place the sources
+  $srcdir = $::operatingsystem ? {
+    default => '/usr/local/src'
+  }
+
+  # Authentication method for communications between Slurm components.
+  $auth_type = 'munge'
+
   # Make sure the clocks, users and groups (UIDs and GIDs) are synchronized
   # across the cluster.
   # Slurm user / group identifiers
-  $uid = 991
-  $gid = $uid
+  $username = 'slurm'
+  $uid      = 991
+  $group    = $username
+  $gid      = $uid
+  $home     = "/var/lib/${username}"
+  $comment  = "SLURM workload manager"
+  $shell    = '/bin/bash'
+
+  # RPMs Build directory
+  $rpm_builddir = "/root/rpmbuild/RPMS/${::architecture}"
 
   # Slurmd associated services
   $servicename = $::operatingsystem ? {
@@ -82,8 +97,9 @@ class slurm::params {
   $munge_uid        = 992
   $munge_group      = $munge_username
   $munge_gid        = $munge_uid
-  $munge_home       = '/var/lib/munge'
+  $munge_home       = "/var/lib/${munge_username}"
   $munge_comment    = "MUNGE Uid 'N' Gid Emporium"
+  $munge_shell      = '/sbin/nologin'
   # Should the key be created if absent ?
   $munge_create_key = true #false
   $munge_key        = '/etc/munge/munge.key'
