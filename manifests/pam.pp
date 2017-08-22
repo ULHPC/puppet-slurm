@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-22 00:28 svarrette>
+# Time-stamp: <Tue 2017-08-22 14:27 svarrette>
 #
 # File::      <tt>pam.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -46,10 +46,10 @@ inherits slurm::params
   # TODO: Enable SLURM's use of PAM by setting UsePAM=1 in slurm.conf.
 
   # PAM access
-  $_allowed_users = concat( $allowed_users, 'root')
+  $__allowed_users = concat( $allowed_users, 'root')
   if (! defined(Class['::pam'])) {
     class { '::pam':
-      allowed_users => $_allowed_users
+      allowed_users => $__allowed_users,
     }
   }
   # Establish a PAM configuration file for slurm /etc/pam.d/slurm
@@ -60,7 +60,7 @@ inherits slurm::params
 
   if ($use_pam_slurm_adopt) {
     # TODO:
-      notice("use pam_slurm_adopt")
+      notice('use pam_slurm_adopt')
   }
 
 

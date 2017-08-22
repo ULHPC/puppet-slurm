@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-22 14:23 svarrette>
+# Time-stamp: <Tue 2017-08-22 14:26 svarrette>
 #
 # File::      <tt>download.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -34,15 +34,15 @@
   #   }
 #
 define slurm::download(
-  String  $ensure   = $slurm::params::ensure,
-  String  $target   = $slurm::params::srcdir,
-  String  $user     = $slurm::params::username,
-  String  $group    = $slurm::params::group,
-  Boolean $archived = false,
+  String  $ensure          = $slurm::params::ensure,
+  String  $target          = $slurm::params::srcdir,
+  String  $user            = $slurm::params::username,
+  String  $group           = $slurm::params::group,
+  Boolean $archived        = false,
   String  $checksum_type   = 'md5',
   Boolean $checksum_verify = false,
-  $checksum         = undef,
-  Boolean $cleanup  = false
+  String  $checksum        = '',
+  Boolean $cleanup         = false
 
 )
 {
@@ -71,17 +71,17 @@ define slurm::download(
 
   # Download the sources using puppet-archive module
   archive { $archive:
-    ensure   => $ensure,
-    path     => $path,
-    source   => $url,
-    user     => $user,
-    group    => $group,
+    ensure          => $ensure,
+    path            => $path,
+    source          => $url,
+    user            => $user,
+    group           => $group,
     checksum_type   => $checksum_type,
-    checksum_verify => ($checksum_verify or $checksum != undef),
-    checksum => $checksum,
-    cleanup  => $cleanup,
-    extract  => false,
-    creates  => $path
+    checksum_verify => ($checksum_verify or empty($checksum)),
+    checksum        => $checksum,
+    cleanup         => $cleanup,
+    extract         => false,
+    creates         => $path,
   }
 
 }

@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-22 14:11 svarrette>
+# Time-stamp: <Tue 2017-08-22 14:26 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -63,7 +63,7 @@ class slurm::params {
   $group    = $username
   $gid      = $uid
   $home     = "/var/lib/${username}"
-  $comment  = "SLURM workload manager"
+  $comment  = 'SLURM workload manager'
   $shell    = '/bin/bash'
 
   # RPMs Build directory
