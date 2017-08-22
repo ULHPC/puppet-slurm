@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-22 00:48 svarrette>
+# Time-stamp: <Tue 2017-08-22 15:46 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -56,6 +56,11 @@ class slurm(
   Integer $gid                 = $slurm::params::gid,
   String  $auth_type           = $slurm::params::auth_type,
   String  $version             = $slurm::params::version,
+  # Slurm source building
+  Boolean $src_archived        = $slurm::params::src_archived,
+  String  $src_checksum        = $slurm::params::src_checksum,
+  String  $srcdir              = $slurm::params::srcdir,
+  String  $builddir            = $slurm::params::builddir,
   # Munge authentication service
   Boolean $munge_create_key    = $slurm::params::munge_create_key,
   Array   $munge_daemon_args   = $slurm::params::munge_daemon_args,

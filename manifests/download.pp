@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-22 14:44 svarrette>
+# Time-stamp: <Tue 2017-08-22 16:47 svarrette>
 #
 # File::      <tt>download.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -10,7 +10,8 @@
 # = Defines: slurm::download
 #
 # This class takes care of downloading the SLURM sources for a given version
-# (passed as name) and placing them into $target directory
+# (passed as name) and placing them into $target directory. You can also invoke
+# this definition with the full archive filename i.e. slurm-<version>.tar.bz2.
 #
 # @param ensure [String]  Default: 'present'
 #          Ensure the presence (or absence) of building
@@ -19,7 +20,7 @@
 # @param archived [Boolean] Default: false
 #          Whether the sources tar.bz2 has be archived or not.
 #          Thus by default, it is assumed that the provided version is the
-#          latest version (https://www.schedmd.com/downloads/latest/).
+#          latest version (from https://www.schedmd.com/downloads/latest/).
 #          If set to true, the sources will be download from
 #             https://www.schedmd.com/downloads/archive/
 # @param checksum_type [String] Default: 'md5'
@@ -49,10 +50,10 @@
 define slurm::download(
   String  $ensure          = $slurm::params::ensure,
   String  $target          = $slurm::params::srcdir,
-  Boolean $archived        = false,
+  Boolean $archived        = $slurm::params::src_archived,
+  String  $checksum        = '',
   String  $checksum_type   = 'md5',
   Boolean $checksum_verify = false,
-  String  $checksum        = '',
 )
 {
   include ::slurm::params

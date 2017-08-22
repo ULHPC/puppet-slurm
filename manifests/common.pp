@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-22 14:28 svarrette>
+# Time-stamp: <Tue 2017-08-22 15:53 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -65,8 +65,22 @@ class slurm::common {
     shell      => $slurm::params::shell,
   }
 
-  # Download and build from sources
+  # Download the Slurm sources
+  slurm::download { $slurm::version :
+    ensure   => $slurm::ensure,
+    target   => $slurm::srcdir,
+    archived => $slurm::src_archived,
+    checksum => $slurm::src_checksum,
+  }
 
+  # Now build the sources
+  class { '::slurm::build':
+    ensure   => $slurm::ensure,
+    version  => $slurm::version,
+    srcdir   => $slurm::srcdir,
+    builddir => $slurm::builddir,
+    require  => Slurm::Download[$slurm::version]
+  }
 
 
   # package { 'slurm':
