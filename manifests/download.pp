@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-22 14:26 svarrette>
+# Time-stamp: <Tue 2017-08-22 14:44 svarrette>
 #
 # File::      <tt>download.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -12,12 +12,25 @@
 # This class takes care of downloading the SLURM sources for a given version
 # (passed as name) and placing them into $target directory
 #
-# == Parameters
+# @param ensure [String]  Default: 'present'
+#          Ensure the presence (or absence) of building
+# @param target [String] Default: '/usr/local/src'
+#          Target directory for the downloaded sources
+# @param archived [Boolean] Default: false
+#          Whether the sources tar.bz2 has be archived or not.
+#          Thus by default, it is assumed that the provided version is the
+#          latest version (https://www.schedmd.com/downloads/latest/).
+#          If set to true, the sources will be download from
+#             https://www.schedmd.com/downloads/archive/
+# @param checksum_type [String] Default: 'md5'
+#          archive file checksum type (none|md5|sha1|sha2|sh256|sha384| sha512).
+# @param checksum_verify [Boolean] Default: false
+#          whether checksum will be verified (true|false).
+# @param checksum [String] Default: ''
+#           archive file checksum (match checksum_type)
 #
-# @param ensure       [String]  Default: 'present'
-#        Ensure the presence (or absence) of building
-#
-# @example Downloading version 17.06.7 (latest) version of SLURM
+# @example Downloading version 17.06.7 (latest at the time of writing) version
+# of SLURM
 #
 #     slurm::download { '17.02.7':
   #     ensure    => 'present',
@@ -36,14 +49,10 @@
 define slurm::download(
   String  $ensure          = $slurm::params::ensure,
   String  $target          = $slurm::params::srcdir,
-  String  $user            = $slurm::params::username,
-  String  $group           = $slurm::params::group,
   Boolean $archived        = false,
   String  $checksum_type   = 'md5',
   Boolean $checksum_verify = false,
   String  $checksum        = '',
-  Boolean $cleanup         = false
-
 )
 {
   include ::slurm::params
@@ -74,12 +83,12 @@ define slurm::download(
     ensure          => $ensure,
     path            => $path,
     source          => $url,
-    user            => $user,
-    group           => $group,
+    user            => $slurm::params::username,
+    group           => $slurm::params::group,
     checksum_type   => $checksum_type,
-    checksum_verify => ($checksum_verify or empty($checksum)),
+    checksum_verify => ($checksum_verify or ! empty($checksum)),
     checksum        => $checksum,
-    cleanup         => $cleanup,
+    cleanup         => false,
     extract         => false,
     creates         => $path,
   }
