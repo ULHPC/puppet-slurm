@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-22 15:46 svarrette>
+# Time-stamp: <Wed 2017-08-23 13:10 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -56,12 +56,18 @@ class slurm(
   Integer $gid                 = $slurm::params::gid,
   String  $auth_type           = $slurm::params::auth_type,
   String  $version             = $slurm::params::version,
+  Boolean $with_slurmd         = $slurm::params::with_slurmd,
+  Boolean $with_slurmctld      = $slurm::params::with_slurmctld,
+  Boolean $with_slurmdbd       = $slurm::params::with_slurmdbd,
+  Array   $wrappers            = $slurm::params::wrappers,
   # Slurm source building
+  # TODO: option NOT to build but re-use shared RPMs
   Boolean $src_archived        = $slurm::params::src_archived,
   String  $src_checksum        = $slurm::params::src_checksum,
   String  $srcdir              = $slurm::params::srcdir,
   String  $builddir            = $slurm::params::builddir,
   # Munge authentication service
+  Boolean $use_munge           = $slurm::params::use_munge,
   Boolean $munge_create_key    = $slurm::params::munge_create_key,
   Array   $munge_daemon_args   = $slurm::params::munge_daemon_args,
   $munge_key_source            = undef,

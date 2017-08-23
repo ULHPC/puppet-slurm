@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 10:49 svarrette>
+# Time-stamp: <Wed 2017-08-23 13:09 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -46,6 +46,10 @@ class slurm::params {
     default  => []
   }
 
+  # Which daemon to configure / install
+  $with_slurmd    = true
+  $with_slurmctld = false
+  $with_slurmdbd  = false
 
   #########################################
   ### SLURM Configuration (slurm.conf)  ###
@@ -146,27 +150,32 @@ class slurm::params {
   # Generated RPMs basenames, without versions and os specific suffixes.
   # Exact filename will be on the form
   #    <basename>-<version>-<n>.el7.centos.x86_64.rpm
-  $rpm_basename = 'slurm'  # Main RPM basename covering slurmd and slurmctld
-  $extra_rpms_basename = [
+  #$rpm_basename = 'slurm'
+  $common_rpms_basename = [
+    'slurm',           # Main RPM basename covering slurmd and slurmctld
     'slurm-contribs',  # Perl tool to print Slurm job state information
     'slurm-devel',     # Development package for Slurm
     'slurm-lua',       # Slurm lua bindings
     'slurm-munge',     # Slurm authentication and crypto implementation using Munge
-    'slurm-openlava',  # openlava/LSF wrappers for transitition from OpenLava/LSF to Slurm
     'slurm-pam_slurm', # PAM module for restricting access to compute nodes via Slurm
     'slurm-perlapi',   # Perl API to Slurm
     'slurm-plugins',   # Slurm plugins (loadable shared objects)
+  ]
+  $slurmdbd_rpms_basenames = [
     'slurm-slurmdbd',  # Slurm database daemon
     'slurm-sql',       # Slurm SQL support
+  ]
+  $wrappers = $extra_rpms_basenames = [
+    'slurm-openlava',  # openlava/LSF wrappers for transitition from OpenLava/LSF to Slurm
     'slurm-torque',    # Torque/PBS wrappers for transitition from Torque/PBS to Slurm
   ]
-
   ####################################
   ### MUNGE authentication service ###
   ####################################
   # see https://github.com/dun/munge
   # We assume it will be used for shared key authentication, and the shared key
   # can be provided to puppet via a URI.
+  $use_munge        = true
   # Munge user/group identifiers, and attributes for the munge user
   $munge_username   = 'munge'
   $munge_uid        = 992
@@ -212,7 +221,7 @@ class slurm::params {
   ##############################################
   ### Pluggable Authentication Modules (PAM) ###
   ##############################################
-  $use_pam = true
+  $use_pam         = true
   $pam_servicename = 'slurm'
   # Default content of /etc/pam.d/slurm
   $pam_content = template('slurm/pam_slurm.erb')
