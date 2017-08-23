@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 11:32 svarrette>
+# Time-stamp: <Wed 2017-08-23 14:29 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -74,9 +74,8 @@ class slurm::common {
   }
 
   # Now build the sources
-  class { '::slurm::build':
+  slurm::build { $slurm::version :
     ensure   => $slurm::ensure,
-    version  => $slurm::version,
     srcdir   => $slurm::srcdir,
     dir      => $slurm::builddir,
     require  => Slurm::Download[$slurm::version]

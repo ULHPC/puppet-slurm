@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 11:15 svarrette>
+# Time-stamp: <Wed 2017-08-23 14:06 svarrette>
 #
 # File::      <tt>download.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -9,7 +9,7 @@
 # ------------------------------------------------------------------------------
 # = Defines: slurm::download
 #
-# This class takes care of downloading the SLURM sources for a given version
+# This definition takes care of downloading the SLURM sources for a given version
 # (passed as name) and placing them into $target directory. You can also invoke
 # this definition with the full archive filename i.e. slurm-<version>.tar.bz2.
 #
@@ -35,7 +35,7 @@
 #
 #     slurm::download { '17.02.7':
   #     ensure    => 'present',
-  #     checksurm => '64009c1ed120b9ce5d79424dca743a06',
+  #     checksum  => '64009c1ed120b9ce5d79424dca743a06',
   #     target    => '/usr/local/src/',
   #   }
 #
