@@ -38,7 +38,7 @@ end
 
 
 require 'falkorlib/tasks/git'
-#require 'falkorlib/tasks/puppet'
+require 'falkorlib/tasks/puppet'
 
 ##############################################################################
 #TOP_SRCDIR = File.expand_path(File.join(File.dirname(__FILE__), "."))
