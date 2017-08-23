@@ -16,9 +16,12 @@
 #      sudo puppet apply -t /vagrant/tests/init.pp
 #
 node default {
+  include ::slurm::params
 
   class { 'slurm':
-    pam_allowed_users => [ 'vagrant' ]
+    pam_allowed_users => [ 'vagrant' ],
+    #with_slurmdbd => true,
+    #wrappers => $slurm::params::wrappers
   }
 
   # slurm::download { $::slurm::params::version:

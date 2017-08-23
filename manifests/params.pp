@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 15:12 svarrette>
+# Time-stamp: <Wed 2017-08-23 17:40 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -161,11 +161,11 @@ class slurm::params {
     'slurm-perlapi',   # Perl API to Slurm
     'slurm-plugins',   # Slurm plugins (loadable shared objects)
   ]
-  $slurmdbd_rpms_basenames = [
+  $slurmdbd_rpms_basename = [
     'slurm-slurmdbd',  # Slurm database daemon
     'slurm-sql',       # Slurm SQL support
   ]
-  $wrappers = $extra_rpms_basenames = [
+  $wrappers = $extra_rpms_basename = [
     'slurm-openlava',  # openlava/LSF wrappers for transitition from OpenLava/LSF to Slurm
     'slurm-torque',    # Torque/PBS wrappers for transitition from Torque/PBS to Slurm
   ]

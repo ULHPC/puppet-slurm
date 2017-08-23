@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 16:14 svarrette>
+# Time-stamp: <Wed 2017-08-23 18:21 svarrette>
 #
 # File::      <tt>build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -86,7 +86,18 @@ define slurm::build(
       $output = "${rpmdir}/slurm-${version}*.rpm"
       # the below command should typically produce the following RPMs
       # slurm[-suffix]-<version>-1.el7.centos.x86_64.rpm
-      $cmd    = "rpmbuild -ta ${with_options} ${without_options} --define \"_topdir ${dir}\" ${src}"
+      case $ensure {
+        'absent': {
+          $cmd          = "rm -f ${rpmdir}/slurm*-${version}*.rpm"
+          $check_onlyif = "test -n \"$(ls ${output} 2>/dev/null)\""
+          $check_unless = undef
+        }
+        default: {
+          $cmd          = "rpmbuild -ta ${with_options} ${without_options} --define \"_topdir ${dir}\" ${src}"
+          $check_onlyif = undef
+          $check_unless = "test -n \"$(ls ${output} 2>/dev/null)\""
+        }
+      }
     }
     default: {
       fail("Module ${module_name} is not supported on ${::operatingsystem}")
@@ -100,12 +111,14 @@ define slurm::build(
       }
     }
   }
+  notice($cmd)
   exec { $buildname:
     path    => '/sbin:/usr/bin:/usr/sbin:/bin',
     command => $cmd,
     cwd     => '/root',
     user    => 'root',
-    unless  => "test -n \"$(ls ${output} 2>/dev/null)\"",
+    onlyif  => $check_onlyif,
+    unless  => $check_unless,
   }
 
 }
