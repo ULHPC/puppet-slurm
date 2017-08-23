@@ -96,7 +96,7 @@ GEM
     facterdb (0.3.12)
       facter
       jgrep
-    falkorlib (0.7.8)
+    falkorlib (0.7.9)
       activesupport (~> 4.0)
       artii (>= 2.1)
       awesome_print (~> 1.2)
@@ -527,4 +527,4 @@ DEPENDENCIES
   travis-lint
 
 BUNDLED WITH
-   1.14.6
+   1.15.4
