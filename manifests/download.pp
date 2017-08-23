@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-22 16:47 svarrette>
+# Time-stamp: <Wed 2017-08-23 11:15 svarrette>
 #
 # File::      <tt>download.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -18,7 +18,7 @@
 # @param target [String] Default: '/usr/local/src'
 #          Target directory for the downloaded sources
 # @param archived [Boolean] Default: false
-#          Whether the sources tar.bz2 has be archived or not.
+#          Whether the sources tar.bz2 has been archived or not.
 #          Thus by default, it is assumed that the provided version is the
 #          latest version (from https://www.schedmd.com/downloads/latest/).
 #          If set to true, the sources will be download from

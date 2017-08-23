@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-22 17:32 svarrette>
+# Time-stamp: <Wed 2017-08-23 11:12 svarrette>
 #
 # File::      <tt>build/redhat.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -24,10 +24,6 @@ class slurm::build::redhat inherits slurm::build {
     true    =>  '',
     default => join(prefix($slurm::build::without, '--without '), ' ')
   }
-  $rpmbuild_cmd = "rpmbuild -ta ${with_options} ${without_options} ${src}"
-  # notice($with_options)
-  # notice($without_options)
-  # notice($rpmbuild_cmd)
   $buildname = "rpmbuild-slurm-${slurm::build::version}"
 
   ### Let's go ###
@@ -40,6 +36,7 @@ class slurm::build::redhat inherits slurm::build {
   }
 
   concat($slurm::params::pre_requisite_packages, $slurm::params::extra_packages).each |String $pkg| {
+    # Safeguard to avoid incompatibility with other puppet modules
     if (!defined(Package[$pkg])) {
       package { $pkg:
         ensure  => 'present',
@@ -48,10 +45,17 @@ class slurm::build::redhat inherits slurm::build {
       }
     }
   }
+  $rpmdir = "${slurm::build::dir}/RPMS/${::architecture}"
+  $rpmbuild_cmd = "rpmbuild -ta ${with_options} ${without_options} --define \"_topdir ${slurm::build::dir}\" ${src}"
 
+  # The build should produce at least the following RPM
+  # slurm-<version>-1.el7.centos.x86_64.rpm
   exec { $buildname:
     path    => '/sbin:/usr/bin:/usr/sbin:/bin',
     command => $rpmbuild_cmd,
+    cwd     => '/root',
+    user    => 'root',
+    unless  => "test -n \"$(ls ${rpmdir}/slurm-${slurm::build::version}*.rpm 2>/dev/null)\"",
     require => [
       Yum::Group[$slurm::params::groupinstall]
     ]
