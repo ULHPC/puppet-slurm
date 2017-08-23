@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-22 11:11 svarrette>
+# Time-stamp: <Wed 2017-08-23 15:13 svarrette>
 #
 # File::      <tt>munge.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -54,7 +54,7 @@
 #
 # /!\ We assume the RPM 'slurm-munge' has been already installed -- this class
 # does not care about it
-
+#
 class slurm::munge(
   String  $ensure      = $slurm::params::ensure,
   Boolean $create_key  = $slurm::params::munge_create_key,
@@ -173,7 +173,7 @@ inherits slurm::params
   else {
     $options = concat($daemon_args, "--key-file ${key_filename}")
   }
-  file { $slurm::params::munge_sysconfigdir:
+  file { $slurm::params::munge_default_sysconfig:
     ensure  => $ensure,
     owner   => $slurm::params::munge_username,
     group   => $slurm::params::munge_group,
