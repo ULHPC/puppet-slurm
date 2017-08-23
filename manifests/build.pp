@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 14:30 svarrette>
+# Time-stamp: <Wed 2017-08-23 16:05 svarrette>
 #
 # File::      <tt>build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -100,19 +100,3 @@ define slurm::build(
   }
 
 }
-
-
-
-
-# inherits slurm::params
-# {
-  #   validate_legacy('String',  'validate_re',   $ensure, ['^present', '^absent'])
-
-  #   case $::osfamily {
-    #     #debian, ubuntu:         { include ::slurm::build::debian }
-    #     'RedHat': { include ::slurm::build::redhat }
-    #     default: {
-      #       fail("Module ${module_name} is not supported on ${::operatingsystem}")
-      #     }
-    #   }
-  #}
