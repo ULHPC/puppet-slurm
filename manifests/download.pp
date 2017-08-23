@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 14:06 svarrette>
+# Time-stamp: <Wed 2017-08-23 16:11 svarrette>
 #
 # File::      <tt>download.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -10,8 +10,9 @@
 # = Defines: slurm::download
 #
 # This definition takes care of downloading the SLURM sources for a given version
-# (passed as name) and placing them into $target directory. You can also invoke
-# this definition with the full archive filename i.e. slurm-<version>.tar.bz2.
+# (passed as name to this resource) and placing them into $target directory.
+# You can also invoke this definition with the full archive filename i.e.
+# slurm-<version>.tar.bz2.
 #
 # @param ensure [String]  Default: 'present'
 #          Ensure the presence (or absence) of building
@@ -30,8 +31,7 @@
 # @param checksum [String] Default: ''
 #           archive file checksum (match checksum_type)
 #
-# @example Downloading version 17.06.7 (latest at the time of writing) version
-# of SLURM
+# @example Downloading version 17.06.7 (latest at the time of writing) of SLURM
 #
 #     slurm::download { '17.02.7':
   #     ensure    => 'present',

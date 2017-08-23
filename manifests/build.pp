@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 16:05 svarrette>
+# Time-stamp: <Wed 2017-08-23 16:14 svarrette>
 #
 # File::      <tt>build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -10,12 +10,12 @@
 # = Defines: slurm::build
 #
 # This definition takes care of building Slurm sources into RPMs using 'rpmbuild'.
+# It expect to get as resource name the SLURM version to build
 # This assumes the sources have been downloaded using slurm::download
 #
-# @param ensure       [String]  Default: 'present'
+#
+# @param ensure  [String]  Default: 'present'
 #          Ensure the presence (or absence) of building
-# @param version [String] Default: '17.02.7' (see params.pp)
-#          Which version of Slurm to grab and build
 # @param srcdir  [String] Default: '/usr/local/src'
 #          Where the [downloaded] Slurm sources are located
 # @param dir     [String] Default: '/root/rpmbuild' on redhat systems
@@ -28,6 +28,15 @@
 # @param without [Array] Default: [] -- see slurm::params
 #          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
 #          List of --without build options to pass to rpmbuild
+#
+# @example Building version 17.06.7 (latest at the time of writing)  of SLURM
+#
+#     slurm::build { '17.02.7':
+  #     ensure => 'present',
+  #     srcdir => '/usr/local/src',
+  #     dir    => '/root/rpmbuild',
+  #     with   => [ 'lua', 'mysql', 'openssl' ]
+  #   }
 #
 define slurm::build(
   String  $ensure       = $slurm::params::ensure,
