@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 19:26 svarrette>
+# Time-stamp: <Wed 2017-08-23 22:48 svarrette>
 #
 # File::      <tt>build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -80,7 +80,7 @@ define slurm::build(
       # Resource default statements
       Package {
         require => Yum::Group[$slurm::params::groupinstall],
-        before  => Exec[$buildname]
+        before  => Exec[$buildname],
       }
       $rpmdir = "${dir}/RPMS/${::architecture}"
       $output = "${rpmdir}/slurm-${version}*.rpm"

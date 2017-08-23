@@ -17,10 +17,10 @@
 #
 node default {
 
-  include slurm::params
+  include ::slurm::params
 
   slurm::download { $::slurm::params::version:
-    ensure => 'present'
+    ensure => 'present',
   }
   slurm::download { 'slurm-16.05.10.tar.bz2':
     archived => true,

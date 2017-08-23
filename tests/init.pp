@@ -18,7 +18,7 @@
 node default {
   include ::slurm::params
 
-  class { 'slurm':
+  class { '::slurm':
     pam_allowed_users => [ 'vagrant' ],
     #with_slurmdbd => true,
     #wrappers => $slurm::params::wrappers

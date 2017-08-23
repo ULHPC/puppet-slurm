@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 20:57 svarrette>
+# Time-stamp: <Wed 2017-08-23 22:52 svarrette>
 #
 # File::      <tt>install.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -109,7 +109,7 @@ define slurm::install(
     cwd     => $pkgdir,
     onlyif  => $check_onlyif,
     unless  => $check_unless,
-    user    => 'root'
+    user    => 'root',
   }
 
 }

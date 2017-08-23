@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 20:57 svarrette>
+# Time-stamp: <Wed 2017-08-23 22:49 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -75,10 +75,10 @@ class slurm::common {
 
   # Now build the sources
   slurm::build { $slurm::version :
-    ensure   => $slurm::ensure,
-    srcdir   => $slurm::srcdir,
-    dir      => $slurm::builddir,
-    require  => Slurm::Download[$slurm::version]
+    ensure  => $slurm::ensure,
+    srcdir  => $slurm::srcdir,
+    dir     => $slurm::builddir,
+    require => Slurm::Download[$slurm::version],
   }
 
   # Install the built packages/RPMs
@@ -88,10 +88,11 @@ class slurm::common {
     slurmctld => $slurm::with_slurmctld,
     slurmdbd  => $slurm::with_slurmdbd,
     wrappers  => $slurm::wrappers,
-    require   => Slurm::Build[$slurm::version]
+    require   => Slurm::Build[$slurm::version],
   }
 
-
+  # Now configure it
+  include ::slurm::config
 }
 
 

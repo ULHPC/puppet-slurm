@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 15:13 svarrette>
+# Time-stamp: <Wed 2017-08-23 21:11 svarrette>
 #
 # File::      <tt>munge.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -24,8 +24,6 @@
 # be used by the SLURM daemons.
 #
 # See https://slurm.schedmd.com/authplugins.html
-#
-# == Parameters
 #
 # @param ensure       [String]  Default: 'present'
 #          Ensure the presence (or absence) of the Munge service
