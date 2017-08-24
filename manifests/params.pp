@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 22:53 svarrette>
+# Time-stamp: <Thu 2017-08-24 12:19 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -61,7 +61,6 @@ class slurm::params {
   $piddir = $::operatingsystem ? {
     default => '/var/run/slurm',
   }
-
   $configdir_mode = $::operatingsystem ? {
     default => '0755',
   }
@@ -97,27 +96,6 @@ class slurm::params {
     #     default => '/var/run/slurm/slurm.pid'
     # }
 
-
-
-
-  # $configfile = $::operatingsystem ? {
-    #   default => '/etc/slurm/slurm.conf',
-    # }
-  # $configfile_init = $::operatingsystem ? {
-    #   /(?i-mx:ubuntu|debian)/ => '/etc/default/slurm',
-    #   default                 => '/etc/sysconfig/slurm'
-    # }
-  # $configfile_mode = $::operatingsystem ? {
-    #   default => '0600',
-    # }
-  # $configfile_owner = $::operatingsystem ? {
-    #   default => 'root',
-    # }
-  # $configfile_group = $::operatingsystem ? {
-    #   default => 'root',
-    # }
-
-
   ####################################################
   ### SLURM Configuration files (slurm.conf etc.)  ###
   ####################################################
@@ -125,7 +103,7 @@ class slurm::params {
   # See https://slurm.schedmd.com/slurm.conf.html
   #
   $configfile      = "${configdir}/slurm.conf"
-  $configfile_mode = '0644',
+  $configfile_mode = '0644'
 
   # The name by which this Slurm managed cluster is known in the accounting
   # database
@@ -148,7 +126,7 @@ class slurm::params {
   ###
   ### Hierarchical Network Topology description -- topology.conf
   ###
-  $topology_configfile = "${configdir}/topology.conf"
+  $topology_configfile = 'topology.conf'
 
   #####################
   ### SLURM Daemons ###

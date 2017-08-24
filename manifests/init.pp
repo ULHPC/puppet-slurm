@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 22:48 svarrette>
+# Time-stamp: <Thu 2017-08-24 11:17 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -81,6 +81,7 @@ class slurm(
   $topology_content            = undef,
   $topology_source             = undef,
   $topology_target             = undef,
+  Hash    $topology_tree       = {},
   #
   # Slurm source building
   # TODO: option NOT to build but re-use shared RPMs

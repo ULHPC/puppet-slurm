@@ -20,8 +20,17 @@ node default {
 
   class { '::slurm':
     pam_allowed_users => [ 'vagrant' ],
-    #with_slurmdbd => true,
-    #wrappers => $slurm::params::wrappers
+    topology      => 'tree',
+    topology_tree => {
+      's0' => { nodes => 'dev[0-5]'   },
+      's1' => { nodes => 'dev-[6-11]' },
+      's2' => { nodes => 'dev-[12-17]'},
+      's3' => {
+        comment   => 'GUID: XXXXXX - switch 0',
+        switches  => 's[0-2]',
+        linkspeed => '100Mb/s',
+      },
+    }
   }
 
   # slurm::download { $::slurm::params::version:
