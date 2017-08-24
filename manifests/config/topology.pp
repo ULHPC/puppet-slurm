@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-24 12:20 svarrette>
+# Time-stamp: <Thu 2017-08-24 16:07 svarrette>
 #
 # File::      <tt>config/topology.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -32,18 +32,23 @@ class slurm::config::topology inherits slurm::config {
     if ($content != undef) or ($source != undef) {
       fail("${Module_name} cannot have 'content' and/or 'source' attribute(s) when 'tree' is specified")
     }
-    $topology_content = template("slurm/topology.conf.erb")
+    $topology_content = template('slurm/topology.conf.erb')
+  }
+  $ensure = $target ? {
+    undef   => $slurm::ensure,
+    default => 'link',
   }
 
   if  $slurm::topology == 'tree' {
     file { 'topology.conf':
-      ensure  => $slurm::ensure,
+      ensure  => $ensure,
       path    => "${slurm::configdir}/topology.conf",
       owner   => $slurm::username,
       group   => $slurm::group,
       mode    => $slurm::params::configfile_mode,
       content => $topology_content,
       source  => $source,
+      target  => $target,
     }
   }
 

@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-24 13:29 svarrette>
+# Time-stamp: <Thu 2017-08-24 13:34 svarrette>
 #
 # File::      <tt>config.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -25,7 +25,9 @@ class slurm::config inherits slurm {
     mode   => $slurm::params::configdir_mode,
   }
 
+  include ::slurm::config::cgroup
   include ::slurm::config::topology
+
 
 
 

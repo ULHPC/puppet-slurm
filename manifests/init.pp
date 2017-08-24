@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-24 11:17 svarrette>
+# Time-stamp: <Thu 2017-08-24 16:16 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -73,10 +73,34 @@ class slurm(
   #
   # Main configuration paramaters
   #
-  String  $configdir           = $slurm::params::configdir,
-  String  $clustername         = $slurm::params::clustername,
-  String  $auth_type           = $slurm::params::auth_type,
-  String  $topology            = $slurm::params::topology,
+  String  $configdir       = $slurm::params::configdir,
+  String  $clustername     = $slurm::params::clustername,
+  String  $auth_type       = $slurm::params::auth_type,
+  String  $topology        = $slurm::params::topology,
+  #
+  # cgroup.conf
+  #
+  $cgroup_content                    = undef,
+  $cgroup_source                     = undef,
+  $cgroup_target                     = undef,
+  Boolean $cgroup_automount          = $slurm::params::cgroup_automount,
+  String  $cgroup_mountpoint         = $slurm::params::cgroup_mountpoint,
+  #String  $cgroup_releaseagentdir    = $slurm::params::cgroup_releaseagentdir,
+  Array   $cgroup_alloweddevices     = $slurm::params::cgroup_alloweddevices,
+  $cgroup_allowedkmemspace           = $slurm::params::cgroup_allowedkmemspace,
+  Numeric $cgroup_allowedramspace    = $slurm::params::cgroup_allowedramspace,
+  Numeric $cgroup_allowedswapspace   = $slurm::params::cgroup_allowedswapspace,
+  Boolean $cgroup_constraincores     = $slurm::params::cgroup_constraincores,
+  Boolean $cgroup_constraindevices   = $slurm::params::cgroup_constraindevices,
+  Boolean $cgroup_constrainkmemspace = $slurm::params::cgroup_constrainkmemspace,
+  Boolean $cgroup_constrainramspace  = $slurm::params::cgroup_constrainramspace,
+  Boolean $cgroup_constrainswapspace = $slurm::params::cgroup_constrainswapspace,
+  Numeric $cgroup_maxrampercent      = $slurm::params::cgroup_maxrampercent,
+  Numeric $cgroup_maxswappercent     = $slurm::params::cgroup_maxswappercent,
+  Numeric $cgroup_maxkmempercent     = $slurm::params::cgroup_maxkmempercent,
+  String  $cgroup_minkmemspace       = $slurm::params::cgroup_minkmemspace,
+  String  $cgroup_minramspace        = $slurm::params::cgroup_minramspace,
+  Boolean $cgroup_taskaffinity       = $slurm::params::cgroup_taskaffinity,
   # topology.conf
   $topology_content            = undef,
   $topology_source             = undef,

@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 22:48 svarrette>
+# Time-stamp: <Thu 2017-08-24 16:25 svarrette>
 #
 # File::      <tt>build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -57,13 +57,13 @@ define slurm::build(
   $src = "${srcdir}/slurm-${version}.tar.bz2"
 
   # Prepare the [RPM] build option
-  $with_options = empty($slurm::build::with) ? {
+  $with_options = empty($with) ? {
     true    =>  '',
-    default => join(prefix($slurm::build::with, '--with '), ' ')
+    default => join(prefix($with, '--with '), ' ')
   }
-  $without_options = empty($slurm::build::without) ? {
+  $without_options = empty($without) ? {
     true    =>  '',
-    default => join(prefix($slurm::build::without, '--without '), ' ')
+    default => join(prefix($without, '--without '), ' ')
   }
   $buildname = "rpmbuild-slurm-${version}"  # Label for the exec
   $pkgs = concat($slurm::params::pre_requisite_packages, $slurm::params::extra_packages)

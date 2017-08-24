@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-24 12:19 svarrette>
+# Time-stamp: <Thu 2017-08-24 15:11 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -123,6 +123,41 @@ class slurm::params {
   #   tree -- used for a hierarchical network as described in a topology.conf file
   $topology = none
 
+  #
+  # Cgroup Parameters
+  #
+  $cgroup_automount = true
+  $cgroup_mountpoint = $::operatingsystem ? {
+    default => '/sys/fs/cgroup'
+  }
+  # $cgroup_releaseagentdir = $::operatingsystem ? {
+  #   default => '/etc/slurm/cgroup'
+  # }
+  # task/cgroup plugin
+  $cgroup_alloweddevices=[]    # if non-empty, cgroup_allowed_devices_file.conf
+  # will host the list of devices that need to be allowed by default for all the jobs
+  $cgroup_alloweddevices_configfile = 'cgroup_allowed_devices_file.conf'
+  $cgroup_allowedkmemspace   = undef   # amount of the allocated kernel memory
+  $cgroup_allowedramspace    = 100     # percentage of the allocated memory
+  $cgroup_allowedswapspace   = 0       # percentage of the swap space
+  $cgroup_constraincores     = true
+  $cgroup_constraindevices   = false   #  constrain the job's allowed devices based on GRES allocated resources.
+  $cgroup_constrainkmemspace = true
+  $cgroup_constrainramspace  = true
+  $cgroup_constrainswapspace = true
+  $cgroup_maxrampercent      = 100   # upper bound in percent of total RAM on the RAM constraint for a job.
+  $cgroup_maxswappercent     = 100   # upper bound (in percent of total RAM) on the amount of RAM+Swap
+  $cgroup_maxkmempercent     = 100   # upper bound in percent of total Kmem for a job.
+  $cgroup_minkmemspace       = '30M' # lower bound (in MB) on the memory limits defined by AllowedKmemSpace.
+  $cgroup_minramspace        = '30M' # lower bound (in MB) on the memory limits defined by AllowedRAMSpace and AllowedSwapSpace.
+  $cgroup_taskaffinity       = true  # This feature requires the Portable Hardware Locality (hwloc) library
+
+
+  ###
+  ### Cgroup support -- cgroup.conf
+  ###
+  $cgroup_configfile = 'cgroup.conf'
+
   ###
   ### Hierarchical Network Topology description -- topology.conf
   ###
@@ -147,19 +182,19 @@ class slurm::params {
 
   # Slurmd associated services
   $servicename = $::operatingsystem ? {
-    default                 => 'slurm'
+  default                 => 'slurm'
   }
   # used for pattern in a service ressource
   $processname = $::operatingsystem ? {
-    default                 => 'slurm'
+  default                 => 'slurm'
   }
   $hasstatus = $::operatingsystem ? {
-    /(?i-mx:ubuntu|debian)/        => false,
-    /(?i-mx:centos|fedora|redhat)/ => true,
-    default => true,
+  /(?i-mx:ubuntu|debian)/        => false,
+  /(?i-mx:centos|fedora|redhat)/ => true,
+  default => true,
   }
   $hasrestart = $::operatingsystem ? {
-    default => true,
+  default => true,
   }
 
   ##########################################
@@ -168,8 +203,8 @@ class slurm::params {
   # Which group install is required to build the Slurm sources -- see slurm::build[::redhat]
   # Makes only sense on yum-based systems
   $groupinstall = $::osfamily ? {
-    'Redhat' => 'Development tools',
-    default  => undef
+  'Redhat' => 'Development tools',
+  default  => undef
   }
   # Which version of Slurm to grab and build
   $version = '17.02.7'
@@ -187,13 +222,13 @@ class slurm::params {
   $src_archived        = false
   # Where to place the sources
   $srcdir = $::operatingsystem ? {
-    default => '/usr/local/src'
+  default => '/usr/local/src'
   }
   ### Slurm Build
   # Where to place the builds of the sources (i.e. RPMs, debs...)
   $builddir = $::osfamily ? {
-    'Redhat' => '/root/rpmbuild', # rpmbuild _topdir Build directory
-    default  => '/tmp/slurmbuild',
+  'Redhat' => '/root/rpmbuild', # rpmbuild _topdir Build directory
+  default  => '/tmp/slurmbuild',
   }
   # Build options -- see https://github.com/SchedMD/slurm/blob/master/slurm.spec
   $build_with = [
@@ -260,31 +295,31 @@ class slurm::params {
   $munge_daemon_args = []
   # Packages to install
   $munge_package = $::operatingsystem ? {
-    default => 'munge'
+  default => 'munge'
   }
   $munge_extra_packages = $::operatingsystem ? {
-    /(?i-mx:ubuntu|debian)/        => [ 'libmunge-dev' ],
-    /(?i-mx:centos|fedora|redhat)/ => [ 'munge-libs', 'munge-devel' ],
-    default => [ ]
+  /(?i-mx:ubuntu|debian)/        => [ 'libmunge-dev' ],
+  /(?i-mx:centos|fedora|redhat)/ => [ 'munge-libs', 'munge-devel' ],
+  default => [ ]
   }
   $munge_configdir = $::operatingsystem ? {
-    default => '/etc/munge',
+  default => '/etc/munge',
   }
   $munge_logdir = $::operatingsystem ? {
-    default => '/var/log/munge',
+  default => '/var/log/munge',
   }
   $munge_piddir = $::operatingsystem ? {
-    default => '/var/run/munge',
+  default => '/var/run/munge',
   }
   $munge_default_sysconfig = $::operatingsystem ? {
-    /(?i-mx:ubuntu|debian)/ => '/etc/default/munge',
-    default                 => '/etc/sysconfig/munge'
+  /(?i-mx:ubuntu|debian)/ => '/etc/default/munge',
+  default                 => '/etc/sysconfig/munge'
   }
   $munge_servicename = $::operatingsystem ? {
-    default => 'munge'
+  default => 'munge'
   }
   $munge_processname = $::operatingsystem ? {
-    default => 'munge'
+  default => 'munge'
   }
 
   ##############################################

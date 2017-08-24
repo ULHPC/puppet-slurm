@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 22:52 svarrette>
+# Time-stamp: <Thu 2017-08-24 16:37 svarrette>
 #
 # File::      <tt>install.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -102,7 +102,7 @@ define slurm::install(
     }
   }
 
-  notice($cmd)
+  #notice($cmd)
   exec { $execname:
     path    => '/sbin:/usr/bin:/usr/sbin:/bin',
     command => $cmd,
