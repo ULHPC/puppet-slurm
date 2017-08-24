@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-24 15:11 svarrette>
+# Time-stamp: <Thu 2017-08-24 16:58 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -149,7 +149,7 @@ class slurm::params {
   $cgroup_maxswappercent     = 100   # upper bound (in percent of total RAM) on the amount of RAM+Swap
   $cgroup_maxkmempercent     = 100   # upper bound in percent of total Kmem for a job.
   $cgroup_minkmemspace       = '30M' # lower bound (in MB) on the memory limits defined by AllowedKmemSpace.
-  $cgroup_minramspace        = '30M' # lower bound (in MB) on the memory limits defined by AllowedRAMSpace and AllowedSwapSpace.
+  $cgroup_minramspace        = '30M' # lower bound (in MB) on the memory limits defined by AllowedRAMSpace & AllowedSwapSpace.
   $cgroup_taskaffinity       = true  # This feature requires the Portable Hardware Locality (hwloc) library
 
 
@@ -157,6 +157,11 @@ class slurm::params {
   ### Cgroup support -- cgroup.conf
   ###
   $cgroup_configfile = 'cgroup.conf'
+
+  ###
+  ### Generic RESource management -- gres.conf
+  ###
+  $gres_configfile    = 'gres.conf'
 
   ###
   ### Hierarchical Network Topology description -- topology.conf

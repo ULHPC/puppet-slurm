@@ -31,20 +31,7 @@ node default {
         linkspeed => '100Mb/s',
       },
     },
-  #cgroup_allowedkmemspace => '100M',
-  cgroup_allowedramspace    => 99,
-  cgroup_allowedswapspace   => 10,      # percentage of the swap space
-  cgroup_constraincores     => true,
-  cgroup_constraindevices   => false,   #  constrain the job's allowed devices based on GRES allocated resources.
-  cgroup_constrainkmemspace => true,
-  cgroup_constrainramspace  => true,
-  cgroup_constrainswapspace => true,
-  cgroup_maxrampercent      => 90,   # upper bound in percent of total RAM on the RAM constraint for a job.
-  cgroup_maxswappercent     => 80,   # upper bound (in percent of total RAM) on the amount of RAM+Swap
-  cgroup_maxkmempercent     => 70,   # upper bound in percent of total Kmem for a job.
-  cgroup_minkmemspace       => '40M', # lower bound (in MB) on the memory limits defined by AllowedKmemSpace.
-  cgroup_minramspace        => '100M', # lower bound (in MB) on the memory limits defined by AllowedRAMSpace and AllowedSwapSpace.
-  cgroup_taskaffinity       => false,  # This feature requires the Portable Hardware Locality (hwloc) library
+
 
   }
 

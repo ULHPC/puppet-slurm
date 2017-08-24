@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-24 16:07 svarrette>
+# Time-stamp: <Thu 2017-08-24 17:15 svarrette>
 #
 # File::      <tt>config/topology.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -15,40 +15,32 @@
 # More details: see <https://slurm.schedmd.com/topology.conf.html>
 #
 class slurm::config::topology inherits slurm::config {
-  $content = $slurm::topology_content
-  $source  = $slurm::topology_source
-  $target  = $slurm::topology_target
-  $tree    = $slurm::topology_tree
 
-  if (($content == undef) and ($source == undef) and ($target == undef) and empty($tree)) {
-    fail("Module ${module_name} require content specification for '${path}' using either content,source,target,tree")
+  $topology_content = $slurm::topology_content ? {
+    undef   => $slurm::topology_source ? {
+      undef   => $slurm::topology_target ? {
+        undef   => template('slurm/topology.conf.erb'),
+        default => $slurm::topology_content,
+      },
+    default => $slurm::topology_content
+    },
+  default => $slurm::topology_content,
   }
-
-  # determine the file content
-  if empty($tree) {
-    $topology_content = $content
-  }
-  else {
-    if ($content != undef) or ($source != undef) {
-      fail("${Module_name} cannot have 'content' and/or 'source' attribute(s) when 'tree' is specified")
-    }
-    $topology_content = template('slurm/topology.conf.erb')
-  }
-  $ensure = $target ? {
+  $ensure = $slurm::topology_target ? {
     undef   => $slurm::ensure,
     default => 'link',
   }
+  $topology_filename = "${slurm::configdir}/${slurm::params::topology_configfile}"
 
   if  $slurm::topology == 'tree' {
-    file { 'topology.conf':
+    file { $topology_filename:
       ensure  => $ensure,
-      path    => "${slurm::configdir}/topology.conf",
       owner   => $slurm::username,
       group   => $slurm::group,
       mode    => $slurm::params::configfile_mode,
       content => $topology_content,
-      source  => $source,
-      target  => $target,
+      source  => $slurm::topology_source,
+      target  => $slurm::topology_target,
     }
   }
 

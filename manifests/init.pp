@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-24 16:16 svarrette>
+# Time-stamp: <Thu 2017-08-24 17:02 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -101,7 +101,16 @@ class slurm(
   String  $cgroup_minkmemspace       = $slurm::params::cgroup_minkmemspace,
   String  $cgroup_minramspace        = $slurm::params::cgroup_minramspace,
   Boolean $cgroup_taskaffinity       = $slurm::params::cgroup_taskaffinity,
+  #
+  # gres.conf
+  #
+  $gres_content                      = undef,
+  $gres_source                       = undef,
+  $gres_target                       = undef,
+  Hash    $gres                      = {},
+  #
   # topology.conf
+  #
   $topology_content            = undef,
   $topology_source             = undef,
   $topology_target             = undef,
