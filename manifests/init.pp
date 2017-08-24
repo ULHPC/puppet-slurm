@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-24 17:02 svarrette>
+# Time-stamp: <Thu 2017-08-24 21:36 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -62,21 +62,31 @@
 # [Remember: No empty lines between comments and class definition]
 #
 class slurm(
-  String  $ensure          = $slurm::params::ensure,
-  Integer $uid             = $slurm::params::uid,
-  Integer $gid             = $slurm::params::gid,
-  String  $version         = $slurm::params::version,
-  Boolean $with_slurmd     = $slurm::params::with_slurmd,
-  Boolean $with_slurmctld  = $slurm::params::with_slurmctld,
-  Boolean $with_slurmdbd   = $slurm::params::with_slurmdbd,
-  Array   $wrappers        = $slurm::params::wrappers,
+  String  $ensure         = $slurm::params::ensure,
+  Integer $uid            = $slurm::params::uid,
+  Integer $gid            = $slurm::params::gid,
+  String  $version        = $slurm::params::version,
+  Boolean $with_slurmd    = $slurm::params::with_slurmd,
+  Boolean $with_slurmctld = $slurm::params::with_slurmctld,
+  Boolean $with_slurmdbd  = $slurm::params::with_slurmdbd,
+  Array   $wrappers       = $slurm::params::wrappers,
   #
   # Main configuration paramaters
   #
-  String  $configdir       = $slurm::params::configdir,
-  String  $clustername     = $slurm::params::clustername,
-  String  $auth_type       = $slurm::params::auth_type,
+  String  $configdir        = $slurm::params::configdir,
+  String  $clustername      = $slurm::params::clustername,
+  String  $authtype         = $slurm::params::authtype,
+  String  $authinfo         = $slurm::params::authinfo,
+  String  $controlmachine   = $slurm::params::controlmachine,
+  String  $controladdr      = $slurm::params::controladdr,
+  String  $backupcontroller = $slurm::params::backupcontroller,
+  String  $backupaddr       = $slurm::params::backupaddr,
+
+
+
+
   String  $topology        = $slurm::params::topology,
+
   #
   # cgroup.conf
   #
@@ -85,7 +95,6 @@ class slurm(
   $cgroup_target                     = undef,
   Boolean $cgroup_automount          = $slurm::params::cgroup_automount,
   String  $cgroup_mountpoint         = $slurm::params::cgroup_mountpoint,
-  #String  $cgroup_releaseagentdir    = $slurm::params::cgroup_releaseagentdir,
   Array   $cgroup_alloweddevices     = $slurm::params::cgroup_alloweddevices,
   $cgroup_allowedkmemspace           = $slurm::params::cgroup_allowedkmemspace,
   Numeric $cgroup_allowedramspace    = $slurm::params::cgroup_allowedramspace,
@@ -104,35 +113,35 @@ class slurm(
   #
   # gres.conf
   #
-  $gres_content                      = undef,
-  $gres_source                       = undef,
-  $gres_target                       = undef,
-  Hash    $gres                      = {},
+  $gres_content  = undef,
+  $gres_source   = undef,
+  $gres_target   = undef,
+  Hash    $gres  = {},
   #
   # topology.conf
   #
-  $topology_content            = undef,
-  $topology_source             = undef,
-  $topology_target             = undef,
-  Hash    $topology_tree       = {},
+  $topology_content      = undef,
+  $topology_source       = undef,
+  $topology_target       = undef,
+  Hash    $topology_tree = {},
   #
   # Slurm source building
   # TODO: option NOT to build but re-use shared RPMs
-  Boolean $src_archived        = $slurm::params::src_archived,
-  String  $src_checksum        = $slurm::params::src_checksum,
-  String  $srcdir              = $slurm::params::srcdir,
-  String  $builddir            = $slurm::params::builddir,
+  Boolean $src_archived  = $slurm::params::src_archived,
+  String  $src_checksum  = $slurm::params::src_checksum,
+  String  $srcdir        = $slurm::params::srcdir,
+  String  $builddir      = $slurm::params::builddir,
   #
   # Munge authentication service
   #
-  Boolean $use_munge           = $slurm::params::use_munge,
-  Boolean $munge_create_key    = $slurm::params::munge_create_key,
-  Array   $munge_daemon_args   = $slurm::params::munge_daemon_args,
-  $munge_key_source            = undef,
-  $munge_key_content           = undef,
-  String  $munge_key_filename  = $slurm::params::munge_key,
-  Integer $munge_uid           = $slurm::params::munge_uid,
-  Integer $munge_gid           = $slurm::params::munge_gid,
+  Boolean $use_munge          = $slurm::params::use_munge,
+  Boolean $munge_create_key   = $slurm::params::munge_create_key,
+  Array   $munge_daemon_args  = $slurm::params::munge_daemon_args,
+  $munge_key_source           = undef,
+  $munge_key_content          = undef,
+  String  $munge_key_filename = $slurm::params::munge_key,
+  Integer $munge_uid          = $slurm::params::munge_uid,
+  Integer $munge_gid          = $slurm::params::munge_gid,
   #
   # PAM settings
   #

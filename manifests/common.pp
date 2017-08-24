@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 22:49 svarrette>
+# Time-stamp: <Thu 2017-08-24 21:33 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -26,7 +26,7 @@ class slurm::common {
     }
   }
 
-  if ($slurm::auth_type =~ /munge/) {
+  if ($slurm::authtype =~ /munge/) {
     class { '::slurm::munge':
       ensure       => $slurm::ensure,
       create_key   => $slurm::munge_create_key,
