@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-24 18:16 svarrette>
+# Time-stamp: <Fri 2017-08-25 16:00 svarrette>
 #
 # File::      <tt>config.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -47,12 +47,12 @@ class slurm::config inherits slurm {
 
   $filename = "${slurm::configdir}/${slurm::params::configfile}"
 
-  file { $cgroup_filename:
+  file { $filename:
     ensure  => $ensure,
     owner   => $slurm::username,
     group   => $slurm::group,
     mode    => $slurm::params::configfile_mode,
-    content => $content,
+    content => $slurm_content,
     source  => $slurm::source,
     target  => $slurm::target,
   }

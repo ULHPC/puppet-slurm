@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-08-25 14:19 svarrette>
+# Time-stamp: <Fri 2017-08-25 15:59 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -102,7 +102,7 @@ class slurm::params {
   #
   # See https://slurm.schedmd.com/slurm.conf.html
   #
-  $configfile              = "${configdir}/slurm.conf"
+  $configfile              = 'slurm.conf'
   $configfile_mode         = '0644'
 
   # The name by which this Slurm managed cluster is known in the accounting database
@@ -118,6 +118,8 @@ class slurm::params {
   $authinfo                = ''
   $cryptotype              = 'munge' # in [ 'munge', 'openssl']
 
+  # What level of association-based enforcement to impose on job submissions
+  $acct_storageenforce     = ['qos', 'limits', 'associations']
   $batchstarttimeout       = 10
   $checkpointtype          = 'none'  # in ['blcr', 'none', 'ompi', 'poe']
   $completewait            = 0
@@ -146,7 +148,7 @@ class slurm::params {
   $jobacctgatherparams     = ''          # in [ 'NoShared', 'UsePss', 'NoOverMemoryKill']
   $jobcheckpointdir        = ''
   $jobcomphost             = ''          # machine hosting the job completion database
-  $jobcomploc              = 'slurmjobs' # e where job completion records are written (DB name, filename...)
+  $jobcomploc              = 'slurmjobs' # where job completion records are written (DB name, filename...)
   $jobcomptype             = 'none'      # in ["none", "elasticsearch", "filetxt", "mysql", "script"]
   $jobcontainertype        = 'none'      # In ['cncu', 'none'] (CNCU = Compute Node Clean Up on Cray)
   $jobsubmitplugins        = [ 'lua' ]   #
@@ -162,6 +164,11 @@ class slurm::params {
   $mpidefault              = 'none'   # See https://slurm.schedmd.com/mpi_guide.html
   $mpiparams               = ''
 
+  #
+  # Nodes
+  # Format
+  # { 'nodename' => 'CPUs=xx Sockets=xx...' }
+  $nodes                   = {}
   $preemptmode             = [ 'REQUEUE' ] # in ['OFF','CANCEL','CHECKPOINT','GANG','REQUEUE','SUSPEND']
   $preempttype             = 'qos'         # in ['none', 'partition_prio', 'qos']
   $prioritydecayhalflife   = '5-0'         # aka 5 days
@@ -223,8 +230,9 @@ class slurm::params {
     #        }
   $topology_tree = {}
 
-
-  # Partitions
+  ##################################
+  ### Partition / QOS definition ###
+  ##################################
   # Default Partition / QoS. Format:
     # '<name>' => {
       #     nodes         => n,           # Number of nodes
@@ -244,10 +252,6 @@ class slurm::params {
       #     preempt       => 'qos-<name>
       # }
     $partitions              = {}
-
-    #
-    # Cgroup Parameters
-    #
 
     ###
     ### Cgroup support -- cgroup.conf

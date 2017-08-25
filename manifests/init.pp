@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-08-25 14:23 svarrette>
+# Time-stamp: <Fri 2017-08-25 15:55 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -143,7 +143,27 @@
 #           Default type of MPI to be used. Srun may override this configuration parameter in any case.
 #           Elligible values in ['lam','mpich1_p4','mpich1_shmem','mpichgm','mpichmx','mvapich','none','openmpi','pmi2']
 # @param mpiparams                [String]      Default: ''
-
+#
+# @param partitions               [Hash]        Default: {}
+#           Hash defining the partitions and QOS settings for SLURM.
+#           Format
+#           { '<name>' => {
+  #              nodes         => n,           # Number of nodes
+  #              default       => true|false,  # Default partition?
+  #              hidden        => true|false,  # Hidden partition?
+  #              allowgroups   => 'ALL|group[,group]*'
+  #              allowaccounts => 'ALL|acct[,acct]*'
+  #              allowqos      => 'ALL|qos[,qos]*'
+  #              state         => 'UP|DOWN|DRAIN|INACTIVE'
+  #              oversubscribe => 'EXCLUSIVE|FORCE|YES|NO' (replace :shared)
+  #              #=== Time: Format is minutes, minutes:seconds, hours:minutes:seconds, days-hours,
+  #                      days-hours:minutes, days-hours:minutes:seconds or "UNLIMITED"
+  #              default_time  => 'UNLIMITED|DD-HH:MM:SS',
+  #              max_time      => 'UNLIMITED|DD-HH:MM:SS',
+  #              #=== associated QoS config, named 'qos-<partition>' ===
+  #              priority      => n           # QoS priority (default: 0)
+  #              preempt       => 'qos-<name>
+  #         }
 # @param preemptmode              [Array]       Default: [ 'REQUEUE' ]
 #           in ['OFF','CANCEL','CHECKPOINT','GANG','REQUEUE','SUSPEND']
 # @param preempttype              [String]      Default: 'qos'
@@ -158,7 +178,7 @@
 # @param priorityweightjobsize    [Integer]     Default: 0
 # @param priorityweightpartition  [Integer]     Default: 0
 # @param priorityweightqos        [Integer]     Default: 0
-# @param privatedata              [String]      Default: []
+# @param privatedata              [Array]       Default: []
 #           Elligible values in ['accounts','cloud','jobs','nodes','partitions','reservations','usage','users']
 # @param proctracktype            [String]      Default: 'cgroup'
 #           Elligible values in ['cgroup', 'cray', 'linuxproc', 'lua', 'sgi_job','pgid']
@@ -398,6 +418,7 @@ class slurm(
   #
   # Main configuration paramaters
   #
+  Array   $acct_storageenforce            = $slurm::params::acct_storageenforce,
   String  $configdir                      = $slurm::params::configdir,
   String  $clustername                    = $slurm::params::clustername,
   String  $authtype                       = $slurm::params::authtype,
@@ -449,7 +470,8 @@ class slurm(
   # Default type of MPI to be used.
   String  $mpidefault                     = $slurm::params::mpidefault,
   String  $mpiparams                      = $slurm::params::mpiparams,
-  #
+  Hash    $nodes                          = $slurm::params::nodes,
+  Hash    $partitions                     = $slurm::params::partitions,
   Array   $preemptmode                    = $slurm::params::preemptmode,
   String  $preempttype                    = $slurm::params::preempttype,
   String  $prioritydecayhalflife          = $slurm::params::prioritydecayhalflife,
@@ -460,14 +482,14 @@ class slurm(
   Integer $priorityweightjobsize          = $slurm::params::priorityweightjobsize,
   Integer $priorityweightpartition        = $slurm::params::priorityweightpartition,
   Integer $priorityweightqos              = $slurm::params::priorityweightqos,
-  String  $privatedata                    = $slurm::params::privatedata,
+  Array   $privatedata                    = $slurm::params::privatedata,
   String  $proctracktype                  = $slurm::params::proctracktype,
   #
   String  $prolog                         = $slurm::params::prolog,
   Array   $prologflags                    = $slurm::params::prologflags,
   String  $prologslurmctld                = $slurm::params::prologslurmctld,
   Array   $propagateresourcelimits        = $slurm::params::propagateresourcelimits,
-  Array   $propagateresourcelimits_except =  $slurm::params::propagateresourcelimits_excep,
+  Array   $propagateresourcelimits_except = $slurm::params::propagateresourcelimits_except,
   Integer $returntoservice                = $slurm::params::returntoservice,
   String  $schedulertype                  = $slurm::params::schedulertype,
   String  $selecttype                     = $slurm::params::selecttype,
