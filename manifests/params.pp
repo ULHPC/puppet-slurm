@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-08-25 10:27 svarrette>
+# Time-stamp: <Fri 2017-08-25 11:50 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -139,7 +139,7 @@ class slurm::params {
   $grestypes               = []          # list of generic resources to be managed
   $healthcheckinterval     = 30
   $healthchecknodestate    = 'ANY'       # in ['ALLOC', 'ANY','CYCLE','IDLE','MIXED']
-  $healthcheckprogram      =
+  $healthcheckprogram      = ''
   $inactivelimit           = 0           # 0 = unlimited
   $jobacctgathertype       = 'cgroup'    # in [ "linux", "cgroup", "none"]
   $jobacctgatherfrequency  = 30
@@ -201,9 +201,6 @@ class slurm::params {
   $taskprolog              = ''
   $tmpfs                   = '/tmp'
   $waittime                = 0
-
-
-
 
   # Which topology plugin to be used for determining the network topology and
   # optimizing job allocations to minimize network contention
