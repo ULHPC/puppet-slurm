@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-08-25 11:50 svarrette>
+# Time-stamp: <Fri 2017-08-25 14:19 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -201,7 +201,9 @@ class slurm::params {
   $taskprolog              = ''
   $tmpfs                   = '/tmp'
   $waittime                = 0
-
+  ######
+  ###### Hierarchical Network Topology description -- topology.conf
+  ######
   # Which topology plugin to be used for determining the network topology and
   # optimizing job allocations to minimize network contention
   # Elligible values
@@ -211,7 +213,15 @@ class slurm::params {
   #       algorithm over those ordered nodes
   #   none -- default for other systems, best-fit logic over one-dimensional topology
   #   tree -- used for a hierarchical network as described in a topology.conf file
+  $topology_configfile = 'topology.conf'
   $topology = none
+  # Format
+  # 'switchname' => {
+    #              [comment => 'This will become a comment above the line',]
+    #              nodes => '<nodes>',
+    #              [linkspeed => '<speed>',]
+    #        }
+  $topology_tree = {}
 
 
   # Partitions
@@ -242,42 +252,38 @@ class slurm::params {
     ###
     ### Cgroup support -- cgroup.conf
     ###
-    $cgroup_configfile = 'cgroup.conf'
-    $cgroup_automount  = true
-    $cgroup_mountpoint = $::operatingsystem ? {
-      default => '/sys/fs/cgroup'
-    }
     # $cgroup_releaseagentdir = $::operatingsystem ? {
       #   default => '/etc/slurm/cgroup'
       # }
+    $cgroup_configfile                = 'cgroup.conf'
+    $cgroup_automount                 = true
+    $cgroup_mountpoint                = $::operatingsystem ? {
+      default                         => '/sys/fs/cgroup'
+    }
     ### task/cgroup plugin ###
-    $cgroup_alloweddevices=[]    # if non-empty, cgroup_allowed_devices_file.conf
+    $cgroup_alloweddevices            = []    # if non-empty, cgroup_allowed_devices_file.conf
     # will host the list of devices that need to be allowed by default for all the jobs
     $cgroup_alloweddevices_configfile = 'cgroup_allowed_devices_file.conf'
-    $cgroup_allowedkmemspace   = undef   # amount of the allocated kernel memory
-    $cgroup_allowedramspace    = 100     # percentage of the allocated memory
-    $cgroup_allowedswapspace   = 0       # percentage of the swap space
-    $cgroup_constraincores     = true
-    $cgroup_constraindevices   = false   #  constrain the job's allowed devices based on GRES allocated resources.
-    $cgroup_constrainkmemspace = true
-    $cgroup_constrainramspace  = true
-    $cgroup_constrainswapspace = true
-    $cgroup_maxrampercent      = 100   # upper bound in percent of total RAM on the RAM constraint for a job.
-    $cgroup_maxswappercent     = 100   # upper bound (in percent of total RAM) on the amount of RAM+Swap
-    $cgroup_maxkmempercent     = 100   # upper bound in percent of total Kmem for a job.
-    $cgroup_minkmemspace       = '30M' # lower bound (in MB) on the memory limits defined by AllowedKmemSpace.
-    $cgroup_minramspace        = '30M' # lower bound (in MB) on the memory limits defined by AllowedRAMSpace & AllowedSwapSpace.
-    $cgroup_taskaffinity       = true  # This feature requires the Portable Hardware Locality (hwloc) library
+    $cgroup_allowedkmemspace          = undef   # amount of the allocated kernel memory
+    $cgroup_allowedramspace           = 100     # percentage of the allocated memory
+    $cgroup_allowedswapspace          = 0       # percentage of the swap space
+    $cgroup_constraincores            = true
+    $cgroup_constraindevices          = false   #  constrain the job's allowed devices based on GRES allocated resources.
+    $cgroup_constrainkmemspace        = true
+    $cgroup_constrainramspace         = true
+    $cgroup_constrainswapspace        = true
+    $cgroup_maxrampercent             = 100   # upper bound in percent of total RAM on the RAM constraint for a job.
+    $cgroup_maxswappercent            = 100   # upper bound (in percent of total RAM) on the amount of RAM+Swap
+    $cgroup_maxkmempercent            = 100   # upper bound in percent of total Kmem for a job.
+    $cgroup_minkmemspace              = '30M' # lower bound (in MB) on the memory limits defined by AllowedKmemSpace.
+    $cgroup_minramspace               = '30M' # lower bound (in MB) on the memory limits defined by AllowedRAMSpace & AllowedSwapSpace.
+    $cgroup_taskaffinity              = true  # This feature requires the Portable Hardware Locality (hwloc) library
 
     ###
     ### Generic RESource management -- gres.conf
     ###
     $gres_configfile    = 'gres.conf'
 
-    ###
-    ### Hierarchical Network Topology description -- topology.conf
-    ###
-    $topology_configfile = 'topology.conf'
 
     #####################
     ### SLURM Daemons ###
@@ -335,6 +341,8 @@ class slurm::params {
     # Whether the remote source archive has been already archived  - this
     # unfortunately changes the URL to download from
 
+    $do_build            = true
+    $do_package_install  = true
     $src_archived        = false
     # Where to place the sources
     $srcdir = $::operatingsystem ? {
@@ -395,7 +403,6 @@ class slurm::params {
     # see https://github.com/dun/munge
     # We assume it will be used for shared key authentication, and the shared key
     # can be provided to puppet via a URI.
-    $use_munge        = true
     # Munge user/group identifiers, and attributes for the munge user
     $munge_username   = 'munge'
     $munge_uid        = 992

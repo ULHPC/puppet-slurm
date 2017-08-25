@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-24 21:33 svarrette>
+# Time-stamp: <Fri 2017-08-25 14:15 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -65,30 +65,37 @@ class slurm::common {
     shell      => $slurm::params::shell,
   }
 
-  # Download the Slurm sources
-  slurm::download { $slurm::version :
-    ensure   => $slurm::ensure,
-    target   => $slurm::srcdir,
-    archived => $slurm::src_archived,
-    checksum => $slurm::src_checksum,
+  # [Eventually] download and build slurm sources
+  if $slurm::do_build {
+    # Download the Slurm sources
+    slurm::download { $slurm::version :
+      ensure   => $slurm::ensure,
+      target   => $slurm::srcdir,
+      archived => $slurm::src_archived,
+      checksum => $slurm::src_checksum,
+    }
+
+    # Now build them
+    slurm::build { $slurm::version :
+      ensure  => $slurm::ensure,
+      srcdir  => $slurm::srcdir,
+      dir     => $slurm::builddir,
+      with    => $slurm::build_with,
+      without => $slurm::build_without,
+      require => Slurm::Download[$slurm::version],
+    }
   }
 
-  # Now build the sources
-  slurm::build { $slurm::version :
-    ensure  => $slurm::ensure,
-    srcdir  => $slurm::srcdir,
-    dir     => $slurm::builddir,
-    require => Slurm::Download[$slurm::version],
-  }
-
-  # Install the built packages/RPMs
-  slurm::install { $slurm::version :
-    ensure    => $slurm::ensure,
-    slurmd    => $slurm::with_slurmd,
-    slurmctld => $slurm::with_slurmctld,
-    slurmdbd  => $slurm::with_slurmdbd,
-    wrappers  => $slurm::wrappers,
-    require   => Slurm::Build[$slurm::version],
+  # [Eventually] Install the built packages/RPMs
+  if $slurm::do_package_install {
+    slurm::install { $slurm::version :
+      ensure    => $slurm::ensure,
+      slurmd    => $slurm::with_slurmd,
+      slurmctld => $slurm::with_slurmctld,
+      slurmdbd  => $slurm::with_slurmdbd,
+      wrappers  => $slurm::wrappers,
+      require   => Slurm::Build[$slurm::version],
+    }
   }
 
   # Now configure it

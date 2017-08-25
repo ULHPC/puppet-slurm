@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-08-25 11:59 svarrette>
+# Time-stamp: <Fri 2017-08-25 14:23 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -20,7 +20,22 @@
 #
 # @param ensure [String] Default: 'present'.
 #         Ensure the presence (or absence) of slurm
-####################### Main system configs #######################################
+# @param content [String]
+#          The desired contents of a file, as a string. This attribute is
+#          mutually exclusive with source and target.
+#          See also
+#          https://docs.puppet.com/puppet/latest/types/file.html#file-attribute-content
+# @param source  [String]
+#          A source file, which will be copied into place on the local system.
+#          This attribute is mutually exclusive with content and target.
+#          See also
+#          https://docs.puppet.com/puppet/latest/types/file.html#file-attribute-source
+# @param target  [String]
+#          See also
+#          https://docs.puppet.com/puppet/latest/types/file.html#file-attribute-target
+#
+############################### Main system configs #######################################
+#
 # @param uid                      [Integer]     Default: 991
 # @param gid                      [Integer]     Default: as $uid
 # @param version                  [String]      Default: '17.02.7'
@@ -28,6 +43,33 @@
 # @param with_slurmctld           [Boolean]     Default: false
 # @param with_slurmdbd            [Boolean]     Default: false
 # @param wrappers                 [Array]       Default: [ 'slurm-openlava',  'slurm-torque' ]
+# @param do_build                 [Boolean]     Default: true
+#          Do we perform the build of the Slurm packages from sources or not?
+# @param do_package_install       [Boolean]     Default: true
+#          Do we perform the install of the Slurm packages or not?
+# @param src_archived             [Boolean]     Default: false
+#          Whether the sources tar.bz2 has been archived or not.
+#          Thus by default, it is assumed that the provided version is the
+#          latest version (from https://www.schedmd.com/downloads/latest/).
+#          If set to true, the sources will be download from
+#             https://www.schedmd.com/downloads/archive/
+# @param src_checksum             [String]      Default: ''
+#           archive file checksum (match checksum_type)
+# @param srcdir                   [String]      Default: '/usr/local/src'
+#          Target directory for the downloaded sources
+# @param builddir                 [String]      Default: '/root/rpmbuild' on redhat systems
+#          Top directory of the sources builds (i.e. RPMs, debs...)
+#          For instance, built RPMs will be placed under
+#          <dir>/RPMS/${::architecture}
+# @param build_with               [Array] Default: [ 'lua', ... ] -- see slurm::params
+#          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
+#          List of --with build options to pass to rpmbuild
+# @param build_without            [Array] Default: [] -- see slurm::params
+#          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
+#          List of --without build options to pass to rpmbuild
+#
+
+
 ########################                       ####################################
 ######################## slurm.conf attributes ####################################
 ########################                       ####################################
@@ -152,9 +194,11 @@
 # @param taskprolog               [String ]     Default: ''
 # @param tmpfs                    [String ]     Default: '/tmp'
 # @param waittime                 [Integer]     Default: 0
+#
 ############################                          ####################################
 ############################ topology.conf attributes ####################################
 ############################                          ####################################
+#
 # @param topology                 [String ]     Default:  = none
 #           Which topology plugin to be used for determining the network topology and
 #           optimizing job allocations to minimize network contention
@@ -194,27 +238,118 @@
 #           SwitchName=s2 Nodes=dev-[12-17]
 #           # GUID: XXXXXX - switch 0
 #           SwitchName=s3 Switches=s[0-2] LinkSpeed=100Mb/s
-
-
-
-
-# @param content [String]
-#          The desired contents of a file, as a string. This attribute is
-#          mutually exclusive with source and target.
-#          See also
-#          https://docs.puppet.com/puppet/latest/types/file.html#file-attribute-content
-# @param source  [String]
+#
+############################                        ####################################
+############################ cgroup.conf attributes ####################################
+############################                        ####################################
+#
+# @param cgroup_content           [String]      Default: undef
+#           The desired contents of a cgroup file, as a string. This attribute is
+#           mutually exclusive with cgroup_source and cgroup_target.
+# @param cgroup_source            [String]      Default: undef
+#          A source cgroup file, which will be copied into place on the local system.
+#          This attribute is mutually exclusive with cgroup_{content,target}.
+# @param cgroup_target            [String]      Default: undef
+#          Target link path
+# @param cgroup_automount          [Boolean]    Default: true
+# @param cgroup_mountpoint         [String]     Default: '/sys/fs/cgroup'
+# @param cgroup_alloweddevices     [Array]      Default: []
+#           if non-empty, cgroup_allowed_devices_file.conf will host the list of
+#           devices that need to be allowed by default for all the jobs
+# @param cgroup_allowedkmemspace   [String]     Default: undef
+#           amount of the allocated kernel memory
+# @param cgroup_allowedramspace    [Numeric]    Default: 100
+#           percentage of the allocated memory
+# @param cgroup_allowedswapspace   [Numeric]    Default: 0
+#           percentage of the swap space
+# @param cgroup_constraincores     [Boolean]    Default: true
+# @param cgroup_constraindevices   [Boolean]    Default: false
+#          constrain the job's allowed devices based on GRES allocated resources.
+# @param cgroup_constrainkmemspace [Boolean]    Default: true
+# @param cgroup_constrainramspace  [Boolean]    Default: true
+# @param cgroup_constrainswapspace [Boolean]    Default: true
+# @param cgroup_maxrampercent      [Numeric]    Default: 100
+#            upper bound in percent of total RAM on the RAM constraint for a job.
+# @param cgroup_maxswappercent     [Numeric]    Default: 100
+#            upper bound (in percent of total RAM) on the amount of RAM+Swap
+# @param cgroup_maxkmempercent     [Numeric]    Default: 100
+#            upper bound in percent of total Kmem for a job.
+# @param cgroup_minkmemspace       [String]     Default: '30M'
+#            lower bound (in MB) on the memory limits defined by AllowedKmemSpace.
+# @param cgroup_minramspace        [String]     Default: '30M'
+#            lower bound (in MB) on the memory limits defined by AllowedRAMSpace & AllowedSwapSpace.
+# @param cgroup_taskaffinity       [Boolean]    Default: true
+#            This feature requires the Portable Hardware Locality (hwloc) library
+#
+############################                      ####################################
+############################ gres.conf attributes ####################################
+############################                      ####################################
+#
+# @param gres_content              [String]      Default: undef
+#           The desired contents of a Generic Resource (GRES) configuration file, as a string.
+#           This attribute is  mutually exclusive with gres_source and gres_target.
+# @param gres_source               [String]      Default: undef
+#          A source GRES file, which will be copied into place on the local system.
+#          This attribute is mutually exclusive with gres_{content,target}.
+# @param gres_target               [String]      Default: undef
+#          Target link path
+# @param gres                 [Hash]     Default:  {}
+#          Hash defining the generic resource management entries
+#          Format
+#          '<nodename>' => {
+  #              [comment => 'This will become a comment above the line',]
+  #              name => '<name>',
+  #              file => '<file>'
+  #              [...]
+  #        }
+#
+############################                      ####################################
+############################ MUNGE Authentication ####################################
+############################                      ####################################
+# @param munge_create_key          [Boolean]       Default: true
+#          Whether or not to generate a new key if it does not exists
+# @param munge_daemon_args         [Array] Default: []
+#          Set the content of the DAEMON_ARGS variable, which permits to set
+#          additional command-line options to the daemon. For example, this can
+#          be used to override the location of the secret key (--key-file) or
+#          set the number of worker threads (--num-threads) See
+#          https://github.com/dun/munge/wiki/Installation-Guide#starting-the-daemon
+# @param munge_gid [Integer] Default: 992
+#          GID of the munge group
+# @param munge_key_content         [String]       Default: undef
+#          The desired contents of a file, as a string. This attribute is mutually
+#          exclusive with source and target.
+# @param munge_key_filename        [String]       Default: '/etc/munge/munge.key'
+#          The secret key filename
+# @param munge_key_source          [String]       Default: undef
 #          A source file, which will be copied into place on the local system.
-#          This attribute is mutually exclusive with content and target.
-#          See also
-#          https://docs.puppet.com/puppet/latest/types/file.html#file-attribute-source
-# @param target  [String]
-#          See also
-#          https://docs.puppet.com/puppet/latest/types/file.html#file-attribute-target
+#          This attribute is mutually exclusive with content.
+#          The normal form of a puppet: URI is
+#                  puppet:///modules/<MODULE NAME>/<FILE PATH>
+# @param munge_uid                 [Integer]      Default: 992
+#          UID of the munge user
+#
+############################              ####################################
+############################ PAM Settings ####################################
+############################              ####################################
+# @param use_pam                  [Boolean]       Default: true
+# @param pam_allowed_users        [Array]         Default: []
+#        Manage login access (see PAM_ACCESS(8)) in addition to 'root'
+# @param pam_content              [String]        Default: 'templates/pam_slurm.erb'
+#        Content of /etc/pam.d/slurm
+# @param pam_limits_source        [String]        Default: 'puppet:///modules/slurm/limits.memlock'
+#        Source file for /etc/security/limits.d/slurm.conf
+# @param pam_use_pam_slurm_adopt  [Boolean] Default: false
+#        Whether or not use the pam_slurm_adopt  module (to Adopt incoming
+#        connections into jobs) -- see
+#        https://github.com/SchedMD/slurm/tree/master/contribs/pam_slurm_adopt
+
+
+
 #
 # @example Default instance
 #
-#     include 'slurm'
+#     include '::slurm'
 #
 # You can then specialize the various aspects of the configuration,
 # for instance
@@ -241,6 +376,9 @@
 #
 class slurm(
   String  $ensure                         = $slurm::params::ensure,
+  $content                                = undef,
+  $source                                 = undef,
+  $target                                 = undef,
   Integer $uid                            = $slurm::params::uid,
   Integer $gid                            = $slurm::params::gid,
   String  $version                        = $slurm::params::version,
@@ -248,6 +386,15 @@ class slurm(
   Boolean $with_slurmctld                 = $slurm::params::with_slurmctld,
   Boolean $with_slurmdbd                  = $slurm::params::with_slurmdbd,
   Array   $wrappers                       = $slurm::params::wrappers,
+  # Slurm source building
+  Boolean $do_build                       = $slurm::params::do_build,
+  Boolean $do_package_install             = $slurm::params::do_package_install,
+  Boolean $src_archived                   = $slurm::params::src_archived,
+  String  $src_checksum                   = $slurm::params::src_checksum,
+  String  $srcdir                         = $slurm::params::srcdir,
+  String  $builddir                       = $slurm::params::builddir,
+  Array   $build_with                     = $slurm::params::build_with,
+  Array   $build_without                  = $slurm::params::build_without,
   #
   # Main configuration paramaters
   #
@@ -261,90 +408,96 @@ class slurm(
   String  $controlmachine                 = $slurm::params::controlmachine,
   String  $controladdr                    = $slurm::params::controladdr,
   #
-  Integer $batchstarttimeout              = $slurm::params::batchstarttimeout
-  String  $checkpointtype                 = $slurm::params::checkpointtype
-  Integer $completewait                   = $slurm::params::completewait
-  String  $corespecplugin                 = $slurm::params::corespecplugin
-  $cpufreqdef                             = $slurm::params::cpufreqdef
-  Array   $cpufreqgovernors               = $slurm::params::cpufreqgovernors
-  Array   $debugflags                     = $slurm::params::debugflags
+  Integer $batchstarttimeout              = $slurm::params::batchstarttimeout,
+  String  $checkpointtype                 = $slurm::params::checkpointtype,
+  Integer $completewait                   = $slurm::params::completewait,
+  String  $corespecplugin                 = $slurm::params::corespecplugin,
+  $cpufreqdef                             = $slurm::params::cpufreqdef,
+  Array   $cpufreqgovernors               = $slurm::params::cpufreqgovernors,
+  Array   $debugflags                     = $slurm::params::debugflags,
   #
-  Integer $defmempercpu                   = $slurm::params::defmempercpu
-  Integer $maxmempercpu                   = $slurm::params::maxmempercpu
-  $maxmempernode                          = $slurm::params::maxmempernode
-  $defmempernode                          = $slurm::params::defmempernode
+  Integer $defmempercpu                   = $slurm::params::defmempercpu,
+  Integer $maxmempercpu                   = $slurm::params::maxmempercpu,
+  $maxmempernode                          = $slurm::params::maxmempernode,
+  $defmempernode                          = $slurm::params::defmempernode,
   #
-  Boolean $disablerootjobs                = $slurm::params::disablerootjobs
-  String  $enforcepartlimits              = $slurm::params::enforcepartlimits
-  String  $epilog                         = $slurm::params::epilog
-  String  $epilogslurmctld                = $slurm::params::epilogslurmctld
-  Integer $fastschedule                   = $slurm::params::fastschedule
-  Array   $grestypes                      = $slurm::params::grestypes
-  Integer $healthcheckinterval            = $slurm::params::healthcheckinterval
-  String  $healthchecknodestate           = $slurm::params::healthchecknodestate
-  String  $healthcheckprogram             = $slurm::params::healthcheckprogram
-  Integer $inactivelimit                  = $slurm::params::inactivelimit
-  String  $jobacctgathertype              = $slurm::params::jobacctgathertype
-  Integer $jobacctgatherfrequency         = $slurm::params::jobacctgatherfrequency
-  String  $jobacctgatherparams            = $slurm::params::jobacctgatherparams
-  String  $jobcheckpointdir               = $slurm::params::jobcheckpointdir
-  String  $jobcomphost                    = $slurm::params::jobcomphost
-  String  $jobcomploc                     = $slurm::params::jobcomploc
-  String  $jobcomptype                    = $slurm::params::jobcomptype
-  String  $jobcontainertype               = $slurm::params::jobcontainertype
-  Array   $jobsubmitplugins               = $slurm::params::jobsubmitplugins
-  Integer $killwait                       = $slurm::params::killwait
-  String  $launchtype                     = $slurm::params::launchtype
-  String  $licenses                       = $slurm::params::licenses
-  String  $maildomain                     = $slurm::params::maildomain
-  String  $mailprog                       = $slurm::params::mailprog
-  Integer $maxtaskspernode                = $slurm::params::maxtaskspernode
+  Boolean $disablerootjobs                = $slurm::params::disablerootjobs,
+  String  $enforcepartlimits              = $slurm::params::enforcepartlimits,
+  String  $epilog                         = $slurm::params::epilog,
+  String  $epilogslurmctld                = $slurm::params::epilogslurmctld,
+  Integer $fastschedule                   = $slurm::params::fastschedule,
+  Array   $grestypes                      = $slurm::params::grestypes,
+  Integer $healthcheckinterval            = $slurm::params::healthcheckinterval,
+  String  $healthchecknodestate           = $slurm::params::healthchecknodestate,
+  String  $healthcheckprogram             = $slurm::params::healthcheckprogram,
+  Integer $inactivelimit                  = $slurm::params::inactivelimit,
+  String  $jobacctgathertype              = $slurm::params::jobacctgathertype,
+  Integer $jobacctgatherfrequency         = $slurm::params::jobacctgatherfrequency,
+  String  $jobacctgatherparams            = $slurm::params::jobacctgatherparams,
+  String  $jobcheckpointdir               = $slurm::params::jobcheckpointdir,
+  String  $jobcomphost                    = $slurm::params::jobcomphost,
+  String  $jobcomploc                     = $slurm::params::jobcomploc,
+  String  $jobcomptype                    = $slurm::params::jobcomptype,
+  String  $jobcontainertype               = $slurm::params::jobcontainertype,
+  Array   $jobsubmitplugins               = $slurm::params::jobsubmitplugins,
+  Integer $killwait                       = $slurm::params::killwait,
+  String  $launchtype                     = $slurm::params::launchtype,
+  String  $licenses                       = $slurm::params::licenses,
+  String  $maildomain                     = $slurm::params::maildomain,
+  String  $mailprog                       = $slurm::params::mailprog,
+  Integer $maxtaskspernode                = $slurm::params::maxtaskspernode,
   # Default type of MPI to be used.
-  String  $mpidefault                     = $slurm::params::mpidefault
-  String  $mpiparams                      = $slurm::params::mpiparams
+  String  $mpidefault                     = $slurm::params::mpidefault,
+  String  $mpiparams                      = $slurm::params::mpiparams,
   #
-  Array   $preemptmode                    = $slurm::params::preemptmode
-  String  $preempttype                    = $slurm::params::preempttype
-  String  $prioritydecayhalflife          = $slurm::params::prioritydecayhalflife
-  Array   $priorityflags                  = $slurm::params::priorityflags
-  String  $prioritytype                   = $slurm::params::prioritytype
-  Integer $priorityweightage              = $slurm::params::priorityweightage
-  Integer $priorityweightfairshare        = $slurm::params::priorityweightfairshare
-  Integer $priorityweightjobsize          = $slurm::params::priorityweightjobsize
-  Integer $priorityweightpartition        = $slurm::params::priorityweightpartition
-  Integer $priorityweightqos              = $slurm::params::priorityweightqos
-  String  $privatedata                    = $slurm::params::privatedata
-  String  $proctracktype                  = $slurm::params::proctracktype
+  Array   $preemptmode                    = $slurm::params::preemptmode,
+  String  $preempttype                    = $slurm::params::preempttype,
+  String  $prioritydecayhalflife          = $slurm::params::prioritydecayhalflife,
+  Array   $priorityflags                  = $slurm::params::priorityflags,
+  String  $prioritytype                   = $slurm::params::prioritytype,
+  Integer $priorityweightage              = $slurm::params::priorityweightage,
+  Integer $priorityweightfairshare        = $slurm::params::priorityweightfairshare,
+  Integer $priorityweightjobsize          = $slurm::params::priorityweightjobsize,
+  Integer $priorityweightpartition        = $slurm::params::priorityweightpartition,
+  Integer $priorityweightqos              = $slurm::params::priorityweightqos,
+  String  $privatedata                    = $slurm::params::privatedata,
+  String  $proctracktype                  = $slurm::params::proctracktype,
   #
-  String  $prolog                         = $slurm::params::prolog
-  Array   $prologflags                    = $slurm::params::prologflags
-  String  $prologslurmctld                = $slurm::params::prologslurmctld
-  Array   $propagateresourcelimits        = $slurm::params::propagateresourcelimits
-  Array   $propagateresourcelimits_except =  $slurm::params::propagateresourcelimits_excep
-  Integer $returntoservice                = $slurm::params::returntoservice
-  String  $schedulertype                  = $slurm::params::schedulertype
-  String  $selecttype                     = $slurm::params::selecttype
-  Array   $selecttype_params              = $slurm::params::selecttype_params
+  String  $prolog                         = $slurm::params::prolog,
+  Array   $prologflags                    = $slurm::params::prologflags,
+  String  $prologslurmctld                = $slurm::params::prologslurmctld,
+  Array   $propagateresourcelimits        = $slurm::params::propagateresourcelimits,
+  Array   $propagateresourcelimits_except =  $slurm::params::propagateresourcelimits_excep,
+  Integer $returntoservice                = $slurm::params::returntoservice,
+  String  $schedulertype                  = $slurm::params::schedulertype,
+  String  $selecttype                     = $slurm::params::selecttype,
+  Array   $selecttype_params              = $slurm::params::selecttype_params,
   # Log details
-  String  $slurmctlddebug                 = $slurm::params::slurmctlddebug
-  String  $slurmddebug                    = $slurm::params::slurmddebug
+  String  $slurmctlddebug                 = $slurm::params::slurmctlddebug,
+  String  $slurmddebug                    = $slurm::params::slurmddebug,
   # Ports
-  Integer $slurmctldport                  = $slurm::params::slurmctldport
-  Integer $slurmdport                     = $slurm::params::slurmdport
-  String  $srunportrange                  = $slurm::params::srunportrange
-  String  $srunepilog                     = $slurm::params::srunepilog
-  String  $srunprolog                     = $slurm::params::srunprolog
-  String  $switchtype                     = $slurm::params::switchtype
-  String  $taskepilog                     = $slurm::params::taskepilog
-  String  $taskplugin                     = $slurm::params::taskplugin
-  Array   $taskpluginparams               = $slurm::params::taskpluginparams
-  String  $taskprolog                     = $slurm::params::taskprolog
-  String  $tmpfs                          = $slurm::params::tmpfs
-  Integer $waittime                       = $slurm::params::waittime
+  Integer $slurmctldport                  = $slurm::params::slurmctldport,
+  Integer $slurmdport                     = $slurm::params::slurmdport,
+  String  $srunportrange                  = $slurm::params::srunportrange,
+  String  $srunepilog                     = $slurm::params::srunepilog,
+  String  $srunprolog                     = $slurm::params::srunprolog,
+  String  $switchtype                     = $slurm::params::switchtype,
+  String  $taskepilog                     = $slurm::params::taskepilog,
+  String  $taskplugin                     = $slurm::params::taskplugin,
+  Array   $taskpluginparams               = $slurm::params::taskpluginparams,
+  String  $taskprolog                     = $slurm::params::taskprolog,
+  String  $tmpfs                          = $slurm::params::tmpfs,
+  Integer $waittime                       = $slurm::params::waittime,
   #
   # Which topology plugin to be used for determining the network topology and
   # optimizing job allocations to minimize network contention
+  # see topology.conf in case $topology == 'tree'
+  #
   String  $topology                       = $slurm::params::topology,
+  $topology_content                       = undef,
+  $topology_source                        = undef,
+  $topology_target                        = undef,
+  Hash    $topology_tree                  = {},
   #
   # cgroup.conf
   #
@@ -376,23 +529,8 @@ class slurm(
   $gres_target   = undef,
   Hash    $gres  = {},
   #
-  # topology.conf
-  #
-  $topology_content      = undef,
-  $topology_source       = undef,
-  $topology_target       = undef,
-  Hash    $topology_tree = {},
-  #
-  # Slurm source building
-  # TODO: option NOT to build but re-use shared RPMs
-  Boolean $src_archived  = $slurm::params::src_archived,
-  String  $src_checksum  = $slurm::params::src_checksum,
-  String  $srcdir        = $slurm::params::srcdir,
-  String  $builddir      = $slurm::params::builddir,
-  #
   # Munge authentication service
   #
-  Boolean $use_munge          = $slurm::params::use_munge,
   Boolean $munge_create_key   = $slurm::params::munge_create_key,
   Array   $munge_daemon_args  = $slurm::params::munge_daemon_args,
   $munge_key_source           = undef,
@@ -404,8 +542,8 @@ class slurm(
   # PAM settings
   #
   Boolean $use_pam             = $slurm::params::use_pam,
-  String  $pam_content         = $slurm::params::pam_content,
   Array   $pam_allowed_users   = $slurm::params::pam_allowed_users,
+  String  $pam_content         = $slurm::params::pam_content,
   String  $pam_limits_source   = $slurm::params::pam_limits_source,
   Boolean $use_pam_slurm_adopt = $slurm::params::use_pam_slurm_adopt,
 )
