@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-24 22:15 svarrette>
+# Time-stamp: <Fri 2017-08-25 10:27 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -102,57 +102,120 @@ class slurm::params {
   #
   # See https://slurm.schedmd.com/slurm.conf.html
   #
-  $configfile      = "${configdir}/slurm.conf"
-  $configfile_mode = '0644'
+  $configfile              = "${configdir}/slurm.conf"
+  $configfile_mode         = '0644'
 
   # The name by which this Slurm managed cluster is known in the accounting database
-  $clustername = 'cluster'
+  $clustername             = 'cluster'
   # Main / backup Slurm controllers
-  $controlmachine      = $::hostname
-  $controladdr         = ''
-  $backupcontroller    = ''
-  $backupaddr          = ''
+  $controlmachine          = $::hostname
+  $controladdr             = ''
+  $backupcontroller        = ''
+  $backupaddr              = ''
 
   # Authentication method for communications between Slurm components.
-  $authtype               = 'munge'   # in [ 'none', 'munge' ]
-  $authinfo               = ''
-  $cryptotype             = 'munge'   # in [ 'munge', 'openssl']
+  $authtype                = 'munge' # in [ 'none', 'munge' ]
+  $authinfo                = ''
+  $cryptotype              = 'munge' # in [ 'munge', 'openssl']
 
-  $batchstarttimeout      = 10
-  $checkpointtype         = 'none'  # in ['blcr', 'none', 'ompi', 'poe']
-  $completewait           = 0
-  $corespecplugin         = 'none'
-  $cpufreqdef             = undef   # or in ['Conservative', 'OnDemand', 'Performance', 'PowerSave']
-  $cpufreqgovernors       = [ 'OnDemand', 'Performance' ]  # in above + 'UserSpace'
-  $debugflags             = []
+  $batchstarttimeout       = 10
+  $checkpointtype          = 'none'  # in ['blcr', 'none', 'ompi', 'poe']
+  $completewait            = 0
+  $corespecplugin          = 'none'
+  $cpufreqdef              = undef   # or in ['Conservative', 'OnDemand', 'Performance', 'PowerSave']
+  $cpufreqgovernors        = [ 'OnDemand', 'Performance' ]  # in above + 'UserSpace'
+  $debugflags              = []
 
-  $defmempercpu           = 0   # 0 = unlimited, mutually exclusive with $defmempernode
-  $maxmempercpu           = 0   # 0 = unlimited
-  $maxmempernode          = undef
-  $defmempernode          = undef   # 0 = unlimited, mutually exclusive with $defmempercpu
-  $disablerootjobs        = true
-  $enforcepartlimits      = 'ALL'
-  $epilog                 = ''
-  $epilogslurmctld        = ''
-  $fastschedule           = 1   # in [ 0, 1, 2]
-  $grestypes              = []  # list of generic resources to be managed
-  $healthcheckinterval    = 30
-  $healthchecknodestate   = 'ANY' # in ['ALLOC', 'ANY','CYCLE','IDLE','MIXED']
-  $healthcheckprogram     =
-  $inactivelimit          = 0  # 0 = unlimited
-  $jobacctgathertype      = 'cgroup' # in [ "linux", "cgroup", "none"]
-  $jobacctgatherfrequency = 30
-  $jobacctgatherparams = '' # in [ 'NoShared', 'UsePss', 'NoOverMemoryKill']
-  $jobcheckpointdir = ''
+  $defmempercpu            = 0           # 0 = unlimited, mutually exclusive with $defmempernode
+  $maxmempercpu            = 0           # 0 = unlimited
+  $maxmempernode           = undef
+  $defmempernode           = undef       # 0 = unlimited, mutually exclusive with $defmempercpu
+
+  $disablerootjobs         = true
+  $enforcepartlimits       = 'ALL'
+  $epilog                  = ''
+  $epilogslurmctld         = ''
+  $fastschedule            = 1           # in [ 0, 1, 2]
+  $grestypes               = []          # list of generic resources to be managed
+  $healthcheckinterval     = 30
+  $healthchecknodestate    = 'ANY'       # in ['ALLOC', 'ANY','CYCLE','IDLE','MIXED']
+  $healthcheckprogram      =
+  $inactivelimit           = 0           # 0 = unlimited
+  $jobacctgathertype       = 'cgroup'    # in [ "linux", "cgroup", "none"]
+  $jobacctgatherfrequency  = 30
+  $jobacctgatherparams     = ''          # in [ 'NoShared', 'UsePss', 'NoOverMemoryKill']
+  $jobcheckpointdir        = ''
+  $jobcomphost             = ''          # machine hosting the job completion database
+  $jobcomploc              = 'slurmjobs' # e where job completion records are written (DB name, filename...)
+  $jobcomptype             = 'none'      # in ["none", "elasticsearch", "filetxt", "mysql", "script"]
+  $jobcontainertype        = 'none'      # In ['cncu', 'none'] (CNCU = Compute Node Clean Up on Cray)
+  $jobsubmitplugins        = [ 'lua' ]   #
+  $killwait                = 30          # sec. interval given to a job's processes between the SIGTERM and SIGKILL
+  $launchtype              = 'slurm'
+  $licenses                = ''          # Specification of licenses
+  $maildomain              = $::domain
+  $mailprog                = '/bin/mail'
+  $maxtaskspernode         = 512
+
+  # Default type of MPI to be used. Srun may override this configuration parameter in any case.
+  # in ['lam','mpich1_p4','mpich1_shmem','mpichgm','mpichmx','mvapich','none','openmpi','pmi2']
+  $mpidefault              = 'none'   # See https://slurm.schedmd.com/mpi_guide.html
+  $mpiparams               = ''
+
+  $preemptmode             = [ 'REQUEUE' ] # in ['OFF','CANCEL','CHECKPOINT','GANG','REQUEUE','SUSPEND']
+  $preempttype             = 'qos'         # in ['none', 'partition_prio', 'qos']
+  $prioritydecayhalflife   = '5-0'         # aka 5 days
+  $priorityflags           = []
+  $prioritytype            = 'multifactor' # in ['basic', 'multifactor']
+  $priorityweightage       = 0
+  $priorityweightfairshare = 0
+  $priorityweightjobsize   = 0
+  $priorityweightpartition = 0
+  $priorityweightqos       = 0
+  $privatedata             = []  # in ['accounts','cloud','jobs','nodes','partitions','reservations','usage','users']
+  $proctracktype           = 'cgroup'      # in ['cgroup', 'cray', 'linuxproc', 'lua', 'sgi_job','pgid']
+
+  $prolog                  = ''
+  $prologflags             = []
+  $prologslurmctld         = ''
+  $propagateresourcelimits = []
+  $propagateresourcelimits_except = [ 'MEMLOCK'] # see https://slurm.schedmd.com/faq.html#memlock
+  # Controls when a DOWN node will be returned to service
+  $returntoservice         = 1  # in [0, 1, 2]
+  $schedulertype           = 'backfill' # in ['backfill', 'builtin', 'hold']
+  $selecttype              = 'cons_res' # in ['bluegene','cons_res','cray','linear','serial' ]
+  $selecttype_params       = [ 'CR_Core_Memory', 'CR_CORE_DEFAULT_DIST_BLOCK' ]
+  # Log details
+  $slurmctlddebug          = 'info'
+  $slurmddebug             = 'info'
+  # Ports
+  $slurmctldport           = 6817
+  $slurmdport              = 6818
+  $srunportrange           = '50000-53000'
+  $srunepilog              = ''
+  $srunprolog              = ''
+  $switchtype              = 'none' # in ['nrt', 'none']
+  $taskepilog              = ''
+  $taskplugin              = 'cgroup' # in ['affinity', 'cgroup','none']
+  $taskpluginparams        = ['cpusets']
+  $taskprolog              = ''
+  $tmpfs                   = '/tmp'
+  $waittime                = 0
 
 
-  $jobcomploc             =
-  $jobcomptype            = 'none'
-  $jobsubmitplugins       = 'lua'
-  $maxmempercpu           = 0
-  $mempercpu              = 0
-  $mpidefault             = 'none'
-  $mpiparams              = ''
+
+
+  # Which topology plugin to be used for determining the network topology and
+  # optimizing job allocations to minimize network contention
+  # Elligible values
+  #   3d_torus  -- best-fit logic over three-dimensional topology
+  #   node_rank -- orders nodes based upon information a node_rank field in the
+  #       node record as generated by a select plugin. Slurm performs a best-fit
+  #       algorithm over those ordered nodes
+  #   none -- default for other systems, best-fit logic over one-dimensional topology
+  #   tree -- used for a hierarchical network as described in a topology.conf file
+  $topology = none
+
 
   # Partitions
   # Default Partition / QoS. Format:
@@ -174,38 +237,6 @@ class slurm::params {
       #     preempt       => 'qos-<name>
       # }
     $partitions              = {}
-    $preemptmode             = 'requeue'
-    $preempttype             = 'qos'
-    $prioritydecayHL         = '5-0'
-    $prioritytype            = 'multifactor'
-    $priorityweightage       = 0
-    $priorityweightfairshare = 0
-    $priorityweightjobsize   = 0
-    $priorityweightpartition = 0
-    $priorityweightqos       = 0
-    $schedulertype           = 'backfill'
-    $selecttype              = 'cons_res'
-    $selecttype_params       = [ 'CR_Core_Memory', 'CR_CORE_DEFAULT_DIST_BLOCK' ]
-    $slurmctlddebug          = 3
-    $slurmctldport           = 6817
-    $slurmddebug             = 3
-    $slurmdport              = 6818
-    $srunportrange           = '50000-53000'
-    $taskepilog              = ''
-    $taskplugin              = 'cgroup'
-    $taskplugin_params       = 'cpusets'
-    $taskprolog              = ''
-
-    # Which topology plugin to be used for determining the network topology and
-    # optimizing job allocations to minimize network contention
-    # Elligible values
-    #   3d_torus  -- best-fit logic over three-dimensional topology
-    #   node_rank -- orders nodes based upon information a node_rank field in the
-    #       node record as generated by a select plugin. Slurm performs a best-fit
-    #       algorithm over those ordered nodes
-    #   none -- default for other systems, best-fit logic over one-dimensional topology
-    #   tree -- used for a hierarchical network as described in a topology.conf file
-    $topology = none
 
     #
     # Cgroup Parameters
@@ -426,4 +457,4 @@ class slurm::params {
 
 
 
-    }
+}
