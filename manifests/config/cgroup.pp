@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-24 17:18 svarrette>
+# Time-stamp: <Fri 2017-08-25 16:03 svarrette>
 #
 # File::      <tt>config/cgroup.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -38,7 +38,7 @@ class slurm::config::cgroup inherits slurm::config {
     undef   => $slurm::ensure,
     default => 'link',
   }
-  $cgroup_filename = "${slurm::configdir}/${slurm::params::cgroup_configfile}"
+  $cgroup_filename          = "${slurm::configdir}/${slurm::params::cgroup_configfile}"
   $allowed_devices_filename = "${slurm::configdir}/${slurm::params::cgroup_alloweddevices_configfile}"
 
   # cgroup.conf
@@ -54,13 +54,12 @@ class slurm::config::cgroup inherits slurm::config {
 
   # [eventually] cgroup_allowed_devices_file.conf
   if !empty($slurm::cgroup_alloweddevices) {
-
     file { $allowed_devices_filename:
       ensure  => $slurm::ensure,
       owner   => $slurm::username,
       group   => $slurm::group,
       mode    => $slurm::params::configfile_mode,
-      content => template('slurm/cgroup_allowed_devices_file.conf.erb')
+      content => template('slurm/cgroup_allowed_devices_file.conf.erb'),
     }
   }
 

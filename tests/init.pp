@@ -20,8 +20,8 @@ node default {
 
   class { '::slurm':
     pam_allowed_users => [ 'vagrant' ],
-    topology      => 'tree',
-    topology_tree => {
+    topology          => 'tree',
+    topology_tree     => {
       's0' => { nodes => 'dev[0-5]'   },
       's1' => { nodes => 'dev-[6-11]' },
       's2' => { nodes => 'dev-[12-17]'},
@@ -31,6 +31,7 @@ node default {
         linkspeed => '100Mb/s',
       },
     },
+
 
 
   }

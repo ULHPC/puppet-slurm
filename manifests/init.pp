@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-08-25 15:55 svarrette>
+# Time-stamp: <Fri 2017-08-25 16:02 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -513,7 +513,7 @@ class slurm(
   #
   # Which topology plugin to be used for determining the network topology and
   # optimizing job allocations to minimize network contention
-  # see topology.conf in case $topology == 'tree'
+  # see topology.conf in case $topology  == 'tree'
   #
   String  $topology                       = $slurm::params::topology,
   $topology_content                       = undef,
@@ -546,28 +546,28 @@ class slurm(
   #
   # gres.conf
   #
-  $gres_content  = undef,
-  $gres_source   = undef,
-  $gres_target   = undef,
-  Hash    $gres  = {},
+  $gres_content                           = undef,
+  $gres_source                            = undef,
+  $gres_target                            = undef,
+  Hash    $gres                           = {},
   #
   # Munge authentication service
   #
-  Boolean $munge_create_key   = $slurm::params::munge_create_key,
-  Array   $munge_daemon_args  = $slurm::params::munge_daemon_args,
-  $munge_key_source           = undef,
-  $munge_key_content          = undef,
-  String  $munge_key_filename = $slurm::params::munge_key,
-  Integer $munge_uid          = $slurm::params::munge_uid,
-  Integer $munge_gid          = $slurm::params::munge_gid,
+  Boolean $munge_create_key               = $slurm::params::munge_create_key,
+  Array   $munge_daemon_args              = $slurm::params::munge_daemon_args,
+  $munge_key_source                       = undef,
+  $munge_key_content                      = undef,
+  String  $munge_key_filename             = $slurm::params::munge_key,
+  Integer $munge_uid                      = $slurm::params::munge_uid,
+  Integer $munge_gid                      = $slurm::params::munge_gid,
   #
   # PAM settings
   #
-  Boolean $use_pam             = $slurm::params::use_pam,
-  Array   $pam_allowed_users   = $slurm::params::pam_allowed_users,
-  String  $pam_content         = $slurm::params::pam_content,
-  String  $pam_limits_source   = $slurm::params::pam_limits_source,
-  Boolean $use_pam_slurm_adopt = $slurm::params::use_pam_slurm_adopt,
+  Boolean $use_pam                        = $slurm::params::use_pam,
+  Array   $pam_allowed_users              = $slurm::params::pam_allowed_users,
+  String  $pam_content                    = $slurm::params::pam_content,
+  String  $pam_limits_source              = $slurm::params::pam_limits_source,
+  Boolean $use_pam_slurm_adopt            = $slurm::params::use_pam_slurm_adopt,
 )
 inherits slurm::params
 {
