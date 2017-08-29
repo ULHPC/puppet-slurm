@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-08-25 16:00 svarrette>
+# Time-stamp: <Tue 2017-08-29 17:11 svarrette>
 #
 # File::      <tt>config.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -17,13 +17,6 @@
 # - https://slurm.schedmd.com/cgroup.conf.html
 #
 class slurm::config inherits slurm {
-
-  file { $slurm::configdir:
-    ensure => 'directory',
-    owner  => $slurm::params::configdir_owner,
-    group  => $slurm::params::configdir_group,
-    mode   => $slurm::params::configdir_mode,
-  }
 
   include ::slurm::config::cgroup
   include ::slurm::config::gres
@@ -44,17 +37,60 @@ class slurm::config inherits slurm {
     undef   => $slurm::ensure,
     default => 'link',
   }
+  if $slurm::with_slurmctld {
+    $notify = $slurm::with_slurmd ? {
+      true    => [ Service['slurmctld'], Service['slurmd'] ],
+      default => Service['slurmctld'],
+    }
+    $slurmdirs = [
+      $slurm::params::configdir,
+      $slurm::params::logdir,
+      $slurm::params::piddir,
+      $slurm::params::slurmctld_libdir,
+      ]
+  }
+  else {
+    $notify = $slurm::with_slurmd ? {
+      true    => Service['slurmd'],
+      default => undef,
+    }
+    $slurmdirs = [
+      $slurm::params::configdir,
+      $slurm::params::logdir,
+      $slurm::params::piddir
+      ]
+  }
+
+  # Prepare the directory structure
+  if $slurm::ensure == 'present' {
+    file { $slurmdirs:
+        ensure  => 'directory',
+        owner   => $slurm::params::username,
+        group   => $slurm::params::group,
+        mode    => $slurm::params::configdir_mode,
+        before  => File[$slurm::params::configfile]
+    }
+  }
+  else {
+    file { $slurmdirs:
+        ensure => $slurm::ensure,
+        force  => true,
+    }
+  }
+
 
   $filename = "${slurm::configdir}/${slurm::params::configfile}"
 
-  file { $filename:
+  file { $slurm::params::configfile:
     ensure  => $ensure,
+    path    => $filename,
     owner   => $slurm::username,
     group   => $slurm::group,
     mode    => $slurm::params::configfile_mode,
     content => $slurm_content,
     source  => $slurm::source,
     target  => $slurm::target,
+    notify  => $notify
   }
 
 

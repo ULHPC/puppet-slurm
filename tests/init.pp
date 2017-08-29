@@ -20,6 +20,8 @@ node default {
 
   class { '::slurm':
     pam_allowed_users => [ 'vagrant' ],
+    with_slurmctld => true,
+    with_slurmd    => false,
     topology          => 'tree',
     topology_tree     => {
       's0' => { nodes => 'dev[0-5]'   },
@@ -29,13 +31,26 @@ node default {
         comment   => 'GUID: XXXXXX - switch 0',
         switches  => 's[0-2]',
         linkspeed => '100Mb/s',
-      },
+      }
     },
-
-
-
+  nodes => {
+    'DEFAULT'    => {
+      comment => 'Test',
+      content => 'CPUs=1 Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=512 State=UP', },
+    'access'     => 'CPUs=2 Sockets=1 CoresPerSocket=2 ThreadsPerCore=1 State=UNKNOWN',
+    'thor-[1-3]' => 'CPUs=2 Sockets=1 CoresPerSocket=2 ThreadsPerCore=1  RealMemory=400 State=UNKNOWN', },
+  partitions => {
+    'interactive' => {
+      content  => 'Nodes=thor-1 State=UP DefaultTime=0-10:00:00 MaxTime=5-00:00:00 DisableRootJobs=YES ',
+      priority => 0, },
+    'batch'       => {
+      content => 'Nodes=thor-[2-3]  State=UP  DefaultTime=0-2:00:00 MaxTime=5-00:00:00 DisableRootJobs=YES',
+      priority => 100,
+      preempt  => 'qos-interactive',
+      #default  => true,
+    },
   }
-
+}
   # slurm::download { $::slurm::params::version:
     #   #checksum => '64009c1ed120b9ce5d79424dca743a06'
     # }

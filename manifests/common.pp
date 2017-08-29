@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-08-25 14:15 svarrette>
+# Time-stamp: <Tue 2017-08-29 16:52 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -41,10 +41,10 @@ class slurm::common {
 
   # Order
   if ($slurm::ensure == 'present') {
-    Group['slurm'] -> User['slurm']
+    Group['slurm'] -> User['slurm'] -> Class['slurm::config']
   }
   else {
-    User['slurm'] -> Group['slurm']
+    Class['slurm::config'] -> User['slurm'] -> Group['slurm']
   }
 
   # Prepare the user and group
@@ -64,6 +64,7 @@ class slurm::common {
     system     => true,
     shell      => $slurm::params::shell,
   }
+
 
   # [Eventually] download and build slurm sources
   if $slurm::do_build {
@@ -95,11 +96,44 @@ class slurm::common {
       slurmdbd  => $slurm::with_slurmdbd,
       wrappers  => $slurm::wrappers,
       require   => Slurm::Build[$slurm::version],
+      before    => Class['slurm::config']
     }
   }
 
   # Now configure it
   include ::slurm::config
+
+  # and take care of the services
+  # ... common attributes
+  Service {
+    ensure     => ($slurm::ensure == 'present'),
+    enable     => ($ensure == 'present'),
+    hasrestart => $slurm::params::hasrestart,
+    pattern    => $slurm::params::controller_processname,
+    hasstatus  => $slurm::params::hasstatus,
+  }
+
+
+  if $slurm::with_slurmctld {
+    service { 'slurmctld':
+      name       => $slurm::params::controller_servicename,
+      require    => [
+        Class['slurm::config']
+      ],
+      subscribe  => File[$slurm::params::configfile],
+    }
+  }
+  if $slurm::with_slurmd {
+    service { 'slurmd':
+      name       => $slurm::params::servicename,
+      require    => [
+        Class['slurm::config']
+      ],
+      subscribe  => File[$slurm::params::configfile],
+    }
+  }
+
+
 }
 
 

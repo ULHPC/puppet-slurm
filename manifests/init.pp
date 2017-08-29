@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-08-25 16:02 svarrette>
+# Time-stamp: <Tue 2017-08-29 14:00 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -68,8 +68,6 @@
 #          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
 #          List of --without build options to pass to rpmbuild
 #
-
-
 ########################                       ####################################
 ######################## slurm.conf attributes ####################################
 ########################                       ####################################
@@ -470,7 +468,9 @@ class slurm(
   # Default type of MPI to be used.
   String  $mpidefault                     = $slurm::params::mpidefault,
   String  $mpiparams                      = $slurm::params::mpiparams,
+  # Nodes definition
   Hash    $nodes                          = $slurm::params::nodes,
+  # Partitons / QOS
   Hash    $partitions                     = $slurm::params::partitions,
   Array   $preemptmode                    = $slurm::params::preemptmode,
   String  $preempttype                    = $slurm::params::preempttype,

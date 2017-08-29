@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-24 16:37 svarrette>
+# Time-stamp: <Tue 2017-08-29 15:16 svarrette>
 #
 # File::      <tt>install.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -80,8 +80,11 @@ define slurm::install(
     'Redhat': {
       include ::epel
       include ::yum
-
-      $rpms         = suffix($pkgs, '*.rpm')
+      $rpms   = suffix($pkgs, '*.rpm')
+      $cwddir = ($pkgdir == $slurm::params::builddir) ? {
+        true    => "${pkgdir}/RPMS/${::architecture}",
+        default => $pkgdir,
+      }
       case $ensure {
         'absent': {
           $execname = "yum-remove-slurm*${version}*.rpm"
@@ -92,7 +95,7 @@ define slurm::install(
         default: {
           $execname  = "yum-localinstall-slurm*${version}*.rpm"
           $cmd          = "yum -y --nogpgcheck localinstall ${join($rpms, ' ')}"
-          $check_onlyif = "test -n \"$(ls ${rpms[0]} 2>/dev/null)\""
+          $check_onlyif = "test -n \"$(ls ${cwddir}/${rpms[0]} 2>/dev/null)\""
           $check_unless = prefix($pkgs, 'yum list installed | grep ')
         }
       }
@@ -102,11 +105,13 @@ define slurm::install(
     }
   }
 
-  #notice($cmd)
+  # notice($cmd)
+  # notice($check_onlyif)
+  # notice($check_unless)
   exec { $execname:
     path    => '/sbin:/usr/bin:/usr/sbin:/bin',
     command => $cmd,
-    cwd     => $pkgdir,
+    cwd     => $cwddir,
     onlyif  => $check_onlyif,
     unless  => $check_unless,
     user    => 'root',

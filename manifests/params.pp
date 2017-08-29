@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-08-25 15:59 svarrette>
+# Time-stamp: <Tue 2017-08-29 17:12 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -61,15 +61,20 @@ class slurm::params {
   $piddir = $::operatingsystem ? {
     default => '/var/run/slurm',
   }
+  # Slurm controller save state directory
+  $slurmctld_libdir = $::operatingsystem ? {
+    default => '/var/lib/slurmctld',
+  }
+
   $configdir_mode = $::operatingsystem ? {
     default => '0755',
   }
-  $configdir_owner = $::operatingsystem ? {
-    default => 'root',
-  }
-  $configdir_group = $::operatingsystem ? {
-    default => 'root',
-  }
+  # $configdir_owner = $::operatingsystem ? {
+  #   default => 'root',
+  # }
+  # $configdir_group = $::operatingsystem ? {
+  #   default => 'root',
+  # }
 
   ### Log directory
   # $logdir_mode = $::operatingsystem ? {
@@ -168,7 +173,14 @@ class slurm::params {
   # Nodes
   # Format
   # { 'nodename' => 'CPUs=xx Sockets=xx...' }
+  # OR
+  # { 'nodename' => {
+    #     comment => 'a comment',
+    #     content =>'CPUs=xx Sockets=xx...',
+    # }
+  # }
   $nodes                   = {}
+
   $preemptmode             = [ 'REQUEUE' ] # in ['OFF','CANCEL','CHECKPOINT','GANG','REQUEUE','SUSPEND']
   $preempttype             = 'qos'         # in ['none', 'partition_prio', 'qos']
   $prioritydecayhalflife   = '5-0'         # aka 5 days
@@ -308,12 +320,14 @@ class slurm::params {
 
     # Slurmd associated services
     $servicename = $::operatingsystem ? {
-      default                 => 'slurm'
+      default                 => 'slurmd'
+    }
+    $controller_servicename = $::operatingsystem ? {
+      default                 => 'slurmctld'
     }
     # used for pattern in a service ressource
-    $processname = $::operatingsystem ? {
-      default                 => 'slurm'
-    }
+    $processname            = $servicename
+    $controller_processname = $controller_servicename
     $hasstatus = $::operatingsystem ? {
       /(?i-mx:ubuntu|debian)/        => false,
       /(?i-mx:centos|fedora|redhat)/ => true,

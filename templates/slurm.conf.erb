@@ -94,9 +94,9 @@ MailDomain=<%= scope['slurm::maildomain'] %>
 RebootProgram=/sbin/reboot
 ReturnToService=<%= scope['slurm::returntoservice'] %>
 #SallocDefaultCommand=
-SlurmctldPidFile=/var/run/slurmctld.pid
+SlurmctldPidFile=<%= scope['slurm::params::piddir'] %>/slurmctld.pid
 SlurmctldPort=<%= scope['slurm::slurmctldport'] %>
-SlurmdPidFile=/var/run/slurmd.pid
+SlurmdPidFile=<%= scope['slurm::params::piddir'] %>/slurmd.pid
 SlurmdPort=<%= scope['slurm::slurmdport'] %>
 SlurmdSpoolDir=/var/lib/slurmd
 <% if scope['slurm::srunepilog'].empty? -%>
@@ -129,7 +129,7 @@ JobCompLoc=<%= scope['slurm::jobcomploc'] %>
 <% end -%>
 #JobCompPass=
 #JobCompPort=
-JobCompType=<%= scope['slurm::jobcomptype'] %>
+JobCompType=jobcomp/<%= scope['slurm::jobcomptype'] %>
 #JobCompUser=
 #JobContainerType=job_container/<%= scope['slurm::jobcontainertype'] %>
 SlurmctldDebug=<%= scope['slurm::slurmctlddebug'] %>
@@ -253,10 +253,10 @@ StateSaveLocation=/var/lib/slurmctld
 FastSchedule=<%= scope['slurm::fastschedule'] %>
 #MaxMemPerCPU=0
 #SchedulerTimeSlice=30
-SchedulerType=<%= scope['slurm::schedulertype'] %>
+SchedulerType=sched/<%= scope['slurm::schedulertype'] %>
 
 # Plugin used to identify which jobs can be preempted in order to start a pending job.
-PreemptType=<%= scope['slurm::preempttype'] %>
+PreemptType=preempt/<%= scope['slurm::preempttype'] %>
 PreemptMode=<%= scope['slurm::preemptmode'].join(',') %>
 
 ### JOB PRIORITY
@@ -314,7 +314,7 @@ PriorityWeightQOS=<%= scope['slurm::priorityweightqos'] %>
 # Mechanism to be used to launch application tasks.
 #LaunchType=launch/<%= scope['slurm::launchtype'] %>
 
-SelectType=<%= scope['slurm::selecttype'] %>
+SelectType=select/<%= scope['slurm::selecttype'] %>
 SelectTypeParameters=<%= scope['slurm::selecttype_params'].join(',') %>
 <% if scope['slurm::taskepilog'].empty? -%>
 #TaskEpilog=
@@ -418,9 +418,13 @@ MaxMemPerCPU=<%= scope['slurm::maxmempercpu'] %>
 # RealMemory:     Size of real memory on the node in megabytes
 # State:   State of the node with respect to the initiation of user jobs.
 #          Acceptable values are "CLOUD", "DOWN", "DRAIN", "FAIL", "FAILING", "FUTURE" and "UNKNOWN"
-<% scope['slurm::nodes'].each do |name, v| -%>
-NodeName=<%= name %> <%= v %>
 
+<% scope['slurm::nodes'].each do |name, v| -%>
+<% content = v.is_a?(Hash) ? v['content'] : v -%>
+<% if v.is_a?(Hash) and v['comment'] -%>
+# <%= v['comment'] %>
+<% end -%>
+NodeName=<%= name.ljust(12) %> <%= content %>
 <% end -%>
 
 ##################################
@@ -430,14 +434,15 @@ NodeName=<%= name %> <%= v %>
 # - Sharing
 # - Priority/preemption
 ###
-<% scope['slurm::partitions'].each_with_index do |(name, v), i| -%>
-<%    n = v['nodes'] -%>
-<%    range  = "#{i + 1}" -%>
-<%    range  = "[#{i + 1}-#{i + n}]" if n>1 -%>
-<%    hidden  = "Hidden=YES" if (!v['hidden'].nil? && v['hidden']) -%>
-<%    allowaccounts = "AllowAccounts=#{v['allowaccounts']} "  if v['allowaccounts'] -%>
-<%    allowgroups   = "AllowGroups=#{v['allowgroups']} "      if v['allowgroups'] -%>
-<%    allowqos      = "AllowQos=#{v['allowqos']} "            if v['allowqos'] -%>
-<%    oversubscribe = "OverSubscribe=#{v['oversubscribe']}"   if v['oversubscribe'] -%>
-PartitionName=<%= name.ljust(12)  %>   Nodes=<%= scope['slurm::clustername'] %>-<%= range.ljust(6) %> Default=<%= (v['default'] ? 'YES' : 'NO') %> <%= hidden %> State=<%= (v['state'] ? v['state'] : 'UP') %> <%= allowaccounts %><%= allowgroups %><%= allowqos %> DefaultTime=<%= v['default_time'] %> MaxTime=<%= v['max_time'] %> DisableRootJobs=YES <%= oversubscribe %>
+<% scope['slurm::partitions'].each do |name, v| -%>
+<%    content = v.is_a?(Hash) ? v['content'] : v -%>
+<%    if v.is_a?(Hash) -%>
+<%       comment = v['comment'] ?  v['comment'] : "#{name} partition" -%>
+<%       comment << " - Priority: #{v['priority']}" if v['priority']  -%>
+<%       comment << "; preempt '#{v['preempt']}'"   if v['preempt']   -%>
+# <%= comment %>
+<%       content << ' Default=YES' if (!v['default'].nil? and v['default'] and content != /Default=/) -%>
+<%       content << ' Hidden=YES'  if (!v['hidden'].nil?  and v['hidden']  and content != /Hidden=/) -%>
+<%    end -%>
+PartitionName=<%= name.ljust(12)  %> <%= content %>
 <% end -%>
