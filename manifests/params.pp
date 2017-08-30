@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 12:00 svarrette>
+# Time-stamp: <Wed 2017-08-30 18:38 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -59,8 +59,8 @@ class slurm::params {
     default => '/var/log/slurm'
   }
   # $piddir = $::operatingsystem ? {
-  #   default => '/var/run/slurm',
-  # }
+    #   default => '/var/run/slurm',
+    # }
   # Slurm controller save state directory
   $slurmctld_libdir = $::operatingsystem ? {
     default => '/var/lib/slurmctld',
@@ -205,11 +205,13 @@ $schedulertype           = 'backfill' # in ['backfill', 'builtin', 'hold']
 $selecttype              = 'cons_res' # in ['bluegene','cons_res','cray','linear','serial' ]
 $selecttype_params       = [ 'CR_Core_Memory', 'CR_CORE_DEFAULT_DIST_BLOCK' ]
 # Log details
+$slurmdbddebug           = 'info'
 $slurmctlddebug          = 'info'
 $slurmddebug             = 'info'
 # Ports
 $slurmctldport           = 6817
 $slurmdport              = 6818
+$slurmdbdport            = 6819
 $srunportrange           = '50000-53000'
 $srunepilog              = ''
 $srunprolog              = ''
@@ -466,10 +468,10 @@ $topology_tree = {}
   ##############################################
   ### Pluggable Authentication Modules (PAM) ###
   ##############################################
-  $use_pam         = true
-  $pam_servicename = 'slurm'
+  $use_pam             = true
+  $pam_servicename     = 'slurm'
   # Default content of /etc/pam.d/slurm
-  $pam_content = template('slurm/pam_slurm.erb')
+  $pam_content         = template('slurm/pam_slurm.erb')
   # Source file for /etc/security/limits.d/slurm.conf
   $pam_limits_source   = 'puppet:///modules/slurm/limits.memlock'
   # Whether or not use the pam_slurm_adopt  module (to Adopt incoming
@@ -481,6 +483,34 @@ $topology_tree = {}
   ### SLURM Plugins  ###
   ######################
   $job_submit_lua = 'job_submit.lua'
+
+  #####################################################
+  ### SLURM DataBase Configuration (slurmdbd.conf)  ###
+  #####################################################
+  $dbd_configfile     = 'slurmdbd.conf'
+  $archivedir         = '/tmp'
+  $archiveevents      = false # When purging events also archive them?
+  $archivejobs        = false # When purging jobs also archive them?
+  $archiveresv        = false # When purging reservations also archive them?
+  $archivesteps       = false # When purging steps also archive them?
+  $archivesuspend     = false # When purging suspend data also archive it?
+  $archivetxn         = false # When purging transaction data also archive it?
+  $archiveusage       = false # When purging usage data (Cluster, Association and WCKey) also archive it.
+  $commitdelay        = 0 # How many seconds between commits on a connection from a Slurmctld
+  $dbdhost            = 'localhost'
+  $dbdaddr            = 'localhost'
+  $dbdbackuphost      = ''
+  $storagehost        = $::hostname
+  $storagebackuphost  = ''
+  $storageloc         = 'slurm'
+  $storageport        = 3306
+  $storagetype        = 'mysql'
+  $storageuser        = $username
+  $storagepass        = 'janIR4TvYoSEqNF94QM' # use 'openssl rand 14 -base64' for instance
+  $trackslurmctlddown = false
+
+
+
 
 
 

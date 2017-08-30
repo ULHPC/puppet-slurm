@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 15:18 svarrette>
+# Time-stamp: <Wed 2017-08-30 18:43 svarrette>
 #
 # File::      <tt>config.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -31,11 +31,10 @@ class slurm::config { #}inherits slurm {
   ]
   if $slurm::ensure == 'present' {
     file { $slurmdirs:
-        ensure  => 'directory',
-        owner   => $slurm::params::username,
-        group   => $slurm::params::group,
-        mode    => $slurm::params::configdir_mode,
-        before  => File[$slurm::params::configfile]
+        ensure => 'directory',
+        owner  => $slurm::params::username,
+        group  => $slurm::params::group,
+        mode   => $slurm::params::configdir_mode,
     }
     File[$slurm::configdir] -> File[$pluginsdir]
   }

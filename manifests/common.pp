@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 15:54 svarrette>
+# Time-stamp: <Wed 2017-08-30 18:29 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -17,7 +17,7 @@ class slurm::common {
   # Load the variables used in this module. Check the params.pp file
   require ::slurm::params
 
-  if $slurm::use_pam {
+  if ($slurm::use_pam and $slurm::with_slurmd) {
     class { '::slurm::pam':
       ensure        => $slurm::ensure,
       content       => $slurm::pam_content,
@@ -45,10 +45,13 @@ class slurm::common {
   Class['::slurm::install'] -> Class['::slurm::config']
 
   if $slurm::with_slurmd {
-    include slurm::slurmd
+    include ::slurm::slurmd
   }
   if $slurm::with_slurmctld {
-    include slurm::slurmctld
+    include ::slurm::slurmctld
+  }
+  if $slurm::with_slurmdbd {
+    include ::slurm::slurmdbd
   }
 
 }
