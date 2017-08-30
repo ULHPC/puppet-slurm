@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-29 16:52 svarrette>
+# Time-stamp: <Wed 2017-08-30 13:51 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -103,36 +103,12 @@ class slurm::common {
   # Now configure it
   include ::slurm::config
 
-  # and take care of the services
-  # ... common attributes
-  Service {
-    ensure     => ($slurm::ensure == 'present'),
-    enable     => ($ensure == 'present'),
-    hasrestart => $slurm::params::hasrestart,
-    pattern    => $slurm::params::controller_processname,
-    hasstatus  => $slurm::params::hasstatus,
-  }
-
-
-  if $slurm::with_slurmctld {
-    service { 'slurmctld':
-      name       => $slurm::params::controller_servicename,
-      require    => [
-        Class['slurm::config']
-      ],
-      subscribe  => File[$slurm::params::configfile],
-    }
-  }
   if $slurm::with_slurmd {
-    service { 'slurmd':
-      name       => $slurm::params::servicename,
-      require    => [
-        Class['slurm::config']
-      ],
-      subscribe  => File[$slurm::params::configfile],
-    }
+    include slurm::slurmd
   }
-
+  if $slurm::with_slurmctld {
+    include slurm::slurmctld
+  }
 
 }
 

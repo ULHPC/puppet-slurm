@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-29 14:00 svarrette>
+# Time-stamp: <Wed 2017-08-30 11:02 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -520,6 +520,12 @@ class slurm(
   $topology_source                        = undef,
   $topology_target                        = undef,
   Hash    $topology_tree                  = {},
+  #
+  # job_submit.lua
+  #
+  $lua_content                            = undef,
+  $lua_source                             = undef,
+  $lua_target                             = undef,
   #
   # cgroup.conf
   #

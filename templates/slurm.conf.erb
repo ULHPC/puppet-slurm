@@ -94,9 +94,9 @@ MailDomain=<%= scope['slurm::maildomain'] %>
 RebootProgram=/sbin/reboot
 ReturnToService=<%= scope['slurm::returntoservice'] %>
 #SallocDefaultCommand=
-SlurmctldPidFile=<%= scope['slurm::params::piddir'] %>/slurmctld.pid
+SlurmctldPidFile=/var/run/slurmctld.pid
 SlurmctldPort=<%= scope['slurm::slurmctldport'] %>
-SlurmdPidFile=<%= scope['slurm::params::piddir'] %>/slurmd.pid
+SlurmdPidFile=/var/run/slurmd.pid
 SlurmdPort=<%= scope['slurm::slurmdport'] %>
 SlurmdSpoolDir=/var/lib/slurmd
 <% if scope['slurm::srunepilog'].empty? -%>

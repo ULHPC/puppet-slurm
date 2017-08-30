@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-24 17:15 svarrette>
+# Time-stamp: <Wed 2017-08-30 11:59 svarrette>
 #
 # File::      <tt>config/topology.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -41,6 +41,8 @@ class slurm::config::topology inherits slurm::config {
       content => $topology_content,
       source  => $slurm::topology_source,
       target  => $slurm::topology_target,
+      tag     => 'slurm::configfile',
+      require => File[$slurm::configdir],
     }
   }
 

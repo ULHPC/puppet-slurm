@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-29 17:11 svarrette>
+# Time-stamp: <Wed 2017-08-30 12:08 svarrette>
 #
 # File::      <tt>config.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -18,10 +18,6 @@
 #
 class slurm::config inherits slurm {
 
-  include ::slurm::config::cgroup
-  include ::slurm::config::gres
-  include ::slurm::config::topology
-
   # Now let's deal with slurm.conf
   $slurm_content = $slurm::content ? {
     undef   => $slurm::source ? {
@@ -37,29 +33,13 @@ class slurm::config inherits slurm {
     undef   => $slurm::ensure,
     default => 'link',
   }
-  if $slurm::with_slurmctld {
-    $notify = $slurm::with_slurmd ? {
-      true    => [ Service['slurmctld'], Service['slurmd'] ],
-      default => Service['slurmctld'],
-    }
-    $slurmdirs = [
-      $slurm::params::configdir,
-      $slurm::params::logdir,
-      $slurm::params::piddir,
-      $slurm::params::slurmctld_libdir,
-      ]
-  }
-  else {
-    $notify = $slurm::with_slurmd ? {
-      true    => Service['slurmd'],
-      default => undef,
-    }
-    $slurmdirs = [
-      $slurm::params::configdir,
-      $slurm::params::logdir,
-      $slurm::params::piddir
-      ]
-  }
+  $pluginsdir = "${slurm::configdir}/${slurm::params::pluginsdir}"
+  $slurmdirs = [
+    $slurm::configdir,
+    $slurm::params::logdir,
+    #$slurm::params::piddir,
+    $pluginsdir,
+  ]
 
   # Prepare the directory structure
   if $slurm::ensure == 'present' {
@@ -70,17 +50,23 @@ class slurm::config inherits slurm {
         mode    => $slurm::params::configdir_mode,
         before  => File[$slurm::params::configfile]
     }
+    File[$slurm::configdir] -> File[$pluginsdir]
   }
   else {
     file { $slurmdirs:
         ensure => $slurm::ensure,
         force  => true,
     }
+    File[$pluginsdir] -> File[$slurm::configdir]
   }
 
+  # Now add the configuration files
+  include ::slurm::config::cgroup
+  include ::slurm::config::gres
+  include ::slurm::config::topology
 
+  # Main slurm.conf
   $filename = "${slurm::configdir}/${slurm::params::configfile}"
-
   file { $slurm::params::configfile:
     ensure  => $ensure,
     path    => $filename,
@@ -90,9 +76,14 @@ class slurm::config inherits slurm {
     content => $slurm_content,
     source  => $slurm::source,
     target  => $slurm::target,
-    notify  => $notify
+    tag     => 'slurm::configfile',
+    require => File[$slurm::configdir],
   }
 
+  # Eventually, add the plugins
+  if member($slurm::build_with, 'lua') {
+    include ::slurm::plugins::lua
+  }
 
 
 }
