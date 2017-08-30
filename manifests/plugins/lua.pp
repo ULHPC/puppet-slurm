@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 11:59 svarrette>
+# Time-stamp: <Wed 2017-08-30 13:57 svarrette>
 #
 # File::      <tt>plugins/lua.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -34,7 +34,6 @@ class slurm::plugins::lua inherits slurm::plugins {
 
   $filename = "${slurm::configdir}/${slurm::params::job_submit_lua}"
 
-  notice($slurm::config::notify)
   file { $slurm::params::job_submit_lua:
     ensure  => $ensure,
     path    => $filename,

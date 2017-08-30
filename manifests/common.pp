@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 13:51 svarrette>
+# Time-stamp: <Wed 2017-08-30 15:06 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -89,7 +89,7 @@ class slurm::common {
 
   # [Eventually] Install the built packages/RPMs
   if $slurm::do_package_install {
-    slurm::install { $slurm::version :
+    slurm::install::packages { $slurm::version :
       ensure    => $slurm::ensure,
       slurmd    => $slurm::with_slurmd,
       slurmctld => $slurm::with_slurmctld,

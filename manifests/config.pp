@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 12:08 svarrette>
+# Time-stamp: <Wed 2017-08-30 15:02 svarrette>
 #
 # File::      <tt>config.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -16,7 +16,37 @@
 # - https://slurm.schedmd.com/topology.conf.html
 # - https://slurm.schedmd.com/cgroup.conf.html
 #
-class slurm::config inherits slurm {
+class slurm::config { #}inherits slurm {
+
+  include ::slurm
+  include ::slurm::params
+
+
+  # Prepare the directory structure
+  if $slurm::ensure == 'present' {
+    file { $slurmdirs:
+        ensure  => 'directory',
+        owner   => $slurm::params::username,
+        group   => $slurm::params::group,
+        mode    => $slurm::params::configdir_mode,
+        before  => File[$slurm::params::configfile]
+    }
+    File[$slurm::configdir] -> File[$pluginsdir]
+  }
+  else {
+    file { $slurmdirs:
+        ensure => $slurm::ensure,
+        force  => true,
+    }
+    File[$pluginsdir] -> File[$slurm::configdir]
+  }
+
+
+
+
+
+
+
 
   # Now let's deal with slurm.conf
   $slurm_content = $slurm::content ? {
@@ -41,24 +71,6 @@ class slurm::config inherits slurm {
     $pluginsdir,
   ]
 
-  # Prepare the directory structure
-  if $slurm::ensure == 'present' {
-    file { $slurmdirs:
-        ensure  => 'directory',
-        owner   => $slurm::params::username,
-        group   => $slurm::params::group,
-        mode    => $slurm::params::configdir_mode,
-        before  => File[$slurm::params::configfile]
-    }
-    File[$slurm::configdir] -> File[$pluginsdir]
-  }
-  else {
-    file { $slurmdirs:
-        ensure => $slurm::ensure,
-        force  => true,
-    }
-    File[$pluginsdir] -> File[$slurm::configdir]
-  }
 
   # Now add the configuration files
   include ::slurm::config::cgroup
