@@ -20,8 +20,9 @@ node default {
 
   class { '::slurm':
     pam_allowed_users => [ 'vagrant' ],
-    with_slurmctld => true,
-    with_slurmd    => false,
+    with_slurmdbd     => true,
+    with_slurmctld    => true,
+    with_slurmd       => false,
     topology          => 'tree',
     topology_tree     => {
       's0' => { nodes => 'dev[0-5]'   },

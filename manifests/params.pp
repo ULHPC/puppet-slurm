@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 21:48 svarrette>
+# Time-stamp: <Wed 2017-08-30 23:19 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -273,10 +273,10 @@ $topology_tree = {}
   # $cgroup_releaseagentdir = $::operatingsystem ? {
     #   default => '/etc/slurm/cgroup'
     # }
-  $cgroup_configfile                = 'cgroup.conf'
-  $cgroup_automount                 = true
-  $cgroup_mountpoint                = $::operatingsystem ? {
-    default                         => '/sys/fs/cgroup'
+  $cgroup_configfile = 'cgroup.conf'
+  $cgroup_automount  = true
+  $cgroup_mountpoint = $::operatingsystem ? {
+    default          => '/sys/fs/cgroup'
   }
   ### task/cgroup plugin ###
   $cgroup_alloweddevices            = []    # if non-empty, cgroup_allowed_devices_file.conf
@@ -302,7 +302,6 @@ $topology_tree = {}
   ###
   $gres_configfile    = 'gres.conf'
 
-
   #####################
   ### SLURM Daemons ###
   #####################
@@ -322,13 +321,13 @@ $topology_tree = {}
 
   # Slurmd associated services
   $servicename = $::operatingsystem ? {
-    default                 => 'slurmd'
+    default => 'slurmd'
   }
   $controller_servicename = $::operatingsystem ? {
-    default                 => 'slurmctld'
+    default => 'slurmctld'
   }
   $dbd_servicename = $::operatingsystem ? {
-    default                 => 'slurmdbd'
+    default => 'slurmdbd'
   }
   # used for pattern in a service ressource
   $processname            = $servicename

@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 16:14 svarrette>
+# Time-stamp: <Thu 2017-08-31 00:20 svarrette>
 #
 # File::      <tt>install/packages.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -54,24 +54,36 @@ define slurm::install::packages(
   # notice("slurmdbd  = ${slurmdbd}")
 
   # Let's build the [default] package list
-  $default_packages = $::osfamily ? {
-    'Redhat' => ($slurmdbd ? {
-      true    => (empty($wrappers) ? {
-        true    => concat($slurm::params::common_rpms_basename, $slurm::params::slurmdbd_rpms_basename),
-        default => concat($slurm::params::common_rpms_basename, $slurm::params::slurmdbd_rpms_basename, $wrappers)
+  if  $::osfamily == 'RedHat' {
+    $common_rpms   = $slurm::params::common_rpms_basename
+    $slurmdbd_rpms = $slurm::params::slurmdbd_rpms_basename
+
+    $default_packages = ($slurmdbd ? {
+      true    => (($slurmctld or $slurmd) ? {
+        true    => (empty($wrappers) ? {
+          true    => concat($common_rpms, $slurmdbd_rpms, $wrappers), # slurmdbd + (slurmctld or slurmd) + wrappers
+          default => concat($common_rpms, $slurmdbd_rpms),            # slurmdbd + (slurmctld or slurmd)
+          }),
+        default => (empty($wrappers) ? {
+          true    => concat($slurmdbd_rpms, $wrappers), # slurmdbd + wrappers
+          default => $common_rpms,                      # slurmdbd
+          }),
         }),
       default => (empty($wrappers) ? {
-        true    => $slurm::params::common_rpms_basename,
-        default => concat($slurm::params::common_rpms_basename, $wrappers)
-        })
-      }),
-    default  => []
+        true    => concat($common_rpms, $wrappers), # (slurmd or slurmctld) + wrappers
+        default => $common_rpms,                    # (slurmd or slurmctld)
+        }),
+      })
+  }
+  else {
+    $default_packages = []
   }
   # Real Full list
   $pkglist = empty($packages) ? {
     true    => $default_packages,
     default => $pkgs
   }
+  notice($pkglist)
   # ... including the version numbers
   $pkgs = suffix($pkglist, "-${version}")
 

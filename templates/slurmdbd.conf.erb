@@ -29,7 +29,7 @@ DebugLevel=<%= scope['slurm::slurmdbd::debuglevel'] %>
 <% else -%>
 DebugFlags=<%= scope['slurm::slurmdbd::debugflags'].join(',') %>
 <% end -%>
-LogFile=<%= <%= scope['slurm::logdir'] %>/slurmdbd.log
+LogFile=<%= scope['slurm::logdir'] %>/slurmdbd.log
 #PidFile=/var/run/slurmdbd.pid
 # Authentication for communications with the other Slurm components
 AuthType=auth/<%= scope['slurm::authtype'] %>

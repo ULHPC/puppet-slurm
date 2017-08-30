@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 22:09 svarrette>
+# Time-stamp: <Wed 2017-08-30 23:04 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -137,7 +137,7 @@ class slurm::slurmdbd(
   String  $dbdhost            = $slurm::params::dbdhost,
   String  $dbdaddr            = $slurm::params::dbdaddr,
   String  $dbdbackuphost      = $slurm::params::dbdbackuphost,
-  Integer $dbddport           = $slurm::params::slurmctldbdport,
+  Integer $dbdport            = $slurm::params::slurmdbdport,
   String  $debuglevel         = $slurm::params::slurmdbddebug,
   Array   $debugflags         = $slurm::params::debugflags,
   $purgeeventafter            = undef,
