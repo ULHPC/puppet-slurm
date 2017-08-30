@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 11:59 svarrette>
+# Time-stamp: <Wed 2017-08-30 21:40 svarrette>
 #
 # File::      <tt>config/topology.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -30,11 +30,12 @@ class slurm::config::topology inherits slurm::config {
     undef   => $slurm::ensure,
     default => 'link',
   }
-  $topology_filename = "${slurm::configdir}/${slurm::params::topology_configfile}"
 
   if  $slurm::topology == 'tree' {
-    file { $topology_filename:
+    $topology_filename = "${slurm::configdir}/${slurm::params::topology_configfile}"
+    file { $slurm::params::topology_configfile:
       ensure  => $ensure,
+      path    => $topology_filename,
       owner   => $slurm::username,
       group   => $slurm::group,
       mode    => $slurm::params::configfile_mode,

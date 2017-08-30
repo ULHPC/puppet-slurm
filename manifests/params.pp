@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 18:38 svarrette>
+# Time-stamp: <Wed 2017-08-30 21:48 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -327,9 +327,14 @@ $topology_tree = {}
   $controller_servicename = $::operatingsystem ? {
     default                 => 'slurmctld'
   }
+  $dbd_servicename = $::operatingsystem ? {
+    default                 => 'slurmdbd'
+  }
   # used for pattern in a service ressource
   $processname            = $servicename
   $controller_processname = $controller_servicename
+  $dbd_processname        = $dbd_servicename
+
   $hasstatus = $::operatingsystem ? {
     /(?i-mx:ubuntu|debian)/        => false,
     /(?i-mx:centos|fedora|redhat)/ => true,
@@ -487,27 +492,28 @@ $topology_tree = {}
   #####################################################
   ### SLURM DataBase Configuration (slurmdbd.conf)  ###
   #####################################################
-  $dbd_configfile     = 'slurmdbd.conf'
-  $archivedir         = '/tmp'
-  $archiveevents      = false # When purging events also archive them?
-  $archivejobs        = false # When purging jobs also archive them?
-  $archiveresv        = false # When purging reservations also archive them?
-  $archivesteps       = false # When purging steps also archive them?
-  $archivesuspend     = false # When purging suspend data also archive it?
-  $archivetxn         = false # When purging transaction data also archive it?
-  $archiveusage       = false # When purging usage data (Cluster, Association and WCKey) also archive it.
-  $commitdelay        = 0 # How many seconds between commits on a connection from a Slurmctld
-  $dbdhost            = 'localhost'
-  $dbdaddr            = 'localhost'
-  $dbdbackuphost      = ''
-  $storagehost        = $::hostname
-  $storagebackuphost  = ''
-  $storageloc         = 'slurm'
-  $storageport        = 3306
-  $storagetype        = 'mysql'
-  $storageuser        = $username
-  $storagepass        = 'janIR4TvYoSEqNF94QM' # use 'openssl rand 14 -base64' for instance
-  $trackslurmctlddown = false
+  $dbd_configfile      = 'slurmdbd.conf'
+  $dbd_configfile_mode = '0400'
+  $archivedir          = '/tmp'
+  $archiveevents       = false # When purging events also archive them?
+  $archivejobs         = false # When purging jobs also archive them?
+  $archiveresv         = false # When purging reservations also archive them?
+  $archivesteps        = false # When purging steps also archive them?
+  $archivesuspend      = false # When purging suspend data also archive it?
+  $archivetxn          = false # When purging transaction data also archive it?
+  $archiveusage        = false # When purging usage data (Cluster, Association and WCKey) also archive it.
+  $commitdelay         = 0 # How many seconds between commits on a connection from a Slurmctld
+  $dbdhost             = 'localhost'
+  $dbdaddr             = 'localhost'
+  $dbdbackuphost       = ''
+  $storagehost         = $::hostname
+  $storagebackuphost   = ''
+  $storageloc          = 'slurm'
+  $storageport         = 3306
+  $storagetype         = 'mysql'
+  $storageuser         = $username
+  $storagepass         = 'janIR4TvYoSEqNF94QM' # use 'openssl rand 14 -base64' for instance
+  $trackslurmctlddown  = false
 
 
 

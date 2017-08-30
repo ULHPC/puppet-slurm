@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 18:44 svarrette>
+# Time-stamp: <Wed 2017-08-30 22:09 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -125,6 +125,7 @@ class slurm::slurmdbd(
   #
   # Main configuration paramaters
   #
+  String  $archivedir         = $slurm::params::archivedir,
   Boolean $archiveevents      = $slurm::params::archiveevents,
   Boolean $archivejobs        = $slurm::params::archivejobs,
   Boolean $archiveresv        = $slurm::params::archiveresv,
@@ -171,13 +172,68 @@ inherits slurm
     }
   }
 
-  include ::mysql::server
-  mysql::db { $storageloc:
-    user     => $storageuser,
-    password => $storagepass,
-    host     => $dbdhost,
-    grant    => ['ALL'],
+  # [Eventually] bootstrap the MySQL DB
+  if $storagetype == 'mysql' {
+    include ::mysql::server
+    mysql::db { $storageloc:
+      user     => $storageuser,
+      password => $storagepass,
+      host     => $dbdhost,
+      grant    => ['ALL'],
+    }
   }
+
+  # Now prepare the slurmdbd.conf
+  $dbdconf_content = $content ? {
+    undef   => $source ? {
+      undef   => $target ? {
+        undef   => template('slurm/slurmdbd.conf.erb'),
+        default => $content,
+      },
+    default => $content
+    },
+  default => $content,
+  }
+  $dbdconf_ensure = $target ? {
+    undef   => $ensure,
+    default => $ensure ? {
+      'present' => 'link',
+      default   => $ensure,
+    }
+  }
+
+  # slurmdbd.conf
+  $filename = "${slurm::configdir}/${slurm::params::dbd_configfile}"
+  file { $slurm::params::dbd_configfile:
+    ensure  => $dbdconf_ensure,
+    path    => $filename,
+    owner   => $slurm::username,
+    group   => $slurm::group,
+    mode    => $slurm::params::dbd_configfile_mode,
+    content => $dbdconf_content,
+    source  => $source,
+    target  => $target,
+
+    notify  => Service['slurmdbd'],
+    require => File[$slurm::configdir],
+  }
+
+  service { 'slurmd':
+    ensure     => ($ensure == 'present'),
+    enable     => ($ensure == 'present'),
+    name       => $slurm::params::dbd_servicename,
+    pattern    => $slurm::params::dbd_processname,
+    hasrestart => $slurm::params::hasrestart,
+    hasstatus  => $slurm::params::hasstatus,
+  }
+
+  if defined(Class['::slurm::slurmd']) {
+    Service['slurmdbd'] -> Service['slurmd']
+  }
+  if defined(Class['::slurm::slurmctld']) {
+    Service['slurmdbd'] -> Service['slurmctld']
+  }
+
 
 
 
