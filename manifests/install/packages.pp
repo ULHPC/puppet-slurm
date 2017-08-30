@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 15:05 svarrette>
+# Time-stamp: <Wed 2017-08-30 16:14 svarrette>
 #
 # File::      <tt>install/packages.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -67,12 +67,13 @@ define slurm::install::packages(
       }),
     default  => []
   }
-  # Full list, including the version numbers
-  $pkgs = empty($packages) ? {
-    true    => suffix($default_packages, "-${version}"),
-    default => suffix($pkgs, "-${version}")
+  # Real Full list
+  $pkglist = empty($packages) ? {
+    true    => $default_packages,
+    default => $pkgs
   }
-  #notice($pkgs)
+  # ... including the version numbers
+  $pkgs = suffix($pkglist, "-${version}")
 
   case $::osfamily {
     'Redhat': {
@@ -94,7 +95,7 @@ define slurm::install::packages(
           $execname  = "yum-localinstall-slurm*${version}*.rpm"
           $cmd          = "yum -y --nogpgcheck localinstall ${join($rpms, ' ')}"
           $check_onlyif = "test -n \"$(ls ${cwddir}/${rpms[0]} 2>/dev/null)\""
-          $check_unless = prefix($pkgs, 'yum list installed | grep ')
+          $check_unless = suffix(prefix($pkglist, "yum list installed | grep ${version} |& grep -E '^"), ".${::architecture}' > /dev/null")
         }
       }
     }
