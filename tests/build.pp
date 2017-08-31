@@ -12,9 +12,18 @@
 #
 # You can execute this manifest as follows in your vagrant box
 #
-#      sudo puppet apply -t /vagrant/tests/init.pp
+#      sudo puppet apply -t /vagrant/tests/pam.pp
 #
 node default {
-  include ::slurm
+  require ::slurm::params
+  $version = $::slurm::params::version
+  $ensure  = 'present' #'absent'
+
+  slurm::download { $version:
+    ensure => $ensure,
+  }
+  slurm::build { $version:
+    ensure => $ensure,
+  }
 
 }
