@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 23:04 svarrette>
+# Time-stamp: <Thu 2017-08-31 14:18 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -175,12 +175,58 @@ inherits slurm
   # [Eventually] bootstrap the MySQL DB
   if $storagetype == 'mysql' {
     include ::mysql::server
+    include ::mysql::server::account_security
+    # you now need to  allow remote access from a different host rather than
+    # localhost within /etc/my.cnf.d/server.cnf i.e. $mysql::server::config_file
+    # i.e. comment the line
+    # [mysqld]
+    # ...
+    # bind-address = 127.0.0.1
+    #
+    if $storagehost != 'localhost' {
+      $bind_setting = $ensure ? {
+        'present' => '0.0.0.0',
+        default   => '127.0.0.0',
+      }
+      ini_setting { "[mysqld]/bind-address = ${bind_setting}":
+        ensure  => 'present',
+        path    => $mysql::server::config_file,
+        section => 'mysqld',
+        setting => 'bind-address',
+        value   => $bind_setting,
+        notify  => Service['mysqld'],
+      }
+    }
     mysql::db { $storageloc:
       user     => $storageuser,
       password => $storagepass,
       host     => $dbdhost,
       grant    => ['ALL'],
+      before   => Service['slurmctld'],
     }
+    # # Eventually create the
+    unique([ $storagehost, $::hostname, $::fqdn]).each |String $host| {
+      mysql_user { "${storageuser}@${host}":
+        password_hash => mysql_password($storagepass),
+      }
+      mysql_grant {  "${storageuser}@${host}/${storageloc}.*":
+        privileges => ['ALL'],
+        table      => "${storageloc}.*",
+        user       => "${storageuser}@${host}",
+        require    => Mysql_user["${storageuser}@${host}"],
+        before     => Service['slurmdbd'],
+      }
+    }
+
+    # mysql_grant { "${storageuser}@${storagehost}/${storageloc}.*":
+      #   ensure => 'absent',
+      #   options    => ['GRANT'],
+      #   privileges => ['ALL'],
+      #   table      => "${storageloc}.*",
+      #   user       => "${storageuser}@${storagehost}",
+      #   require    => Mysql::Db[$storageloc],
+      #   before     => Service['slurmctld'],
+      # }
   }
 
   # Now prepare the slurmdbd.conf
@@ -213,18 +259,21 @@ inherits slurm
     content => $dbdconf_content,
     source  => $source,
     target  => $target,
-
     notify  => Service['slurmdbd'],
-    require => File[$slurm::configdir],
+    require => [
+      Class['::slurm::config'],
+      File[$slurm::configdir],
+    ],
   }
 
-  service { 'slurmd':
+  service { 'slurmdbd':
     ensure     => ($ensure == 'present'),
     enable     => ($ensure == 'present'),
     name       => $slurm::params::dbd_servicename,
     pattern    => $slurm::params::dbd_processname,
     hasrestart => $slurm::params::hasrestart,
     hasstatus  => $slurm::params::hasstatus,
+    require    => File[$slurm::params::dbd_configfile],
   }
 
   if defined(Class['::slurm::slurmd']) {

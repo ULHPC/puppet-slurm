@@ -18,29 +18,24 @@
 node default {
   include ::slurm::params
 
-  class { '::slurm':
-    pam_allowed_users => [ 'vagrant' ],
-    with_slurmdbd     => true,
-    with_slurmctld    => true,
-    with_slurmd       => false,
-    topology          => 'tree',
-    topology_tree     => {
-      's0' => { nodes => 'dev[0-5]'   },
-      's1' => { nodes => 'dev-[6-11]' },
-      's2' => { nodes => 'dev-[12-17]'},
-      's3' => {
-        comment   => 'GUID: XXXXXX - switch 0',
-        switches  => 's[0-2]',
-        linkspeed => '100Mb/s',
-      }
-    },
-  nodes => {
+  # Example of the topology tree
+  $tree = {
+    's0' => { nodes => 'dev[0-5]'   },
+    's1' => { nodes => 'dev-[6-11]' },
+    's2' => { nodes => 'dev-[12-17]'},
+    's3' => {
+      comment   => 'GUID: XXXXXX - switch 0',
+      switches  => 's[0-2]',
+      linkspeed => '100Mb/s', },
+  }
+  $nodes = {
     'DEFAULT'    => {
       comment => 'Test',
       content => 'CPUs=1 Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=512 State=UP', },
     'access'     => 'CPUs=2 Sockets=1 CoresPerSocket=2 ThreadsPerCore=1 State=UNKNOWN',
-    'thor-[1-3]' => 'CPUs=2 Sockets=1 CoresPerSocket=2 ThreadsPerCore=1  RealMemory=400 State=UNKNOWN', },
-  partitions => {
+    'thor-[1-3]' => 'CPUs=2 Sockets=1 CoresPerSocket=2 ThreadsPerCore=1  RealMemory=400 State=UNKNOWN',
+  }
+  $partitions = {
     'interactive' => {
       content  => 'Nodes=thor-1 State=UP DefaultTime=0-10:00:00 MaxTime=5-00:00:00 DisableRootJobs=YES ',
       priority => 0, },
@@ -51,13 +46,16 @@ node default {
       #default  => true,
     },
   }
-}
-  # slurm::download { $::slurm::params::version:
-    #   #checksum => '64009c1ed120b9ce5d79424dca743a06'
-    # }
-  # slurm::download { 'slurm-16.05.10.tar.bz2':
-    #   archived => true,
-    #   checksum => '8216a75830ba6aa72df6ae49cdfaa725',
-    # }
 
+
+  class { '::slurm':
+    pam_allowed_users => [ 'vagrant' ],
+    with_slurmdbd     => true,
+    with_slurmctld    => true,
+    with_slurmd       => false,
+    topology          => 'tree',
+    topology_tree     => $tree,
+    nodes             => $nodes,
+    partitions        => $partitions,
+  }
 }

@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 23:19 svarrette>
+# Time-stamp: <Thu 2017-08-31 14:27 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -47,7 +47,7 @@ class slurm::params {
   }
 
   # Which daemon to configure / install
-  $with_slurmd    = true
+  $with_slurmd    = false
   $with_slurmctld = false
   $with_slurmdbd  = false
 

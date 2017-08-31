@@ -61,7 +61,7 @@ TrackSlurmctldDown=yes
 #####################
 ###  Archive Info ###
 #####################
-<% if (scope['slurm::slurmdbd::archivedir'].empty? and scope['slurm::slurmdbd::archivedir'] == '/tmp') -%>
+<% if (scope['slurm::slurmdbd::archivedir'].empty? or scope['slurm::slurmdbd::archivedir'] == '/tmp') -%>
 #ArchiveDir="<%= scope['slurm::slurmdbd::archivedir'] %>"
 <% else -%>
 ArchiveDir="<%= scope['slurm::slurmdbd::archivedir'] %>"
@@ -112,7 +112,7 @@ DbdBackupHost=<%= scope['slurm::slurmdbd::dbdbackuphost'] %>
 #####################
 ### Database Info ###
 #####################
-StorageType="accounting_storage/<%= scope['slurm::slurmdbd::storagetype'] %>"
+StorageType=accounting_storage/<%= scope['slurm::slurmdbd::storagetype'] %>
 StorageHost=<%= scope['slurm::slurmdbd::storagehost'] %>
 <% if scope['slurm::slurmdbd::storagebackuphost'].empty? -%>
 #StorageBackupHost=

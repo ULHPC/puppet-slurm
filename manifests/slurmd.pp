@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 16:14 svarrette>
+# Time-stamp: <Thu 2017-08-31 14:29 svarrette>
 #
 # File::      <tt>slurmd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -21,7 +21,7 @@
 class slurm::slurmd inherits slurm
 {
   File <| tag == 'slurm::configfile' |> {
-    notify +> Service['slurmd'],
+    notify  +> Service['slurmd'],
   }
 
   service { 'slurmd':
@@ -31,6 +31,7 @@ class slurm::slurmd inherits slurm
     pattern    => $slurm::params::processname,
     hasrestart => $slurm::params::hasrestart,
     hasstatus  => $slurm::params::hasstatus,
+    require    => Class['::slurm::config'],
   }
 
   if defined(Class['::slurm::slurmctld']) {

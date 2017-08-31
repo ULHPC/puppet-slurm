@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 18:43 svarrette>
+# Time-stamp: <Thu 2017-08-31 14:30 svarrette>
 #
 # File::      <tt>config.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -74,7 +74,10 @@ class slurm::config { #}inherits slurm {
     source  => $slurm::source,
     target  => $slurm::target,
     tag     => 'slurm::configfile',
-    require => File[$slurm::configdir],
+    require => [
+      Package['slurm'],
+      File[$slurm::configdir],
+    ],
   }
 
   # Now add the other configuration files

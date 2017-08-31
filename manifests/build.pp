@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-24 16:25 svarrette>
+# Time-stamp: <Thu 2017-08-31 10:29 svarrette>
 #
 # File::      <tt>build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -65,37 +65,27 @@ define slurm::build(
     true    =>  '',
     default => join(prefix($without, '--without '), ' ')
   }
-  $buildname = "rpmbuild-slurm-${version}"  # Label for the exec
-  $pkgs = concat($slurm::params::pre_requisite_packages, $slurm::params::extra_packages)
+  $buildname = "build-slurm-${version}"  # Label for the exec
 
   case $::osfamily {
     'Redhat': {
-      include ::epel
-      include ::yum
+      Yum::Group[$slurm::params::groupinstall] -> Exec[$buildname]
 
-      yum::group { $slurm::params::groupinstall:
-        ensure  => 'present',
-        timeout => 600,
-      }
-      # Resource default statements
-      Package {
-        require => Yum::Group[$slurm::params::groupinstall],
-        before  => Exec[$buildname],
-      }
       $rpmdir = "${dir}/RPMS/${::architecture}"
-      $output = "${rpmdir}/slurm-${version}*.rpm"
+      $rpms   = prefix(suffix(concat($slurm::params::common_rpms_basename, $slurm::params::slurmdbd_rpms_basename), "-${version}*.rpm"), "${rpmdir}/")
       # the below command should typically produce the following RPMs
       # slurm[-suffix]-<version>-1.el7.centos.x86_64.rpm
       case $ensure {
         'absent': {
           $cmd          = "rm -f ${rpmdir}/slurm*-${version}*.rpm"
-          $check_onlyif = "test -n \"$(ls ${output} 2>/dev/null)\""
+          $check_onlyif = "test -n \"$(ls ${rpms[0]} 2>/dev/null)\""
           $check_unless = undef
         }
         default: {
           $cmd          = "rpmbuild -ta ${with_options} ${without_options} --define \"_topdir ${dir}\" ${src}"
           $check_onlyif = undef
-          $check_unless = "test -n \"$(ls ${output} 2>/dev/null)\""
+          $check_unless = suffix(prefix($rpms, 'test -n "$(ls '), ' 2>/dev/null)"')
+          #"test -n \"$(ls ${main_rpm} 2>/dev/null)\""
         }
       }
     }
@@ -103,14 +93,7 @@ define slurm::build(
       fail("Module ${module_name} is not supported on ${::operatingsystem}")
     }
   }
-  $pkgs.each |String $pkg| {
-    # Safeguard to avoid incompatibility with other puppet modules
-    if (!defined(Package[$pkg])) {
-      package { $pkg:
-        ensure  => 'present',
-      }
-    }
-  }
+
   #notice($cmd)
   exec { $buildname:
     path    => '/sbin:/usr/bin:/usr/sbin:/bin',

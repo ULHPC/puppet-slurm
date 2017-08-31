@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-31 00:20 svarrette>
+# Time-stamp: <Thu 2017-08-31 14:21 svarrette>
 #
 # File::      <tt>install/packages.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -96,18 +96,37 @@ define slurm::install::packages(
         true    => "${pkgdir}/RPMS/${::architecture}",
         default => $pkgdir,
       }
-      case $ensure {
-        'absent': {
-          $execname = "yum-remove-slurm*${version}*.rpm"
-          $cmd ="yum -y remove slurm*-${version}*"
-          $check_onlyif = "test -n \"$(rpm -qa | grep slurm*${version})\""
-          $check_unless = "test -z \"$(rpm -qa | grep slurm*${version})\""
+      # case $ensure {
+      #   'absent': {
+      #     $execname = "yum-remove-slurm*${version}*.rpm"
+      #     $cmd ="yum -y remove slurm*-${version}*"
+      #     $check_onlyif = "test -n \"$(rpm -qa | grep slurm*${version})\""
+      #     $check_unless = "test -z \"$(rpm -qa | grep slurm*${version})\""
+      #   }
+      #   default: {
+      #     $execname  = "yum-localinstall-slurm*${version}*.rpm"
+      #     $cmd          = "yum -y --nogpgcheck localinstall ${join($rpms, ' ')}"
+      #     $check_onlyif = "test -n \"$(ls ${cwddir}/${rpms[0]} 2>/dev/null)\""
+      #     $check_unless = suffix(prefix($pkglist, "yum list installed | grep ${version} |& grep -E '^"), ".${::architecture}' > /dev/null")
+      #   }
+      # }
+      # Ensure individual RPMs are really installed
+      # package { $pkgs:
+      #   ensure => $ensure,
+      #   provider => 'rpm',
+      #   source =>
+        # }
+      $pkglist.each |String $pkg| {
+        if $pkg != 'slurm' {
+          Package[$pkg] {
+            require => Package['slurm']
+          }
         }
-        default: {
-          $execname  = "yum-localinstall-slurm*${version}*.rpm"
-          $cmd          = "yum -y --nogpgcheck localinstall ${join($rpms, ' ')}"
-          $check_onlyif = "test -n \"$(ls ${cwddir}/${rpms[0]} 2>/dev/null)\""
-          $check_unless = suffix(prefix($pkglist, "yum list installed | grep ${version} |& grep -E '^"), ".${::architecture}' > /dev/null")
+        package { $pkg:
+          ensure          => $ensure,
+          provider        => 'rpm',
+          install_options => [ '--nodeps' ],
+          source          => "${cwddir}/${pkg}-${version}*.rpm",
         }
       }
     }
@@ -119,13 +138,13 @@ define slurm::install::packages(
   # notice($cmd)
   # notice($check_onlyif)
   # notice($check_unless)
-  exec { $execname:
-    path    => '/sbin:/usr/bin:/usr/sbin:/bin',
-    command => $cmd,
-    cwd     => $cwddir,
-    onlyif  => $check_onlyif,
-    unless  => $check_unless,
-    user    => 'root',
-  }
+  # exec { $execname:
+  #   path    => '/sbin:/usr/bin:/usr/sbin:/bin',
+  #   command => $cmd,
+  #   cwd     => $cwddir,
+  #   onlyif  => $check_onlyif,
+  #   unless  => $check_unless,
+  #   user    => 'root',
+  # }
 
 }
