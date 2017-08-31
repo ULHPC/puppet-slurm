@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-22 14:27 svarrette>
+# Time-stamp: <Thu 2017-08-31 15:52 svarrette>
 #
 # File::      <tt>pam.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -34,22 +34,39 @@ class slurm::pam(
   String  $ensure              = $slurm::params::ensure,
   Array   $allowed_users       = $slurm::params::pam_allowed_users,
   String  $content             = $slurm::params::pam_content,
-  String  $limits_source       = $slurm::params::limits_source,
+  $limits_source               = $slurm::params::limits_source,
   Boolean $use_pam_slurm_adopt = $slurm::params::use_pam_slurm_adopt
 )
 inherits slurm::params
 {
   validate_legacy('String', 'validate_re', $ensure, ['^present', '^absent'])
   validate_legacy('String', 'validate_string', $content)
-  validate_legacy('String', 'validate_string', $limits_source)
-
-  # TODO: Enable SLURM's use of PAM by setting UsePAM=1 in slurm.conf.
+  #validate_legacy('String', 'validate_string', $limits_source)
 
   # PAM access
-  $__allowed_users = concat( $allowed_users, 'root')
+  # Detect vagrant environment to include 'vagrant' in the list of allowed host otherwise
+  # the application of this class will prevent the vagrant user to work as expected
+  # Trick is to detect ::is_virtual facter + the presence of the /vagrant directory
+  # See custom fact 'lib/facter/is_vagrant.rb'
+  $default_allowed_users = $::is_vagrant ? {
+    true    => [ 'root', 'vagrant'],
+    default => [ 'root' ],
+  }
+  $__allowed_users = empty($allowed_users) ? {
+    true    => $default_allowed_users,
+    default => concat( $allowed_users, $default_allowed_users),
+  }
+  notice($__allowed_users)
   if (! defined(Class['::pam'])) {
     class { '::pam':
       allowed_users => $__allowed_users,
+    }
+    # the above class will lead to sssd errors on Redhat systems
+    # you might want to enforce the installation of the sssd package in this case
+    if $::osfamily == 'RedHat' and !defined(Package['sssd']) {
+      package { 'sssd':
+        ensure => 'present'
+      }
     }
   }
   # Establish a PAM configuration file for slurm /etc/pam.d/slurm
@@ -63,13 +80,14 @@ inherits slurm::params
       notice('use pam_slurm_adopt')
   }
 
-
   # PAM limits
-  include ::pam::limits
-  # Update PAM MEMLOCK limits (required for MPI)
-  pam::limits::fragment { $slurm::params::pam_servicename:
-    ensure => $ensure,
-    source => $limits_source,
+  if ($limits_source != undef) {
+    include ::pam::limits
+    # Update PAM MEMLOCK limits (required for MPI)
+    pam::limits::fragment { $slurm::params::pam_servicename:
+      ensure => $ensure,
+      source => $limits_source,
+    }
   }
 
 }

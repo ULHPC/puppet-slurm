@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 16:11 svarrette>
+# Time-stamp: <Thu 2017-08-31 16:43 svarrette>
 #
 # File::      <tt>download.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -92,6 +92,12 @@ define slurm::download(
     cleanup         => false,
     extract         => false,
     creates         => $path,
+  }
+  if $ensure == 'absent' {
+    file {$path:
+      ensure  => $ensure,
+      require => Archive[$archive]
+    }
   }
 
 }

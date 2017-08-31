@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-31 14:30 svarrette>
+# Time-stamp: <Thu 2017-08-31 14:56 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -50,19 +50,21 @@ class slurm::common {
     }
   }
 
-  include ::slurm::install
-  include ::slurm::config
+  if $slurm::with_slurmd or $slurm::with_slurmctld or $slurm::with_slurmdbd or defined(Class['::slurm::slurmd']) or defined(Class['::slurm::slurmctld']) or defined(Class['::slurm::slurmdbd']) {
+    include ::slurm::install
+    include ::slurm::config
 
-  Class['::slurm::install'] -> Class['::slurm::config']
+    Class['::slurm::install'] -> Class['::slurm::config']
 
-  if $slurm::with_slurmd {
-    include ::slurm::slurmd
-  }
-  if $slurm::with_slurmctld {
-    include ::slurm::slurmctld
-  }
-  if $slurm::with_slurmdbd {
-    include ::slurm::slurmdbd
+    if $slurm::with_slurmd {
+      include ::slurm::slurmd
+    }
+    if $slurm::with_slurmctld {
+      include ::slurm::slurmctld
+    }
+    if $slurm::with_slurmdbd {
+      include ::slurm::slurmdbd
+    }
   }
 
 }

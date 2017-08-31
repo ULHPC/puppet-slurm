@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-31 14:27 svarrette>
+# Time-stamp: <Thu 2017-08-31 14:48 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -473,6 +473,7 @@ $topology_tree = {}
   ### Pluggable Authentication Modules (PAM) ###
   ##############################################
   $use_pam             = true
+  $pam_allowed_users   = []
   $pam_servicename     = 'slurm'
   # Default content of /etc/pam.d/slurm
   $pam_content         = template('slurm/pam_slurm.erb')

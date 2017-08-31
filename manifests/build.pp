@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-31 10:29 svarrette>
+# Time-stamp: <Thu 2017-08-31 16:41 svarrette>
 #
 # File::      <tt>build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -39,11 +39,11 @@
   #   }
 #
 define slurm::build(
-  String  $ensure       = $slurm::params::ensure,
-  String  $srcdir       = $slurm::params::srcdir,
-  String  $dir          = $slurm::params::builddir,
-  Array   $with         = $slurm::params::build_with,
-  Array   $without      = $slurm::params::build_without,
+  String  $ensure  = $slurm::params::ensure,
+  String  $srcdir  = $slurm::params::srcdir,
+  String  $dir     = $slurm::params::builddir,
+  Array   $with    = $slurm::params::build_with,
+  Array   $without = $slurm::params::build_without,
 )
 {
   include ::slurm::params
@@ -65,10 +65,23 @@ define slurm::build(
     true    =>  '',
     default => join(prefix($without, '--without '), ' ')
   }
-  $buildname = "build-slurm-${version}"  # Label for the exec
+  # Label for the exec
+  $buildname = $ensure ? {
+    'absent'  => "uninstall-slurm-${version}",
+    default   => "build-slurm-${version}",
+    }
 
   case $::osfamily {
     'Redhat': {
+      include ::epel
+      include ::yum
+      if !defined(Yum::Group[$slurm::params::groupinstall]) {
+        yum::group { $slurm::params::groupinstall:
+          ensure  => 'present',
+          timeout => 600,
+          require => Class['::epel'],
+        }
+      }
       Yum::Group[$slurm::params::groupinstall] -> Exec[$buildname]
 
       $rpmdir = "${dir}/RPMS/${::architecture}"
