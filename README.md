@@ -92,7 +92,9 @@ This is the main class defined in this module.
 It accepts so many parameters that they are not listed here -- see the [puppet strings `@param`] comments of [`manifests/init.pp`](manifests/init.pp)
 Use it as follows:
 
-     include ::slurm
+```ruby
+include ::slurm
+```
 
 See also [`tests/init.pp`](tests/init.pp) or a more advanced usage (defining the network topology, the computing nodes and the SLURM partitions) in [`tests/advanced.pp`](tests/advanced.pp)
 
@@ -120,8 +122,172 @@ See also [`tests/slurmdbd.pp`](tests/slurmdbd.pp)
 
 The `slurm::slurmdbd` accepts also so many parameters that they are not listed here -- see the [puppet strings `@param`] comments of [`manifests/slurmdbd.pp`](manifests/slurmddbd.pp) for more details
 
+### Class `slurm::slurmctld`
+
+The main helper class specializing the main slurm class for setting up a Slurmctld daemon aka the slurm controller.
+
+```ruby
+include ::slurm
+include ::slurm::slurmctld
+```
+
+Alternatively, you can use the `with_slurctld` parameter of the `::slurm` class:
+
+```ruby
+class { '::slurm':
+    with_slurmctld => true,
+}
+```
+
+### Class `slurm::slurmd`
+
+The main helper class specializing the main slurm class for setting up a Slurmctld daemon aka the slurm controller.
+
+```ruby
+include ::slurm
+include ::slurm::slurmctld
+```
+
+Alternatively, you can use the `with_slurd` parameter of the `::slurm` class:
+
+```ruby
+class { '::slurm':
+    with_slurmd => true,
+}
+```
+
+There are of course *many* configuration parameters that you can set to change the content of the `slurm.conf` configuration file (generated from the ERB template).
+Read the documentation of the `slurm` class to make them suit your tastes and wishes.
+
+### Class `slurm::munge`
+
+[MUNGE](https://github.com/dun/munge) (MUNGE Uid 'N' Gid Emporium) is an authentication service for creating and validating credentials. It is designed to be highly scalable for use in an HPC cluster environment.
+It allows a process to authenticate the UID and GID of another local or remote process within a group of hosts having common users and groups. These hosts form a security realm that is defined by a shared cryptographic key.
+Clients within this security realm can create and validate credentials without the use of root privileges, reserved ports, or platform-specific methods.
+
+For more information, see <https://github.com/dun/munge>
+
+The puppet class `slurm::munge` is thus responsible for setting up a working Munge environment to
+be used by the SLURM daemons -- see also <https://slurm.schedmd.com/authplugins.html>
+Use it as follows:
+
+```ruby
+include ::slurm::munge
+```
+
+Or, if you wish to provide the munge key using puppet URI:
+
+```ruby
+class {'::slurm::munge':
+    ensure     => true,
+    key_source => "puppet:///modules/${myprofile}/munge.key"
+}
+```
+
+If, as in the above example, the key is stored centrally in your control repository, you probably want to store it encrypted using [git-crypt](https://github.com/AGWA/git-crypt) for instance.
+
+The `slurm::munge` class accepts the following parameters:
+
+* `ensure`  [String]  Default: 'present'
+   - Ensure the presence (or absence) of the Munge service
+* `create_key`   [Boolean] Default: true
+   - Whether or not to generate a new key if it does not exists
+* `daemon_args`  [Array] Default: []
+   - Set the content of the DAEMON_ARGS variable, which permits to set additional command-line options to the daemon. For example, this can be used to override the location of the secret key (`--key-file`) or  set the number of worker threads (`--num-threads`) See <        https://github.com/dun/munge/wiki/Installation-Guide#starting-the-daemon>.
+* `gid` [Integer] Default: 992
+   - GID of the munge group
+* `key_content`  [String] Default: undef
+   - The desired contents of a file, as a string. This attribute is mutually exclusive with source and target.
+* `key_filename` [String] Default: '/etc/munge/munge.key'
+   - The secret key filename
+* `key_source`   [String] Default: undef
+   - A source file, which will be copied into place on the local system. This attribute is mutually exclusive with content. The normal form of a puppet: URI is `puppet:///modules/<MODULE NAME>/<FILE PATH>`
+* `uid` [Integer] Default: 992
+   - UID of the munge user
+
+Note that the `slurm` class makes use of this class by default as the parameter `manage_munge` is set to true by default.
+
+### Definition `slurm::download`
+
+This definition takes care of downloading the SLURM sources for a given version (passed as name to this resource) and placing them into `$target` directory. You can also invoke this definition with the full archive filename i.e. `slurm-<version>.tar.bz2`.
+
+* `ensure` [String]  Default: `present`
+     - Ensure the presence (or absence) of building
+* `target` [String] Default: `/usr/local/src`
+     - Target directory for the downloaded sources
+* `archived` [Boolean] Default: `false`
+     - Whether the sources tar.bz2 has been archived or not.Thus by default, it is assumed that the provided version is the latest version (from <https://www.schedmd.com/downloads/latest/>).
+     - If set to `true`, the sources will be download from <https://www.schedmd.com/downloads/archive/>
+* `checksum_type` [String] Default: `md5`
+     - archive file checksum type (none|md5|sha1|sha2|sh256|sha384| sha512).
+* `checksum_verify` [Boolean] Default: false
+     - whether checksum will be verified (true|false).
+* `checksum` [String] Default: ''
+     -  archive file checksum (match checksum_type)
+
+_Example 1_: Downloading version 17.06.7 (latest at the time of writing) of SLURM
+
+```ruby
+slurm::download { '17.02.7':
+  ensure    => 'present',
+  checksum  => '64009c1ed120b9ce5d79424dca743a06',
+  target    => '/usr/local/src/',
+}
+```
+
+_Example 2_: Downloading archived version 16.05.10 version of SLURM
+
+```ruby
+slurm::download { 'slurm-16.05.10.tar.bz2':
+  ensure   => 'present',
+  archived => true,
+  target   => '/usr/local/src/',
+}
+```
+
+### Definition `slurm::build`
+
+This definition takes care of building Slurm sources into RPMs using 'rpmbuild'.
+It expect to get as resource name the SLURM version to build
+This assumes the sources have been downloaded using slurm::download
 
 
+* `ensure`  [String]  Default: `present`
+     - Ensure the presence (or absence) of building
+* `srcdir`  [String] Default: `/usr/local/src`
+     - Where the [downloaded] Slurm sources are located
+* `dir`     [String] Default: `/root/rpmbuild` on redhat systems
+     - Top directory of the sources builds (i.e. RPMs, debs...). For instance, built RPMs will be placed under `${dir}/RPMS/${::architecture}`
+* `with`    [Array] Default: `[ 'lua', ... ]`
+     - List of --with build options to pass to rpmbuild -- see <https://github.com/SchedMD/slurm/blob/master/slurm.spec>
+* `without` [Array] Default: `[]`
+     - List of --without build options to pass to rpmbuild -- see <https://github.com/SchedMD/slurm/blob/master/slurm.spec>
+
+
+_Example_: Building version 17.06.7 (latest at the time of writing)  of SLURM
+
+```ruby
+slurm::build { '17.02.7':
+  ensure => 'present',
+  srcdir => '/usr/local/src',
+  dir    => '/root/rpmbuild',
+  with   => [ 'lua', 'mysql', 'openssl' ]
+}
+```
+
+### Definition `slurm::install::packages`
+
+This definition takes care of installing the Slurm packages, typically built from `slurm::build`, for a given version passed as resource name.
+
+_Example_: installing slurmd packages in version 17.02.7:
+
+```ruby
+slurm::install::packages { '17.02.7':
+   ensure => 'present',
+   pkgdir => "/root/rpmbuild/RPMs/${::architecture}",
+   slurmd => true
+}
+```
 
 
 ## Librarian-Puppet / R10K Setup

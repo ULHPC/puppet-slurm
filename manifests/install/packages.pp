@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 11:20 svarrette>
+# Time-stamp: <Fri 2017-09-01 15:17 svarrette>
 #
 # File::      <tt>install/packages.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -21,7 +21,7 @@
 
 # @example install version 17.06.7 (latest at the time of writing)  of SLURMd
 #
-#     slurm::install { '17.02.7':
+#     slurm::install::packages { '17.02.7':
   #     ensure => 'present',
   #     pkgdir => "/root/rpmbuild/RPMs/${::architecture}",
   #     slurmd => true
