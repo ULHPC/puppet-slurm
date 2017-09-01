@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 11:14 svarrette>
+# Time-stamp: <Fri 2017-09-01 12:19 svarrette>
 #
 # File::      <tt>pam.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -65,7 +65,7 @@ inherits slurm::params
     # you might want to enforce the installation of the sssd package in this case
     if $::osfamily == 'RedHat' and !defined(Package['sssd']) {
       package { 'sssd':
-        ensure => 'present'
+        ensure => 'present',
       }
     }
   }

@@ -51,11 +51,11 @@ node default {
 
   # Let's go, all-in-one run
   class { '::slurm':
-    with_slurmdbd     => true,
-    with_slurmctld    => true,
-    topology          => 'tree',
-    topology_tree     => $tree,
-    nodes             => $nodes,
-    partitions        => $partitions,
+    with_slurmdbd  => true,
+    with_slurmctld => true,
+    topology       => 'tree',
+    topology_tree  => $tree,
+    nodes          => $nodes,
+    partitions     => $partitions,
   }
 }

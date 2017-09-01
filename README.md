@@ -76,28 +76,57 @@ By default, some key configuration decisions are configured, namely:
 See [`metadata.json`](metadata.json). In particular, this module depends on
 
 * [puppetlabs/stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib)
+* [puppetlabs/mysql](https://forge.puppetlabs.com/puppetlabs/mysql)
+* [puppetlabs/inifile](https://forge.puppetlabs.com/puppetlabs/inifile)
+* [puppet/archive](https://forge.puppetlabs.com/puppet/archive)
+* [puppet/yum](https://forge.puppetlabs.com/puppet/yum)
+* [stahnma/epel](https://forge.puppetlabs.com/stahnma/epel)
+* [bodgit/rngd](https://forge.puppetlabs.com/bodgit/rngd)
+* [ghoneycutt/pam](https://forge.puppetlabs.com/ghoneycutt/pam)
 
 ## Overview and Usage
 
 ### Class `slurm`
 
 This is the main class defined in this module.
-It accepts the following parameters:
-
-* `$ensure`: default to 'present', can be 'absent'
-
+It accepts so many parameters that they are not listed here -- see the [puppet strings `@param`] comments of [`manifests/init.pp`](manifests/init.pp)
 Use it as follows:
 
-     include ' slurm'
+     include ::slurm
 
-See also [`tests/init.pp`](tests/init.pp)
+See also [`tests/init.pp`](tests/init.pp) or a more advanced usage (defining the network topology, the computing nodes and the SLURM partitions) in [`tests/advanced.pp`](tests/advanced.pp)
+
+### Class `slurm::slurmdbd`
+
+This class is responsible for setting up a [Slurm Database Daemon](https://slurm.schedmd.com/slurmdbd.html), which provides a secure enterprise-wide interface to a database for Slurm.
+In particular, it can run relatively independently of the other slurm daemon instances and thus is proposed as a separate independent class.
+
+You can simply configure it as follows:
+
+```ruby
+include ::slurm
+include ::slurm::slurmdbd
+```
+
+Alternatively, you can use the `with_slurdbd` parameter of the `::slurm` class:
+
+```ruby
+class { '::slurm':
+    with_slurmdbd => true,
+}
+```
+
+See also [`tests/slurmdbd.pp`](tests/slurmdbd.pp)
+
+The `slurm::slurmdbd` accepts also so many parameters that they are not listed here -- see the [puppet strings `@param`] comments of [`manifests/slurmdbd.pp`](manifests/slurmddbd.pp) for more details
+
+
 
 
 
 ## Librarian-Puppet / R10K Setup
 
-You can of course configure the slurm module in your `Puppetfile` to make it available with [Librarian puppet](http://librarian-puppet.com/) or
-[r10k](https://github.com/adrienthebo/r10k) by adding the following entry:
+You can of course configure the slurm module in your `Puppetfile` to make it available with [Librarian puppet](http://librarian-puppet.com/) or [r10k](https://github.com/adrienthebo/r10k) by adding the following entry:
 
      # Modules from the Puppet Forge
      mod "ULHPC/slurm"
