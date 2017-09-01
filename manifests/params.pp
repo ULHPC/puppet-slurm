@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-31 14:48 svarrette>
+# Time-stamp: <Fri 2017-09-01 09:15 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -427,6 +427,7 @@ $topology_tree = {}
   # see https://github.com/dun/munge
   # We assume it will be used for shared key authentication, and the shared key
   # can be provided to puppet via a URI.
+  $manage_munge     = true   # Whether or not this module should manage munge
   # Munge user/group identifiers, and attributes for the munge user
   $munge_username   = 'munge'
   $munge_uid        = 992
@@ -472,6 +473,7 @@ $topology_tree = {}
   ##############################################
   ### Pluggable Authentication Modules (PAM) ###
   ##############################################
+  $manage_pam          = true   # Whether or not this module should manage pam
   $use_pam             = true
   $pam_allowed_users   = []
   $pam_servicename     = 'slurm'

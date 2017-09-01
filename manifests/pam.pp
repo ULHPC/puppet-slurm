@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-31 15:52 svarrette>
+# Time-stamp: <Thu 2017-08-31 16:56 svarrette>
 #
 # File::      <tt>pam.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -57,7 +57,7 @@ inherits slurm::params
     default => concat( $allowed_users, $default_allowed_users),
   }
   notice($__allowed_users)
-  if (! defined(Class['::pam'])) {
+  if (! defined('pam')) {
     class { '::pam':
       allowed_users => $__allowed_users,
     }

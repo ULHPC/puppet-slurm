@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 15:31 svarrette>
+# Time-stamp: <Fri 2017-09-01 09:21 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -35,18 +35,22 @@
 #          https://docs.puppet.com/puppet/latest/types/file.html#file-attribute-target
 #
 ############################### Main system configs #######################################
-#
 # @param uid                      [Integer]     Default: 991
 # @param gid                      [Integer]     Default: as $uid
 # @param version                  [String]      Default: '17.02.7'
 # @param with_slurmd              [Boolean]     Default: true
 # @param with_slurmctld           [Boolean]     Default: false
 # @param with_slurmdbd            [Boolean]     Default: false
-# @param wrappers                 [Array]       Default: [ 'slurm-openlava',  'slurm-torque' ]
+# @param manage_munge             [Boolean]     Default: true
+#           Whether or not this module should manage
+# @param manage_pam               [Boolean]     Default: true
+#           Whether or not this module should manage
 # @param do_build                 [Boolean]     Default: true
 #          Do we perform the build of the Slurm packages from sources or not?
 # @param do_package_install       [Boolean]     Default: true
 #          Do we perform the install of the Slurm packages or not?
+# @param wrappers                 [Array]       Default: [ 'slurm-openlava',  'slurm-torque' ]
+#          Extra wrappers/package to install (ex: openlava/LSF wrapper, Torque/PBS wrappers)
 # @param src_archived             [Boolean]     Default: false
 #          Whether the sources tar.bz2 has been archived or not.
 #          Thus by default, it is assumed that the provided version is the
@@ -60,11 +64,11 @@
 # @param builddir                 [String]      Default: '/root/rpmbuild' on redhat systems
 #          Top directory of the sources builds (i.e. RPMs, debs...)
 #          For instance, built RPMs will be placed under
-#          <dir>/RPMS/${::architecture}
-# @param build_with               [Array] Default: [ 'lua', ... ] -- see slurm::params
+#          ${builddir}/RPMS/${::architecture}
+# @param build_with               [Array] Default: [ 'lua', ... ]
 #          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
 #          List of --with build options to pass to rpmbuild
-# @param build_without            [Array] Default: [] -- see slurm::params
+# @param build_without            [Array] Default: []
 #          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
 #          List of --without build options to pass to rpmbuild
 #
@@ -397,6 +401,8 @@ class slurm(
   $content                                = undef,
   $source                                 = undef,
   $target                                 = undef,
+  Boolean $manage_munge                   = $slurm::params::manage_munge,
+  Boolean $manage_pam                     = $slurm::params::manage_pam,
   Integer $uid                            = $slurm::params::uid,
   Integer $gid                            = $slurm::params::gid,
   String  $version                        = $slurm::params::version,

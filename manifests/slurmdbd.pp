@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-31 14:18 svarrette>
+# Time-stamp: <Fri 2017-09-01 09:05 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -160,17 +160,13 @@ inherits slurm
 {
   validate_legacy('String', 'validate_re', $ensure, ['^present', '^absent'])
 
-  info ("Configuring SLURM DataBase daemon (with ensure = ${ensure})")
-
   case $::osfamily {
-    'Redhat': {
-
-
-    }
-    default: {
-      fail("Module ${module_name} is not supported on ${::operatingsystem}")
-    }
+    'Redhat': { }
+    default:  { fail("Module ${module_name} is not supported on ${::operatingsystem}") }
   }
+
+  include ::slurm::install
+  include ::slurm::config
 
   # [Eventually] bootstrap the MySQL DB
   if $storagetype == 'mysql' {
@@ -217,16 +213,6 @@ inherits slurm
         before     => Service['slurmdbd'],
       }
     }
-
-    # mysql_grant { "${storageuser}@${storagehost}/${storageloc}.*":
-      #   ensure => 'absent',
-      #   options    => ['GRANT'],
-      #   privileges => ['ALL'],
-      #   table      => "${storageloc}.*",
-      #   user       => "${storageuser}@${storagehost}",
-      #   require    => Mysql::Db[$storageloc],
-      #   before     => Service['slurmctld'],
-      # }
   }
 
   # Now prepare the slurmdbd.conf
@@ -275,11 +261,10 @@ inherits slurm
     hasstatus  => $slurm::params::hasstatus,
     require    => File[$slurm::params::dbd_configfile],
   }
-
-  if defined(Class['::slurm::slurmd']) {
+  if defined(Class['slurm::slurmd']) {
     Service['slurmdbd'] -> Service['slurmd']
   }
-  if defined(Class['::slurm::slurmctld']) {
+  if defined(Class['slurm::slurmctld']) {
     Service['slurmdbd'] -> Service['slurmctld']
   }
 

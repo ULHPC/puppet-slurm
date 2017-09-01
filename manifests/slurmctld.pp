@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-31 14:28 svarrette>
+# Time-stamp: <Fri 2017-09-01 09:06 svarrette>
 #
 # File::      <tt>slurmctld.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -20,11 +20,17 @@
 #
 class slurm::slurmctld inherits slurm
 {
+  case $::osfamily {
+    'Redhat': { }
+    default:  { fail("Module ${module_name} is not supported on ${::operatingsystem}") }
+  }
+
+  include ::slurm::install
+  include ::slurm::config
 
   File <| tag == 'slurm::configfile' |> {
     notify  +> Service['slurmctld'],
   }
-
   service { 'slurmctld':
     ensure     => ($slurm::ensure == 'present'),
     enable     => ($slurm::ensure == 'present'),
