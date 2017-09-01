@@ -12,9 +12,9 @@
 #
 # You can execute this manifest as follows in your vagrant box
 #
-#      sudo puppet apply -t /vagrant/tests/init.pp
+#      sudo puppet apply -t /vagrant/tests/pam.pp
 #
 node default {
-  include ::slurm
+  include ::slurm::pam
 
 }

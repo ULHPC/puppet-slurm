@@ -2,7 +2,6 @@
 source "https://rubygems.org"
 
 gem 'falkorlib' #, :path => '~/git/github.com/Falkor/falkorlib'
-
 # Puppet stuff
 #gem 'puppetlabs_spec_helper', '>= 0.1.0'
 
@@ -12,6 +11,7 @@ gem 'falkorlib' #, :path => '~/git/github.com/Falkor/falkorlib'
 group :test do
   gem "rake"
   gem "puppet", ENV['PUPPET_GEM_VERSION'] || '~> 4.4.0'
+  gem 'puppet-strings'
   gem "rspec", '< 3.2.0'
   gem "rspec-puppet"
   gem "puppetlabs_spec_helper"

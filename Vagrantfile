@@ -1,6 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-# Time-stamp: <Sun 2017-08-20 20:45 svarrette>
+# Time-stamp: <Tue 2017-08-22 23:58 svarrette>
 ###########################################################################################
 #              __     __                          _    __ _ _
 #              \ \   / /_ _  __ _ _ __ __ _ _ __ | |_ / _(_) | ___
@@ -37,9 +37,8 @@ DEFAULT_SETTINGS = {
     :defaults => {
         :os     => :centos7,
         :ram    => 512,
-        :vcpus  => 1,
+        :vcpus  => 4,
         :vbguest_auto_update => true,
-        :nodes  => 1,
     },
     # Default domain settings
     :network => {

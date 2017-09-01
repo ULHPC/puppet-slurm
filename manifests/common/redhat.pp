@@ -7,4 +7,20 @@
 # = Class: slurm::common::redhat
 #
 # Specialization class for Redhat systems
-class slurm::common::redhat inherits slurm::common { }
+class slurm::common::redhat inherits slurm::common {
+
+  include ::epel
+  include ::yum
+
+  yum::group { $slurm::params::groupinstall:
+    ensure  => 'present',
+    timeout => 600,
+    require => Class['::epel'],
+  }
+
+  # Resource default statements
+  Package {
+    require => Yum::Group[$slurm::params::groupinstall],
+  }
+
+}

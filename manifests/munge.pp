@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-08-21 22:40 svarrette>
+# Time-stamp: <Fri 2017-09-01 11:25 svarrette>
 #
 # File::      <tt>munge.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -25,55 +25,60 @@
 #
 # See https://slurm.schedmd.com/authplugins.html
 #
-# == Parameters
-#
 # @param ensure       [String]  Default: 'present'
-#        Ensure the presence (or absence) of sysctl
+#          Ensure the presence (or absence) of the Munge service
 # @param create_key   [Boolean] Default: true
-#        Whether or not to generate a new key if it does not exists
-# @param key_filename [String] Default: '/etc/munge/munge.key'
-#        The secret key filename
-# @param key_source   [String] Default: undef
-#        A source file, which will be copied into place on the local system.
-#        This attribute is mutually exclusive with content.
-#        The normal form of a puppet: URI is
-#                  puppet:///modules/<MODULE NAME>/<FILE PATH>
-# @param key_content  [String] Default: undef
-#        The desired contents of a file, as a string. This attribute is mutually
-#        exclusive with source and target.
+#          Whether or not to generate a new key if it does not exists
 # @param daemon_args  [Array] Default: []
-#        Set the content of the DAEMON_ARGS variable, which permits to set
-#        additional command-line options to the daemon. For example, this can be
-#        used to override the location of the secret key (--key-file) or set the
-#        number of worker threads (--num-threads)
-#        See https://github.com/dun/munge/wiki/Installation-Guide#starting-the-daemon
+#          Set the content of the DAEMON_ARGS variable, which permits to set
+#          additional command-line options to the daemon. For example, this can
+#          be used to override the location of the secret key (--key-file) or
+#          set the number of worker threads (--num-threads) See
+#          https://github.com/dun/munge/wiki/Installation-Guide#starting-the-daemon
+# @param gid [Integer] Default: 992
+#          GID of the munge group
+# @param key_content  [String] Default: undef
+#          The desired contents of a file, as a string. This attribute is mutually
+#          exclusive with source and target.
+# @param key_filename [String] Default: '/etc/munge/munge.key'
+#          The secret key filename
+# @param key_source   [String] Default: undef
+#          A source file, which will be copied into place on the local system.
+#          This attribute is mutually exclusive with content.
+#          The normal form of a puppet: URI is
+#                  puppet:///modules/<MODULE NAME>/<FILE PATH>
+# @param uid [Integer] Default: 992
+#          UID of the munge user
 #
 # /!\ We assume the RPM 'slurm-munge' has been already installed -- this class
 # does not care about it
-
+#
 class slurm::munge(
-  String $ensure       = $slurm::params::ensure,
+  String  $ensure      = $slurm::params::ensure,
   Boolean $create_key  = $slurm::params::munge_create_key,
+  Array $daemon_args   = $slurm::params::munge_daemon_args,
+  Integer $uid         = $slurm::params::munge_uid,
+  Integer $gid         = $slurm::params::munge_gid,
   String $key_filename = $slurm::params::munge_key,
   $key_source          = undef,
   $key_content         = undef,
-  Array $daemon_args   = []
 )
 inherits slurm::params
 {
   validate_legacy('String',  'validate_re',   $ensure, ['^present', '^absent'])
-  validate_legacy('Boolean', 'validate_bool', $create_key)
+  #validate_legacy('Boolean', 'validate_bool', $create_key)
 
   if ($::osfamily == 'RedHat') {
     include ::epel
   }
 
   # Order
-  if ($ensure == 'present')
-  { Group['munge'] -> User['munge'] -> Package['munge'] }
-  else
-  { Package['munge'] -> User['munge'] -> Group['munge'] }
-
+  if ($ensure == 'present') {
+    Group['munge'] -> User['munge'] -> Package['munge']
+  }
+  else {
+    Package['munge'] -> User['munge'] -> Group['munge']
+  }
 
   # Install the required packages
   package { 'munge':
@@ -88,19 +93,19 @@ inherits slurm::params
   # Prepare the user and group
   group { 'munge':
     ensure => $ensure,
-    name   => $slurm::params::group,
-    gid    => $slurm::params::munge_gid,
+    name   => $slurm::params::munge_group,
+    gid    => $gid,
   }
   user { 'munge':
     ensure     => $ensure,
     name       => $slurm::params::munge_username,
-    uid        => $slurm::params::munge_uid,
-    gid        => $slurm::params::munge_gid,
+    uid        => $uid,
+    gid        => $gid,
     comment    => $slurm::params::munge_comment,
     home       => $slurm::params::munge_home,
     managehome => true,
     system     => true,
-    shell      => '/sbin/nologin',
+    shell      => $slurm::params::munge_shell,
   }
 
   if $ensure == 'present' {
@@ -166,7 +171,7 @@ inherits slurm::params
   else {
     $options = concat($daemon_args, "--key-file ${key_filename}")
   }
-  file { $slurm::params::munge_sysconfigdir:
+  file { $slurm::params::munge_default_sysconfig:
     ensure  => $ensure,
     owner   => $slurm::params::munge_username,
     group   => $slurm::params::munge_group,
