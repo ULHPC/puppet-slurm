@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 09:15 svarrette>
+# Time-stamp: <Fri 2017-09-01 11:23 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -447,7 +447,7 @@ $topology_tree = {}
   }
   $munge_extra_packages = $::operatingsystem ? {
     /(?i-mx:ubuntu|debian)/        => [ 'libmunge-dev' ],
-    /(?i-mx:centos|fedora|redhat)/ => [ 'munge-libs', 'munge-devel' ],
+    /(?i-mx:centos|fedora|redhat)/ => [ 'munge-devel', 'munge-libs' ],
     default => [ ]
   }
   $munge_configdir = $::operatingsystem ? {

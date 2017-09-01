@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 09:05 svarrette>
+# Time-stamp: <Fri 2017-09-01 11:10 svarrette>
 #
 # File::      <tt>slurmd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -42,7 +42,7 @@ class slurm::slurmd inherits slurm
     require    => Class['::slurm::config'],
   }
 
-  if defined('slurm::slurmctld') {
+  if ($slurm::with_slurmctld or defined(Class['slurm::slurmctld'])) {
     Service['slurmctld'] -> Service['slurmd']
   }
 }

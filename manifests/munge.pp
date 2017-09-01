@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-23 21:11 svarrette>
+# Time-stamp: <Fri 2017-09-01 11:25 svarrette>
 #
 # File::      <tt>munge.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)

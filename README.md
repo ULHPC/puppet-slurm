@@ -28,16 +28,27 @@ different daemons and components of a typical Slurm architecture, depicted below
 
 In particular, this module implements the following elements:
 
-* __Puppet classes__:
-    - `slurm`:  The main slurm class, responsible for validating the parameters, and instantiating the `slurm::repo`, `slurm::slurmd`, `slurm::slurmctld` and/or `slurm::slurmdbd` classes
-    - `slurm::slurmd`: takes care of [Slurmd](https://slurm.schedmd.com/slurmd.html), the compute node daemon for Slurm.
-    - `slurm::slurmctld`: handles [Slurmctld](https://slurm.schedmd.com/slurmctld.html) - The central management daemon of Slurm.
-    - `slurm::slurmdbd`: manages [slurmdbd](https://slurm.schedmd.com/slurmdbd.html), the Slurm Database Daemon.
-    - `slurm::pam`: Handle PAM aspects  for SLURM (Memlock for MPI etc.)
+| Puppet Class       | Description                                                                                                          |
+|--------------------|----------------------------------------------------------------------------------------------------------------------|
+| `slurm`            | The main slurm class, piloting all aspects of the configuration                                                      |
+| `slurm::slurmdbd`  | Specialized class for [Slurmdbd](https://slurm.schedmd.com/slurmdbd.html), the Slurm Database Daemon.                |
+| `slurm::slurmctld` | Specialized class for [Slurmctld](https://slurm.schedmd.com/slurmctld.html), the central management daemon of Slurm. |
+| `slurm::slurmd`    | Specialized class for [Slurmd](https://slurm.schedmd.com/slurmd.html), the compute node daemon for Slurm.            |
+| `slurm::munge`     | Manages [MUNGE]( https://github.com/dun/munge), an authentication service for creating and validating credentials.   |
+| `slurm::pam`       | Handle PAM aspects  for SLURM (Memlock for MPI etc.)                                                                 |
 
+| Puppet Defines    | Description                                                     |
+|-------------------|-----------------------------------------------------------------|
+| `slurm::download` | takes care of downloading the SLURM sources for a given version |
+| `slurm::build`    | building Slurm sources into RPMs using 'rpmbuild'.              |
+|                   |                                                                 |
 
+In addition, this puppet module implements several **private** classes:
 
-* __Puppet definitions__:
+* `slurm::common[::redhat]`: handles common tasks to all daemon
+* `slurm::install`: install the Slurm packages, eventually built from downloaded sources
+* `slurm::config`: handles the configuration of SLURM daemons -- see <https://slurm.schedmd.com/slurm.conf.html#lbAN>
+
 
 
 

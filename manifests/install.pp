@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-31 16:56 svarrette>
+# Time-stamp: <Fri 2017-09-01 11:51 svarrette>
 #
 # File::      <tt>install.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -15,32 +15,6 @@ class slurm::install {
 
   include ::slurm
   include ::slurm::params
-
-  # Prepare the user and group
-  group { 'slurm':
-    ensure => $slurm::ensure,
-    name   => $slurm::params::group,
-    gid    => $slurm::gid,
-  }
-  user { 'slurm':
-    ensure     => $slurm::ensure,
-    name       => $slurm::params::username,
-    uid        => $slurm::uid,
-    gid        => $slurm::gid,
-    comment    => $slurm::params::comment,
-    home       => $slurm::params::home,
-    managehome => true,
-    system     => true,
-    shell      => $slurm::params::shell,
-  }
-
-  # Order
-  if ($slurm::ensure == 'present') {
-    Group['slurm'] -> User['slurm']
-  }
-  else {
-    User['slurm'] -> Group['slurm']
-  }
 
   # [Eventually] download and build slurm sources
   if $slurm::do_build {
@@ -74,6 +48,8 @@ class slurm::install {
       require   => Slurm::Build[$slurm::version],
     }
   }
+
+
 
 
 

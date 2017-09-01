@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 09:21 svarrette>
+# Time-stamp: <Fri 2017-09-01 09:23 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -587,9 +587,9 @@ inherits slurm::params
 
   info ("Configuring SLURM (with ensure = ${ensure})")
 
-  case $::operatingsystem {
-    #debian, ubuntu:         { contain ::slurm::common::debian }
-    'redhat', 'fedora', 'centos': { contain ::slurm::common::redhat }
+  case $::osfamily {
+    #'Debian': { contain ::slurm::common::debian }
+    'RedHat':  { contain ::slurm::common::redhat }
     default: {
       fail("Module ${module_name} is not supported on ${::operatingsystem}")
     }

@@ -381,6 +381,8 @@ GEM
       puppet-lint (>= 1.0, < 3.0)
     puppet-lint-version_comparison-check (0.2.1)
       puppet-lint (>= 1.0, < 3.0)
+    puppet-strings (1.1.0)
+      yard (~> 0.9.5)
     puppet-syntax (2.4.1)
       rake
     puppetlabs_spec_helper (2.3.2)
@@ -496,6 +498,7 @@ GEM
     uber (0.1.0)
     websocket (1.2.4)
     xml-simple (1.1.5)
+    yard (0.9.9)
 
 PLATFORMS
   ruby
@@ -514,6 +517,7 @@ DEPENDENCIES
   puppet-lint-trailing_comma-check
   puppet-lint-unquoted_string-check
   puppet-lint-version_comparison-check
+  puppet-strings
   puppetlabs_spec_helper
   rake
   rspec (< 3.2.0)

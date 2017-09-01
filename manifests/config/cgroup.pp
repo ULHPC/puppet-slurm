@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 21:39 svarrette>
+# Time-stamp: <Fri 2017-09-01 10:52 svarrette>
 #
 # File::      <tt>config/cgroup.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -52,7 +52,6 @@ class slurm::config::cgroup inherits slurm::config {
     source  => $slurm::cgroup_source,
     target  => $slurm::cgroup_target,
     tag     => 'slurm::configfile',
-    require => File[$slurm::configdir],
   }
 
   # [eventually] cgroup_allowed_devices_file.conf
@@ -65,7 +64,6 @@ class slurm::config::cgroup inherits slurm::config {
       mode    => $slurm::params::configfile_mode,
       content => template('slurm/cgroup_allowed_devices_file.conf.erb'),
       tag     => 'slurm::configfile',
-      require => File[$slurm::configdir],
     }
   }
 

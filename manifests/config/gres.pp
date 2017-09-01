@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 21:38 svarrette>
+# Time-stamp: <Fri 2017-09-01 10:52 svarrette>
 #
 # File::      <tt>config/gres.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -43,7 +43,6 @@ class slurm::config::gres inherits slurm::config {
     source  => $slurm::gres_source,
     target  => $slurm::gres_target,
     tag     => 'slurm::configfile',
-    require => File[$slurm::configdir],
   }
 
 }

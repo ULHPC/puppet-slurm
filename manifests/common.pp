@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 09:15 svarrette>
+# Time-stamp: <Fri 2017-09-01 11:50 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -28,6 +28,32 @@ class slurm::common {
     }
   }
 
+  # Prepare the user and group
+  group { 'slurm':
+    ensure => $slurm::ensure,
+    name   => $slurm::params::group,
+    gid    => $slurm::gid,
+  }
+  user { 'slurm':
+    ensure     => $slurm::ensure,
+    name       => $slurm::params::username,
+    uid        => $slurm::uid,
+    gid        => $slurm::gid,
+    comment    => $slurm::params::comment,
+    home       => $slurm::params::home,
+    managehome => true,
+    system     => true,
+    shell      => $slurm::params::shell,
+  }
+
+  # Order
+  if ($slurm::ensure == 'present') {
+    Group['slurm'] -> User['slurm']
+  }
+  else {
+    User['slurm'] -> Group['slurm']
+  }
+
   if ($slurm::manage_pam and $slurm::use_pam and $slurm::with_slurmd) {
     class { '::slurm::pam':
       ensure        => $slurm::ensure,
@@ -50,20 +76,15 @@ class slurm::common {
     }
   }
 
-  if ($slurm::with_slurmd or $slurm::with_slurmctld or $slurm::with_slurmdbd) {
-    include ::slurm::install
-    include ::slurm::config
-    Class['::slurm::install'] -> Class['::slurm::config']
-
-    if $slurm::with_slurmd {
-      include ::slurm::slurmd
-    }
-    if $slurm::with_slurmctld {
-      include ::slurm::slurmctld
-    }
-    if $slurm::with_slurmdbd {
-      include ::slurm::slurmdbd
-    }
+  if $slurm::with_slurmdbd {
+    include ::slurm::slurmdbd
   }
-
+  if $slurm::with_slurmctld {
+    include ::slurm::slurmctld
+  }
+  if $slurm::with_slurmd {
+    include ::slurm::slurmd
+  }
 }
+
+#}

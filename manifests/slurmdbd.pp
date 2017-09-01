@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 09:05 svarrette>
+# Time-stamp: <Fri 2017-09-01 10:59 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -32,6 +32,9 @@
 # @param target  [String]
 #          See also
 #          https://docs.puppet.com/puppet/latest/types/file.html#file-attribute-target
+#
+# @param ensure [String] Default: 'present'.
+#         Ensure the presence (or absence) of slurm
 #
 ############################### Main system configs #######################################
 #
@@ -168,6 +171,7 @@ inherits slurm
   include ::slurm::install
   include ::slurm::config
 
+
   # [Eventually] bootstrap the MySQL DB
   if $storagetype == 'mysql' {
     include ::mysql::server
@@ -198,9 +202,9 @@ inherits slurm
       password => $storagepass,
       host     => $dbdhost,
       grant    => ['ALL'],
-      before   => Service['slurmctld'],
+      before   => Service['slurmdbd'],
     }
-    # # Eventually create the
+    # Eventually create the 'slurm'@'*' user with all rights
     unique([ $storagehost, $::hostname, $::fqdn]).each |String $host| {
       mysql_user { "${storageuser}@${host}":
         password_hash => mysql_password($storagepass),
@@ -245,11 +249,17 @@ inherits slurm
     content => $dbdconf_content,
     source  => $source,
     target  => $target,
-    notify  => Service['slurmdbd'],
-    require => [
-      Class['::slurm::config'],
-      File[$slurm::configdir],
-    ],
+    #notify  => Service['slurmdbd'],
+    # require => [
+    #   Class['::slurm::config'],
+    #   File[$slurm::configdir],
+    # ],
+  }
+  if $slurm::ensure == 'present' {
+    File[$slurm::params::dbd_configfile] {
+      require => File[$slurm::configdir],
+      notify  => Service['slurmdbd'],
+    }
   }
 
   service { 'slurmdbd':
@@ -259,7 +269,6 @@ inherits slurm
     pattern    => $slurm::params::dbd_processname,
     hasrestart => $slurm::params::hasrestart,
     hasstatus  => $slurm::params::hasstatus,
-    require    => File[$slurm::params::dbd_configfile],
   }
   if defined(Class['slurm::slurmd']) {
     Service['slurmdbd'] -> Service['slurmd']
@@ -268,6 +277,9 @@ inherits slurm
     Service['slurmdbd'] -> Service['slurmctld']
   }
 
+  if $ensure == 'absent' {
+    Service['slurmdbd'] -> Class['slurm::install']
+  }
 
 
 
