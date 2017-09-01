@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 10:52 svarrette>
+# Time-stamp: <Fri 2017-09-01 12:06 svarrette>
 #
 # File::      <tt>config.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -16,7 +16,7 @@
 # - https://slurm.schedmd.com/topology.conf.html
 # - https://slurm.schedmd.com/cgroup.conf.html
 #
-class slurm::config { #}inherits slurm {
+class slurm::config {
 
   include ::slurm
   include ::slurm::params
