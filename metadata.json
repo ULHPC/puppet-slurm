@@ -1,6 +1,6 @@
 {
   "name": "ULHPC-slurm",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "UL HPC Team",
   "mail": "hpc-sysadmins@uni.lu",
   "summary": "Configure and manage Slurm: A Highly Scalable Resource Manager",
