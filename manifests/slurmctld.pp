@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-09-04 14:58 svarrette>
+# Time-stamp: <Mon 2017-09-04 21:25 svarrette>
 #
 # File::      <tt>slurmctld.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -49,24 +49,27 @@ class slurm::slurmctld inherits slurm
     }
   }
 
-  service { 'slurmctld':
-    ensure     => ($slurm::ensure == 'present'),
-    enable     => ($slurm::ensure == 'present'),
-    name       => $slurm::params::controller_servicename,
-    pattern    => $slurm::params::controller_processname,
-    hasrestart => $slurm::params::hasrestart,
-    hasstatus  => $slurm::params::hasstatus,
-  }
+  if $slurm::service_manage == true {
 
-  # if $slurm::ensure == 'present' {
-  #   Class['slurm::install'] ->
-  #   Class['slurm::config'] ->
-  #   Service['slurmctld']
-  # }
-  # else {
-  #   Service['slurmctld'] ->
-  #   Class['slurm::install'] ->
-  #   Class['slurm::config']
-  # }
+    service { 'slurmctld':
+      ensure     => ($slurm::ensure == 'present'),
+      enable     => ($slurm::ensure == 'present'),
+      name       => $slurm::params::controller_servicename,
+      pattern    => $slurm::params::controller_processname,
+      hasrestart => $slurm::params::hasrestart,
+      hasstatus  => $slurm::params::hasstatus,
+    }
+
+    # if $slurm::ensure == 'present' {
+      #   Class['slurm::install'] ->
+      #   Class['slurm::config'] ->
+      #   Service['slurmctld']
+      # }
+    # else {
+      #   Service['slurmctld'] ->
+      #   Class['slurm::install'] ->
+      #   Class['slurm::config']
+      # }
+  }
 
 }

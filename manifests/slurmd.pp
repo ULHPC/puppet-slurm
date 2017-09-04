@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 11:10 svarrette>
+# Time-stamp: <Mon 2017-09-04 21:24 svarrette>
 #
 # File::      <tt>slurmd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -32,17 +32,19 @@ class slurm::slurmd inherits slurm
     notify  +> Service['slurmd'],
   }
 
-  service { 'slurmd':
-    ensure     => ($slurm::ensure == 'present'),
-    enable     => ($slurm::ensure == 'present'),
-    name       => $slurm::params::servicename,
-    pattern    => $slurm::params::processname,
-    hasrestart => $slurm::params::hasrestart,
-    hasstatus  => $slurm::params::hasstatus,
-    require    => Class['::slurm::config'],
-  }
+  if $slurm::service_manage == true {
+    service { 'slurmd':
+      ensure     => ($slurm::ensure == 'present'),
+      enable     => ($slurm::ensure == 'present'),
+      name       => $slurm::params::servicename,
+      pattern    => $slurm::params::processname,
+      hasrestart => $slurm::params::hasrestart,
+      hasstatus  => $slurm::params::hasstatus,
+      require    => Class['::slurm::config'],
+    }
 
-  if ($slurm::with_slurmctld or defined(Class['slurm::slurmctld'])) {
-    Service['slurmctld'] -> Service['slurmd']
+    if ($slurm::with_slurmctld or defined(Class['slurm::slurmctld'])) {
+      Service['slurmctld'] -> Service['slurmd']
+    }
   }
 }

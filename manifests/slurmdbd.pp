@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-09-04 14:58 svarrette>
+# Time-stamp: <Mon 2017-09-04 21:26 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -201,9 +201,9 @@ inherits slurm
         undef   => template('slurm/slurmdbd.conf.erb'),
         default => $content,
       },
-    default => $content
+      default => $content
     },
-  default => $content,
+    default => $content,
   }
   $dbdconf_ensure = $target ? {
     undef   => $ensure,
@@ -244,21 +244,23 @@ inherits slurm
 
   }
 
-  service { 'slurmdbd':
-    ensure     => ($ensure == 'present'),
-    enable     => ($ensure == 'present'),
-    name       => $slurm::params::dbd_servicename,
-    pattern    => $slurm::params::dbd_processname,
-    hasrestart => $slurm::params::hasrestart,
-    hasstatus  => $slurm::params::hasstatus,
-  }
-  if $slurm::with_slurmd or defined(Class['slurm::slurmd']) {
-    Service['slurmdbd'] -> Service['slurmd']
-  }
-  if $slurm::with_slurmctld or defined(Class['slurm::slurmctld']) {
-    Service['slurmdbd'] -> Service['slurmctld']
-  }
+  if $slurm::service_manage == true {
+    service { 'slurmdbd':
+      ensure     => ($ensure == 'present'),
+      enable     => ($ensure == 'present'),
+      name       => $slurm::params::dbd_servicename,
+      pattern    => $slurm::params::dbd_processname,
+      hasrestart => $slurm::params::hasrestart,
+      hasstatus  => $slurm::params::hasstatus,
+    }
+    if $slurm::with_slurmd or defined(Class['slurm::slurmd']) {
+      Service['slurmdbd'] -> Service['slurmd']
+    }
+    if $slurm::with_slurmctld or defined(Class['slurm::slurmctld']) {
+      Service['slurmdbd'] -> Service['slurmctld']
+    }
 
+  }
 
 
 }

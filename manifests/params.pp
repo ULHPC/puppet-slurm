@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 11:23 svarrette>
+# Time-stamp: <Mon 2017-09-04 21:23 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -68,6 +68,10 @@ class slurm::params {
   $pluginsdir = 'plugstack.conf.d'
 
   $configdir_mode = '0755'
+
+  # The below directory (absolute path) is used as a target for synchronizing the
+  # Slurm configuration
+  $shared_configdir = ''
 
   # $configdir_owner = $::operatingsystem ? {
     #   default => 'root',
@@ -342,6 +346,8 @@ $topology_tree = {}
   $hasrestart = $::operatingsystem ? {
     default => true,
   }
+  # Whether to manage the slurm services
+  $service_manage = true
 
   ##########################################
   ### SLURM Sources and Building Process ###

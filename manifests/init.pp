@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 09:23 svarrette>
+# Time-stamp: <Mon 2017-09-04 21:24 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -65,13 +65,14 @@
 #          Top directory of the sources builds (i.e. RPMs, debs...)
 #          For instance, built RPMs will be placed under
 #          ${builddir}/RPMS/${::architecture}
-# @param build_with               [Array] Default: [ 'lua', ... ]
+# @param build_with               [Array]       Default: [ 'lua', ... ]
 #          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
 #          List of --with build options to pass to rpmbuild
-# @param build_without            [Array] Default: []
+# @param build_without            [Array]       Default: []
 #          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
 #          List of --without build options to pass to rpmbuild
-#
+# @param service_manage           [Boolean]     Default: true
+#          Whether to manage the slurm services.
 ########################                       ####################################
 ######################## slurm.conf attributes ####################################
 ########################                       ####################################
@@ -403,6 +404,7 @@ class slurm(
   $target                                 = undef,
   Boolean $manage_munge                   = $slurm::params::manage_munge,
   Boolean $manage_pam                     = $slurm::params::manage_pam,
+  Boolean $service_manage                 = $slurm::params::service_manage,
   Integer $uid                            = $slurm::params::uid,
   Integer $gid                            = $slurm::params::gid,
   String  $version                        = $slurm::params::version,
