@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 10:59 svarrette>
+# Time-stamp: <Mon 2017-09-04 14:58 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -33,36 +33,10 @@
 #          See also
 #          https://docs.puppet.com/puppet/latest/types/file.html#file-attribute-target
 #
-# @param ensure [String] Default: 'present'.
-#         Ensure the presence (or absence) of slurm
-#
-############################### Main system configs #######################################
-#
-# @param uid                      [Integer]     Default: 991
-# @param gid                      [Integer]     Default: as $uid
-# @param version                  [String]      Default: '17.02.7'
-# @param do_build                 [Boolean]     Default: true
-#          Do we perform the build of the Slurm packages from sources or not?
-# @param do_package_install       [Boolean]     Default: true
-#          Do we perform the install of the Slurm packages or not?
-# @param src_archived             [Boolean]     Default: false
-#          Whether the sources tar.bz2 has been archived or not.
-#          Thus by default, it is assumed that the provided version is the
-#          latest version (from https://www.schedmd.com/downloads/latest/).
-#          If set to true, the sources will be download from
-#             https://www.schedmd.com/downloads/archive/
-# @param src_checksum             [String]      Default: ''
-#           archive file checksum (match checksum_type)
-# @param srcdir                   [String]      Default: '/usr/local/src'
-#          Target directory for the downloaded sources
-# @param builddir                 [String]      Default: '/root/rpmbuild' on redhat systems
-#          Top directory of the sources builds (i.e. RPMs, debs...)
-#          For instance, built RPMs will be placed under
-#          <dir>/RPMS/${::architecture}
-#
 ########################                          ####################################
 ######################## slurmdbd.conf attributes ####################################
 ########################                          ####################################
+#
 # @param configdir          [String]      Default: '/etc/slurm'
 # @param authtype           [String]      Default: 'munge'
 #          Elligible values in [ 'none', 'munge' ]
@@ -170,6 +144,7 @@ inherits slurm
 
   include ::slurm::install
   include ::slurm::config
+  Class['slurm::install'] -> Class['slurm::config']
 
 
   # [Eventually] bootstrap the MySQL DB
@@ -186,7 +161,7 @@ inherits slurm
     if $storagehost != 'localhost' {
       $bind_setting = $ensure ? {
         'present' => '0.0.0.0',
-        default   => '127.0.0.0',
+        default   => '127.0.0.1',
       }
       ini_setting { "[mysqld]/bind-address = ${bind_setting}":
         ensure  => 'present',
@@ -202,7 +177,7 @@ inherits slurm
       password => $storagepass,
       host     => $dbdhost,
       grant    => ['ALL'],
-      before   => Service['slurmdbd'],
+      before   => File[$slurm::params::dbd_configfile],
     }
     # Eventually create the 'slurm'@'*' user with all rights
     unique([ $storagehost, $::hostname, $::fqdn]).each |String $host| {
@@ -214,7 +189,7 @@ inherits slurm
         table      => "${storageloc}.*",
         user       => "${storageuser}@${host}",
         require    => Mysql_user["${storageuser}@${host}"],
-        before     => Service['slurmdbd'],
+        before     => File[$slurm::params::dbd_configfile],
       }
     }
   }
@@ -260,6 +235,13 @@ inherits slurm
       require => File[$slurm::configdir],
       notify  => Service['slurmdbd'],
     }
+
+    # Ensure the cluster have been created
+    slurm::acct::cluster{ $slurm::clustername:
+      ensure  => $slurm::ensure,
+      require => Service['slurmdbd'],
+    }
+
   }
 
   service { 'slurmdbd':
@@ -270,15 +252,11 @@ inherits slurm
     hasrestart => $slurm::params::hasrestart,
     hasstatus  => $slurm::params::hasstatus,
   }
-  if defined(Class['slurm::slurmd']) {
+  if $slurm::with_slurmd or defined(Class['slurm::slurmd']) {
     Service['slurmdbd'] -> Service['slurmd']
   }
-  if defined(Class['slurm::slurmctld']) {
+  if $slurm::with_slurmctld or defined(Class['slurm::slurmctld']) {
     Service['slurmdbd'] -> Service['slurmctld']
-  }
-
-  if $ensure == 'absent' {
-    Service['slurmdbd'] -> Class['slurm::install']
   }
 
 
