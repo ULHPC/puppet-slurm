@@ -2,7 +2,7 @@
 
 # Slurm Puppet Module
 
-[![Puppet Forge](http://img.shields.io/puppetforge/v/slurm.svg)](https://forge.puppet.com/ULHPC/slurm) [![License](http://img.shields.io/:license-Apache2.0-blue.svg)](LICENSE) ![Supported Platforms](http://img.shields.io/badge/platform-centos-lightgrey.svg) [![Documentation Status](https://readthedocs.org/projects/ulhpc-puppet-slurm/badge/?version=latest)](https://readthedocs.org/projects/ulhpc-puppet-slurm/?badge=latest)
+[![Puppet Forge](http://img.shields.io/puppetforge/v/ULHPC/slurm.svg)](https://forge.puppet.com/ULHPC/slurm) [![License](http://img.shields.io/:license-Apache2.0-blue.svg)](LICENSE) ![Supported Platforms](http://img.shields.io/badge/platform-centos-lightgrey.svg) [![Documentation Status](https://readthedocs.org/projects/ulhpc-puppet-slurm/badge/?version=latest)](https://readthedocs.org/projects/ulhpc-puppet-slurm/?badge=latest)
 
 Configure and manage [Slurm](https://slurm.schedmd.com/): A Highly Scalable Resource Manager
 
@@ -56,6 +56,7 @@ All these components are configured through a set of variables you will find in 
 _Note_: the various operations that can be conducted from this repository are piloted from a [`Rakefile`](https://github.com/ruby/rake) and assumes you have a running [Ruby](https://www.ruby-lang.org/en/) installation.
 See `docs/contributing.md` for more details on the steps you shall follow to have this `Rakefile` working properly.
 
+**IMPORTANT** Until the release of version 1.0 (denoting a usage in production on the [UL HPC Platform](http://hpc.uni.lu)), this module is still to be considered in alpha state and a work in progress. Use it at your own risks!
 
 ### Setup Requirements
 
