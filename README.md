@@ -51,7 +51,7 @@ In addition, this puppet module implements several **private** classes:
 * `slurm::config[::{cgroup,gres,topology}]`: handles the various aspects of the configuration of SLURM daemons -- see <https://slurm.schedmd.com/slurm.conf.html#lbAN>
 * `slurm::plugins::lua`: takes care of the Job Submit plugin 'lua' i.e. of the file [`job_submit.lua`](https://github.com/SchedMD/slurm/blob/master/contribs/lua/job_submit.lua).
 
-All these components are configured through a set of variables you will find in [`manifests/params.pp`](manifests/params.pp).
+All these components are configured through a set of variables you will find in [`manifests/params.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/manifests/params.pp).
 
 _Note_: the various operations that can be conducted from this repository are piloted from a [`Rakefile`](https://github.com/ruby/rake) and assumes you have a running [Ruby](https://www.ruby-lang.org/en/) installation.
 See `docs/contributing.md` for more details on the steps you shall follow to have this `Rakefile` working properly.
@@ -74,7 +74,7 @@ By default, some key configuration decisions are configured, namely:
 
 ## Forge Module Dependencies
 
-See [`metadata.json`](metadata.json). In particular, this module depends on
+See [`metadata.json`](https://github.com/ULHPC/puppet-slurm/blob/devel/metadata.json). In particular, this module depends on
 
 * [puppetlabs/stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib)
 * [puppetlabs/mysql](https://forge.puppetlabs.com/puppetlabs/mysql)
@@ -90,14 +90,14 @@ See [`metadata.json`](metadata.json). In particular, this module depends on
 ### Class `slurm`
 
 This is the main class defined in this module.
-It accepts so many parameters that they are not listed here -- see the [puppet strings `@param`] comments of [`manifests/init.pp`](manifests/init.pp)
+It accepts so many parameters that they are not listed here -- see the [puppet strings `@param`] comments of [`manifests/init.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/manifests/init.pp)
 Use it as follows:
 
 ```ruby
 include ::slurm
 ```
 
-See also [`tests/init.pp`](tests/init.pp) or a more advanced usage (defining the network topology, the computing nodes and the SLURM partitions) in [`tests/advanced.pp`](tests/advanced.pp)
+See also [`tests/init.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/init.pp) or a more advanced usage (defining the network topology, the computing nodes and the SLURM partitions) in [`tests/advanced.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/advanced.pp)
 
 ### Class `slurm::slurmdbd`
 
@@ -121,7 +121,7 @@ class { '::slurm':
 
 See also [`tests/slurmdbd.pp`](tests/slurmdbd.pp)
 
-The `slurm::slurmdbd` accepts also so many parameters that they are not listed here -- see the [puppet strings `@param`] comments of [`manifests/slurmdbd.pp`](manifests/slurmddbd.pp) for more details
+The `slurm::slurmdbd` accepts also so many parameters that they are not listed here -- see the [puppet strings `@param`] comments of [`manifests/slurmdbd.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/manifests/slurmddbd.pp) for more details
 
 ### Class `slurm::slurmctld`
 
@@ -194,7 +194,7 @@ The `slurm::munge` class accepts the following parameters:
 * `create_key`   [Boolean] Default: true
    - Whether or not to generate a new key if it does not exists
 * `daemon_args`  [Array] Default: []
-   - Set the content of the DAEMON_ARGS variable, which permits to set additional command-line options to the daemon. For example, this can be used to override the location of the secret key (`--key-file`) or  set the number of worker threads (`--num-threads`) See <        https://github.com/dun/munge/wiki/Installation-Guide#starting-the-daemon>.
+   - Set the content of the DAEMON_ARGS variable, which permits to set additional command-line options to the daemon. For example, this can be used to override the location of the secret key (`--key-file`) or  set the number of worker threads (`--num-threads`) See <https://github.com/dun/munge/wiki/Installation-Guide#starting-the-daemon>.
 * `gid` [Integer] Default: 992
    - GID of the munge group
 * `key_content`  [String] Default: undef
