@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 19:04 svarrette>
+# Time-stamp: <Mon 2017-09-04 14:58 svarrette>
 #
 # File::      <tt>slurmctld.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -29,7 +29,7 @@ class slurm::slurmctld inherits slurm
     'present' => 'directory',
     default   => $slurm::ensure
   }
-  file { $slurmctld_libdir:
+  file { $slurm::params::slurmctld_libdir:
     ensure => $dir_ensure,
     owner  => $slurm::params::username,
     group  => $slurm::params::group,
