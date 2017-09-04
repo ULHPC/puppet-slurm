@@ -42,7 +42,7 @@ In particular, this module implements the following elements:
 | `slurm::download`          | takes care of downloading the SLURM sources for a given version  passed as resource name                       |
 | `slurm::build`             | building Slurm sources into packages (_i.e. RPMs for the moment) for a given version  passed as resource name  |
 | `slurm::install::packages` | installs the Slurm packages, typically built from `slurm::build`, for a given version passed as resource name. |
-|                            |                                                                                                                |
+| `slurm::acct::cluster`     | adding (or removing) a cluster to the slurm database                                                           |
 
 In addition, this puppet module implements several **private** classes:
 
@@ -56,7 +56,7 @@ All these components are configured through a set of variables you will find in 
 _Note_: the various operations that can be conducted from this repository are piloted from a [`Rakefile`](https://github.com/ruby/rake) and assumes you have a running [Ruby](https://www.ruby-lang.org/en/) installation.
 See `docs/contributing.md` for more details on the steps you shall follow to have this `Rakefile` working properly.
 
-**IMPORTANT** Until the release of version 1.0 (denoting a usage in production on the [UL HPC Platform](http://hpc.uni.lu)), this module is still to be considered in alpha state and a work in progress. Use it at your own risks!
+**IMPORTANT** Until the release of version 1.0 (denoting a usage in production on the [UL HPC Platform](http://hpc.uni.lu)), **this module is still to be considered in alpha state and a work in progress**. Use it at your own risks!
 
 ### Setup Requirements
 

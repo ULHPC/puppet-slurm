@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 19:02 svarrette>
+# Time-stamp: <Mon 2017-09-04 14:47 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -161,7 +161,7 @@ inherits slurm
     if $storagehost != 'localhost' {
       $bind_setting = $ensure ? {
         'present' => '0.0.0.0',
-        default   => '127.0.0.0',
+        default   => '127.0.0.1',
       }
       ini_setting { "[mysqld]/bind-address = ${bind_setting}":
         ensure  => 'present',
@@ -235,6 +235,13 @@ inherits slurm
       require => File[$slurm::configdir],
       notify  => Service['slurmdbd'],
     }
+
+    # Ensure the cluster have been created
+    slurm::acct::cluster{ $slurm::clustername:
+      ensure  => $slurm::ensure,
+      require => Service['slurmdbd']
+    }
+
   }
 
   service { 'slurmdbd':
@@ -251,8 +258,6 @@ inherits slurm
   if $slurm::with_slurmctld or defined(Class['slurm::slurmctld']) {
     Service['slurmdbd'] -> Service['slurmctld']
   }
-
-
 
 
 

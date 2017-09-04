@@ -18,6 +18,7 @@
 node default {
   include ::slurm::params
 
+  $clustername = 'thor'
   # Example of the topology tree
   $tree = {
     's0' => { nodes => 'dev[0-5]'   },
@@ -51,6 +52,7 @@ node default {
 
   # Let's go, all-in-one run
   class { '::slurm':
+    clustername    => $clustername,
     with_slurmdbd  => true,
     with_slurmctld => true,
     topology       => 'tree',
