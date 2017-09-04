@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 15:17 svarrette>
+# Time-stamp: <Fri 2017-09-01 19:01 svarrette>
 #
 # File::      <tt>install/packages.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -136,7 +136,7 @@ define slurm::install::packages(
     }
   }
   else {
-    notice($cmd)
+    #notice($cmd)
     exec { "uninstall-slurm*${version}*":
       path    => '/sbin:/usr/bin:/usr/sbin:/bin',
       command => $cmd,

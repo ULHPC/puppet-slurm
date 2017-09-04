@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 11:50 svarrette>
+# Time-stamp: <Fri 2017-09-01 16:40 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -73,6 +73,9 @@ class slurm::common {
       key_source   => $slurm::munge_key_source,
       key_content  => $slurm::munge_key_content,
       key_filename => $slurm::munge_key_filename,
+    }
+    if $slurm::ensure == 'absent' and $slurm::do_package_install {
+      Slurm::Install::Packages[$slurm::version] -> Class['slurm::munge']
     }
   }
 

@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 10:56 svarrette>
+# Time-stamp: <Fri 2017-09-01 19:04 svarrette>
 #
 # File::      <tt>slurmctld.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -25,11 +25,28 @@ class slurm::slurmctld inherits slurm
     default:  { fail("Module ${module_name} is not supported on ${::operatingsystem}") }
   }
 
+  $dir_ensure = $slurm::ensure ? {
+    'present' => 'directory',
+    default   => $slurm::ensure
+  }
+  file { $slurmctld_libdir:
+    ensure => $dir_ensure,
+    owner  => $slurm::params::username,
+    group  => $slurm::params::group,
+    mode   => $slurm::params::configdir_mode,
+    force  => true,
+    before => File[$slurm::configdir],
+  }
+
   include ::slurm::install
   include ::slurm::config
+  Class['slurm::install'] -> Class['slurm::config']
 
-  File <| tag == 'slurm::configfile' |> {
-    notify  +> Service['slurmctld'],
+  if $slurm::ensure == 'present' {
+    File <| tag == 'slurm::configfile' |> {
+      require => File[$slurm::configdir],
+      notify  +> Service['slurmctld'],
+    }
   }
 
   service { 'slurmctld':
@@ -39,6 +56,17 @@ class slurm::slurmctld inherits slurm
     pattern    => $slurm::params::controller_processname,
     hasrestart => $slurm::params::hasrestart,
     hasstatus  => $slurm::params::hasstatus,
-    require    => Class['::slurm::config'],
   }
+
+  # if $slurm::ensure == 'present' {
+  #   Class['slurm::install'] ->
+  #   Class['slurm::config'] ->
+  #   Service['slurmctld']
+  # }
+  # else {
+  #   Service['slurmctld'] ->
+  #   Class['slurm::install'] ->
+  #   Class['slurm::config']
+  # }
+
 }
