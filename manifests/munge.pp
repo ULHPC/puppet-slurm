@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 11:25 svarrette>
+# Time-stamp: <Tue 2017-09-05 10:49 svarrette>
 #
 # File::      <tt>munge.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -85,11 +85,15 @@ inherits slurm::params
     ensure => $ensure,
     name   => $slurm::params::munge_package,
   }
-  package { $slurm::params::munge_extra_packages:
-    ensure  => $ensure,
-    require => Package['munge'],
+  $slurm::params::munge_extra_packages.each |String $pkg| {
+    # Safeguard to avoid incompatibility with other puppet modules
+    if (!defined(Package[$pkg])) {
+      package { $slurm::params::munge_extra_packages:
+        ensure  => $ensure,
+        require => Package['munge'],
+      }
+    }
   }
-
   # Prepare the user and group
   group { 'munge':
     ensure => $ensure,

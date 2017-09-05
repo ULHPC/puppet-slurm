@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 16:40 svarrette>
+# Time-stamp: <Tue 2017-09-05 10:47 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -18,7 +18,7 @@ class slurm::common {
   require ::slurm::params
 
   # Install preliminary packages
-  $required_pkgs = concat($slurm::params::pre_requisite_packages, $slurm::params::extra_packages)
+  $required_pkgs = concat($slurm::params::pre_requisite_packages, $slurm::params::extra_packages, $slurm::params::munge_extra_packages)
   $required_pkgs.each |String $pkg| {
     # Safeguard to avoid incompatibility with other puppet modules
     if (!defined(Package[$pkg])) {
