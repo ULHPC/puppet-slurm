@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-09-05 17:09 svarrette>
+# Time-stamp: <Tue 2017-09-05 17:14 svarrette>
 #
 # File::      <tt>repo.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -93,11 +93,10 @@ inherits slurm::params
   }
 
   if $ensure == 'present' {
-    exec { "mkdir -p ${real_path}":
+    exec { "mkdir -p ${real_path} && chown ${user}: ${real_path}":
       path   => '/sbin:/usr/bin:/usr/sbin:/bin',
       unless => "test -d ${real_path}",
       before => Vcsrepo[$real_path],
-      user   => $real_user,
     }
   }
   else {
