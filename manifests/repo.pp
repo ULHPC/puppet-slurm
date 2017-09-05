@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-09-05 17:14 svarrette>
+# Time-stamp: <Tue 2017-09-05 17:24 svarrette>
 #
 # File::      <tt>repo.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -63,7 +63,6 @@ class slurm::repo(
   String $provider = 'git',
   String $basedir  = $slurm::params::repo_basedir,
   String $path     = '',
-  String $user     = '',
   $source          = undef,
   String $branch   = 'HEAD',
   String $syncscript = ''
@@ -84,19 +83,29 @@ inherits slurm::params
     ''      => "${basedir}/${institute}/${reponame}",
     default => $path,
   }
-  $real_user = empty($user) ? {
-    true    => defined(Class[::slurm]) ? {
-      true    => $slurm::username,
-      default => 'root',
-    },
-    default => $user,
+  $user = defined(Class[::slurm]) ? {
+    true    => $slurm::username,
+    default => 'root',
+  }
+  $group = defined(Class[::slurm]) ? {
+    true    => $slurm::group,
+    default => 'root',
   }
 
+
   if $ensure == 'present' {
-    exec { "mkdir -p ${real_path} && chown ${user}: ${real_path}":
+    exec { "mkdir -p ${real_path}":
       path   => '/sbin:/usr/bin:/usr/sbin:/bin',
       unless => "test -d ${real_path}",
-      before => Vcsrepo[$real_path],
+      before => File[$real_path],
+    }
+    if !defined(File[$real_path]) {
+      file { $real_path:
+        ensure => 'directory',
+        owner  => $user,
+        group  => $group,
+        mode   => $slurm::params::configdir_mode,
+      }
     }
   }
   else {
@@ -105,7 +114,6 @@ inherits slurm::params
       force  => true,
     }
   }
-
   # notice($source)
   # notice($real_path)
 
@@ -113,10 +121,10 @@ inherits slurm::params
     ensure   => $ensure,
     provider => $provider,
     source   => $source,
-    user     => $real_user,
+    user     => $user,
     revision => $branch,
   }
 
 
 
-  }
+}
