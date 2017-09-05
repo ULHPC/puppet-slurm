@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-09-04 21:25 svarrette>
+# Time-stamp: <Tue 2017-09-05 10:38 svarrette>
 #
 # File::      <tt>slurmctld.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -45,11 +45,14 @@ class slurm::slurmctld inherits slurm
   if $slurm::ensure == 'present' {
     File <| tag == 'slurm::configfile' |> {
       require => File[$slurm::configdir],
-      notify  +> Service['slurmctld'],
     }
   }
 
   if $slurm::service_manage == true {
+
+    File <| tag == 'slurm::configfile' |> {
+      notify  +> Service['slurmctld'],
+    }
 
     service { 'slurmctld':
       ensure     => ($slurm::ensure == 'present'),
