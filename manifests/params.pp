@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-09-04 21:23 svarrette>
+# Time-stamp: <Tue 2017-09-05 16:42 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -72,6 +72,9 @@ class slurm::params {
   # The below directory (absolute path) is used as a target for synchronizing the
   # Slurm configuration
   $shared_configdir = ''
+
+  # Where the [git] control repository will be cloned
+  $repo_basedir = '/usr/local/src/git'
 
   # $configdir_owner = $::operatingsystem ? {
     #   default => 'root',
