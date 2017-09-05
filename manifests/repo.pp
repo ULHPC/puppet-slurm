@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-09-05 17:24 svarrette>
+# Time-stamp: <Tue 2017-09-05 17:29 svarrette>
 #
 # File::      <tt>repo.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -105,11 +105,12 @@ inherits slurm::params
         owner  => $user,
         group  => $group,
         mode   => $slurm::params::configdir_mode,
+        before => Vcsrepo[$real_path],
       }
     }
   }
   else {
-    file { $real_path:
+    file { "${basedir}/${institute}":
       ensure => $ensure,
       force  => true,
     }
