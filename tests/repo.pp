@@ -7,7 +7,8 @@ node default {
 
   class { '::slurm::repo':
     ensure => 'present',
-    source => 'ssh://git@github.com/ULHPC/slurm-control.git',
+    source => 'https://github.com/SchedMD/slurm.git',
+    #'ssh://git@github.com/ULHPC/slurm-control.git',
   }
 
 }

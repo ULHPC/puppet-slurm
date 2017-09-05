@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-09-05 16:47 svarrette>
+# Time-stamp: <Tue 2017-09-05 17:09 svarrette>
 #
 # File::      <tt>repo.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -63,7 +63,7 @@ class slurm::repo(
   String $provider = 'git',
   String $basedir  = $slurm::params::repo_basedir,
   String $path     = '',
-  String $user     = $slurm::params::username,
+  String $user     = '',
   $source          = undef,
   String $branch   = 'HEAD',
   String $syncscript = ''
@@ -84,6 +84,29 @@ inherits slurm::params
     ''      => "${basedir}/${institute}/${reponame}",
     default => $path,
   }
+  $real_user = empty($user) ? {
+    true    => defined(Class[::slurm]) ? {
+      true    => $slurm::username,
+      default => 'root',
+    },
+    default => $user,
+  }
+
+  if $ensure == 'present' {
+    exec { "mkdir -p ${real_path}":
+      path   => '/sbin:/usr/bin:/usr/sbin:/bin',
+      unless => "test -d ${real_path}",
+      before => Vcsrepo[$real_path],
+      user   => $real_user,
+    }
+  }
+  else {
+    file { $real_path:
+      ensure => $ensure,
+      force  => true,
+    }
+  }
+
   # notice($source)
   # notice($real_path)
 
@@ -91,10 +114,10 @@ inherits slurm::params
     ensure   => $ensure,
     provider => $provider,
     source   => $source,
-    user     => $user,
+    user     => $real_user,
     revision => $branch,
   }
 
 
 
-}
+  }
