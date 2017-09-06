@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-09-04 21:24 svarrette>
+# Time-stamp: <Wed 2017-09-06 18:35 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -79,6 +79,12 @@
 # @param configdir                [String]      Default: '/etc/slurm'
 # @param clustername              [String]      Default: 'cluster'
 #          The name by which this Slurm managed cluster is known in the accounting database
+#
+# @param acct_gatherenergytype    [String]   Default: 'none'
+#          Identifies the plugin to be used for energy consumption accounting
+#          Elligible values in [ 'none', 'ipmi', 'rapl' ]
+# @paraù acct_storageenforce      [Array]       Default: ['qos', 'limits', 'associations']
+#          What level of association-based enforcement to impose on job submissions.
 # @param authtype                 [String]      Default: 'munge'
 #          Elligible values in [ 'none', 'munge' ]
 # @param authinfo                 [String]      Default: ''
@@ -425,6 +431,7 @@ class slurm(
   # Main configuration paramaters
   #
   Array   $acct_storageenforce            = $slurm::params::acct_storageenforce,
+  String  $acct_gatherenergytype          = $slurm::params::acct_gatherenergytype,
   String  $configdir                      = $slurm::params::configdir,
   String  $clustername                    = $slurm::params::clustername,
   String  $authtype                       = $slurm::params::authtype,

@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-09-05 17:29 svarrette>
+# Time-stamp: <Wed 2017-09-06 18:44 svarrette>
 #
 # File::      <tt>repo.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -50,22 +50,32 @@
 #          Typically a Git repository URL or a hash of remotename => URL mappings
 # @param branch       [String]  Default: 'HEAD'
 #          The branch/revision to pull
+# @param linkdir      [String]  Default: ''
+#          An Optional link to create pointing to the working copy of the repository (Ex: "/etc/slurm-${slurm::clustername}")
 #
 # @example Clone the SLURM control repository into '/usr/local/src/git/ULHPC/slurm'
-#
+# # Create the SSH key, using for instance the maestrodev/ssh_keygen module
+# ssh_keygen { $slurm::username:
+  #    comment => "${slurm::username}@${::fqdn}",
+  #    home    => $slurm::params::home,
+  #  }
+# # /!\ Render the host key known globally using sshkey { ... }
+# # Now you can expect the clone to work
 # class { 'slurm::repo':
   #     ensure => 'present',
   #     source => 'ssh://git@gitlab.uni.lu:8022/ULHPC/slurm.git',
   #  }
 #
 class slurm::repo(
-  String $ensure   = $slurm::params::ensure,
-  String $provider = 'git',
-  String $basedir  = $slurm::params::repo_basedir,
-  String $path     = '',
-  $source          = undef,
-  String $branch   = 'HEAD',
-  String $syncscript = ''
+  String $ensure     = $slurm::params::ensure,
+  String $provider   = 'git',
+  String $basedir    = $slurm::params::repo_basedir,
+  String $path       = '',
+  $source            = undef,
+  String $branch     = 'HEAD',
+  String $syncscript = '',
+  String $linkdir    = '',
+
 )
 inherits slurm::params
 {
@@ -126,6 +136,15 @@ inherits slurm::params
     revision => $branch,
   }
 
-
+  if !empty($linkdir) {
+    $link_ensure = $ensure ? {
+      'present' => 'link',
+      default   => $ensure
+    }
+    file { $linkdir:
+      ensure => $link_ensure,
+      target => $real_path,
+    }
+  }
 
 }

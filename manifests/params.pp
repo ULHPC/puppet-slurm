@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-09-05 16:42 svarrette>
+# Time-stamp: <Wed 2017-09-06 11:45 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -132,6 +132,7 @@ class slurm::params {
 
   # What level of association-based enforcement to impose on job submissions
   $acct_storageenforce     = ['qos', 'limits', 'associations']
+  $acct_gatherenergytype   = 'none'
   $batchstarttimeout       = 10
   $checkpointtype          = 'none'  # in ['blcr', 'none', 'ompi', 'poe']
   $completewait            = 0
