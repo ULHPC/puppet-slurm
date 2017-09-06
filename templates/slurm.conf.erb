@@ -447,5 +447,7 @@ NodeName=<%= name.ljust(12) %> <%= content %>
 <%       content << ' Default=YES' if (!v['default'].nil? and v['default'] and content != /Default=/) -%>
 <%       content << ' Hidden=YES'  if (!v['hidden'].nil?  and v['hidden']  and content != /Hidden=/) -%>
 <%    end -%>
+<%    unless content.empty? -%>
 PartitionName=<%= name.ljust(12)  %> <%= content %>
+<%    end -%>
 <% end -%>
