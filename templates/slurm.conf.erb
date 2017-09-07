@@ -438,16 +438,23 @@ NodeName=<%= name.ljust(12) %> <%= content %>
 # - Priority/preemption
 ###
 <% scope['slurm::partitions'].each do |name, v| -%>
-<%    content = v.is_a?(Hash) ? v['content'] : v -%>
+<%    content = v.is_a?(Hash) ? '' : v -%>
 <%    if v.is_a?(Hash) -%>
 <%       comment = v['comment'] ?  v['comment'] : "#{name} partition" -%>
 <%       comment << " - Priority: #{v['priority']}" if v['priority']  -%>
 <%       comment << "; preempt '#{v['preempt']}'"   if v['preempt']   -%>
 # <%= comment %>
-<%       content << ' Default=YES' if (!v['default'].nil? and v['default'] and content != /Default=/) -%>
-<%       content << ' Hidden=YES'  if (!v['hidden'].nil?  and v['hidden']  and content != /Hidden=/) -%>
+<%       content << "Nodes=#{v['nodes']} " unless v['nodes'].nil? -%>
+<%       content << v['content'] unless v['content'].nil? -%>
+<%       content << ' Default=YES' if (!v['default'].nil? and v['default'] and content !~ /Default=/) -%>
+<%       content << ' Hidden=YES'  if (!v['hidden'].nil?  and v['hidden']  and content !~ /Hidden=/) -%>
+<%       content << " State=#{v['state']}" unless v['state'].nil? -%>
+<%       content << " AllowAccounts=#{v['allowaccounts'].is_a?(Array) ? v['allowaccounts'].join(',') : v['allowaccounts']}" unless v['allowaccounts'].nil? -%>
+<%       content << " AllowGroups=#{v['allowgroups'].is_a?(Array) ? v['allowgroups'].join(',') : v['allowgroups']}" unless v['allowgroups'].nil? -%>
+<%       content << " AllowQos=#{v['allowqos'].is_a?(Array) ? v['allowqos'].join(',') : v['allowqos']}" unless v['allowqos'].nil? -%>
+<%       content << ' DisableRootJobs=YES'  if (!v['disablerootjobs'].nil?  and v['disablerootjobs']  and content !~ /DisableRootJobs=/) -%>
 <%    end -%>
-<%    unless content.empty? -%>
+<%    unless (content.nil? or content.empty?) -%>
 PartitionName=<%= name.ljust(12)  %> <%= content %>
 <%    end -%>
 <% end -%>
