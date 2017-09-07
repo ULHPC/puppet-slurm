@@ -452,7 +452,7 @@ NodeName=<%= name.ljust(12) %> <%= content %>
 <%       content << " State=#{v['state']}" unless (v['state'].nil? or content =~ /State=/) -%>
 <%       content << " AllowAccounts=#{v['allowaccounts'].is_a?(Array) ? v['allowaccounts'].join(',') : v['allowaccounts']}" if v['allowaccounts'] -%>
 <%       content << " AllowGroups=#{v['allowgroups'].is_a?(Array) ? v['allowgroups'].join(',') : v['allowgroups']}" if v['allowgroups'] -%>
-<%       content << " AllowQos=#{v['allowqos']is_a?(Array) ? v['allowqos'].join(',') : v['allowqos']}"      if v['allowqos'] -%>
+<%       content << " AllowQos=#{v['allowqos'].is_a?(Array) ? v['allowqos'].join(',') : v['allowqos']}"      if v['allowqos'] -%>
 <%       content << ' DisableRootJobs=YES'  if (!v['disablerootjobs'].nil?  and v['disablerootjobs']  and content !~ /DisableRootJobs=/) -%>
 <%    end -%>
 <%    unless (content.nil? or content.empty?) -%>
