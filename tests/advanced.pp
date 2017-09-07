@@ -28,6 +28,10 @@ node default {
   # Definition of the partitions
   $partitions = {
     'DEFAULT' => 'State=UP AllowGroups=clusterusers AllowAccounts=ALL DisableRootJobs=YES OverSubscribe=NO',
+    'interactive' => {
+      priority => 50,
+      nodes    => 'iris-[081-090]',
+    },
     'admin' => {
       priority => 100,
       hidden => true,
@@ -38,29 +42,44 @@ node default {
       content => 'DefaultTime=0-10:00:00 MaxTime=5-00:00:00 MaxNodes=UNLIMITED',
     },
     'batch' => {
-      priority => 20,
+      priority => 50,
       nodes => 'iris-[001-080]',
       allowqos => [ 'qos-besteffort', 'qos-batch', 'qos-batch-001' ],
       content => 'DefaultTime=0-10:00:00 MaxTime=5-00:00:00 MaxNodes=UNLIMITED',
     },
   }
+  $qos = {
+    'qos-besteffort' => { priority =>  0, },
+    'qos-batch' => {
+      priority => 100,
+      preempt  => 'qos-besteffort',
+      grpnodes => 30,
+    },
+    'qos-interactive' => {
+      preempt  => 'qos-besteffort',
+      grpnodes => 8,
+    },
+    'qos-long' => {
+      preempt  => 'qos-besteffort',
+      grpnodes => 8,
+    },
+    'qos-batch-001' => 'Priority=100 Preempt=qos-besteffort GrpNodes=50 flags=OverPartQOS',
+  }
 
   # Let's go, all-in-one run
   class { '::slurm':
     clustername    => $clustername,
-    with_slurmdbd  => true,
-    with_slurmctld => true,
-    topology       => 'tree',
-    topology_tree  => $tree,
-    nodes          => $nodes,
+    # with_slurmdbd  => true,
+    # with_slurmctld => true,
+    # topology       => 'tree',
+    # topology_tree  => $tree,
+    # nodes          => $nodes,
     partitions     => $partitions,
+    qos            => $qos,
     service_manage => false,
   }
 
-  slurm::acct::mgr{ 'qos-interactive':
-    entity => 'qos',
-    options => {
-      'priority' => 1,
-    }
-  }
+  notice(inline_template("<%= scope['slurm::qos'].to_yaml %>"))
+  include ::slurm::accounting
+
 }

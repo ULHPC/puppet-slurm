@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-09-06 11:45 svarrette>
+# Time-stamp: <Thu 2017-09-07 18:10 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -273,7 +273,8 @@ $topology_tree = {}
     #     priority      => n           # QoS priority (default: 0)
     #     preempt       => 'qos-<name>
     # }
-  $partitions              = {}
+  $partitions = {}
+  $qos        = {}
 
   ###
   ### Cgroup support -- cgroup.conf

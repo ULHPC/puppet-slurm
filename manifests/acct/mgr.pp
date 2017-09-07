@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-09-07 14:50 svarrette>
+# Time-stamp: <Thu 2017-09-07 19:31 svarrette>
 #
 # File::      <tt>acct/mgr.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -42,7 +42,7 @@ define slurm::acct::mgr(
   String $ensure  = $slurm::params::ensure,
   String $entity  = '',
   String $value   = '',
-  Hash   $options = {},
+  $options        = undef,
 )
 {
   include ::slurm
@@ -71,9 +71,15 @@ define slurm::acct::mgr(
     true    => $name,
     default => $value
   }
-  $cmd_options = empty($options) ? {
-    true    => '',
-    default => $options.map |$k, $v| { join([ camelcase($k), $v ], '=') },
+  $cmd_options = ($options == undef) ? {
+    true    => [],
+    default => $options.map |$k, $v| {
+      $key = ($k =~ /[A-Z]/) ? {
+        true    => $k,
+        default => camelcase($k),
+      }
+      join([ $key, $v ], '=')
+    },
   }
   $opts = join($cmd_options, ' ')
   case $ensure {

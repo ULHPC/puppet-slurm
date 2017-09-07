@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-09-06 18:35 svarrette>
+# Time-stamp: <Thu 2017-09-07 18:18 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -505,6 +505,7 @@ class slurm(
   String  $prologslurmctld                = $slurm::params::prologslurmctld,
   Array   $propagateresourcelimits        = $slurm::params::propagateresourcelimits,
   Array   $propagateresourcelimits_except = $slurm::params::propagateresourcelimits_except,
+  Hash    $qos                            = $slurm::params::qos,
   Integer $returntoservice                = $slurm::params::returntoservice,
   String  $schedulertype                  = $slurm::params::schedulertype,
   String  $selecttype                     = $slurm::params::selecttype,

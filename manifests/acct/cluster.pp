@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-09-07 14:56 svarrette>
+# Time-stamp: <Thu 2017-09-07 15:00 svarrette>
 #
 # File::      <tt>acct/cluster.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -14,7 +14,7 @@
 # The name of this resource is expected to be the cluster name.
 #
 # @param ensure [String]  Default: 'present'
-#          Ensure the presence (or absence) of the cluster
+#          Ensure the presence (or absence) of the entity
 # @param options [Hash] Default: {}
 #          Specification options -- see https://slurm.schedmd.com/sacctmgr.html
 #          Elligible keys:  # Classification, Cluster, ClusterNodes,
