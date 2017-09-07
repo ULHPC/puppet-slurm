@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-09-05 10:40 svarrette>
+# Time-stamp: <Thu 2017-09-07 10:20 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -234,16 +234,15 @@ inherits slurm
     File[$slurm::params::dbd_configfile] {
       require => File[$slurm::configdir],
     }
+  }
+
+  if $slurm::service_manage == true {
 
     # Ensure the cluster have been created
     slurm::acct::cluster{ $slurm::clustername:
       ensure  => $slurm::ensure,
       require => Service['slurmdbd'],
     }
-
-  }
-
-  if $slurm::service_manage == true {
 
     File[$slurm::params::dbd_configfile] {
       notify  => Service['slurmdbd'],

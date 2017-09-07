@@ -19,7 +19,7 @@ node default {
   }
   # Definition of the nodes
   $nodes = {
-    'DEFAULT'    => {
+    'DEFAULT' => {
       comment => 'Test',
       content => 'CPUs=1 Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=512 State=UP', },
     'access'     => 'CPUs=2 Sockets=1 CoresPerSocket=2 ThreadsPerCore=1 State=UNKNOWN',
@@ -27,14 +27,21 @@ node default {
   }
   # Definition of the partitions
   $partitions = {
-    'interactive' => {
-      content  => 'Nodes=thor-1 State=UP DefaultTime=0-10:00:00 MaxTime=5-00:00:00 DisableRootJobs=YES ',
-      priority => 0, },
-    'batch'       => {
-      content => 'Nodes=thor-[2-3]  State=UP  DefaultTime=0-2:00:00 MaxTime=5-00:00:00 DisableRootJobs=YES',
+    'DEFAULT' => 'State=UP AllowGroups=clusterusers AllowAccounts=ALL DisableRootJobs=YES OverSubscribe=NO',
+    'admin' => {
       priority => 100,
-      preempt  => 'qos-interactive',
-      #default  => true,
+      hidden => true,
+      nodes => 'iris-[001-100]',
+      allowaccounts => 'ulhpc',
+      allowgroups => 'project_sysadmins',
+      allowqos => 'qos-admin',
+      content => 'DefaultTime=0-10:00:00 MaxTime=5-00:00:00 MaxNodes=UNLIMITED',
+    },
+    'batch' => {
+      priority => 20,
+      nodes => 'iris-[001-080]',
+      allowqos => [ 'qos-besteffort', 'qos-batch', 'qos-batch-001' ],
+      content => 'DefaultTime=0-10:00:00 MaxTime=5-00:00:00 MaxNodes=UNLIMITED',
     },
   }
 
@@ -47,5 +54,6 @@ node default {
     topology_tree  => $tree,
     nodes          => $nodes,
     partitions     => $partitions,
+    service_manage => false,
   }
 }
