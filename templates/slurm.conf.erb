@@ -437,7 +437,6 @@ NodeName=<%= name.ljust(12) %> <%= content %>
 # - Sharing
 # - Priority/preemption
 ###
-<%= scope['slurm::partitions'].to_yaml %>
 <% scope['slurm::partitions'].each do |name, v| -%>
 <%    content = v.is_a?(Hash) ? '' : v -%>
 <%    if v.is_a?(Hash) -%>

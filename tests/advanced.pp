@@ -56,4 +56,11 @@ node default {
     partitions     => $partitions,
     service_manage => false,
   }
+
+  slurm::acct::mgr{ 'qos-interactive':
+    entity => 'qos',
+    options => {
+      'priority' => 1,
+    }
+  }
 }

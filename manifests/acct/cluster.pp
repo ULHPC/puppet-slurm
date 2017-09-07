@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-09-04 14:44 svarrette>
+# Time-stamp: <Thu 2017-09-07 14:56 svarrette>
 #
 # File::      <tt>acct/cluster.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -15,6 +15,14 @@
 #
 # @param ensure [String]  Default: 'present'
 #          Ensure the presence (or absence) of the cluster
+# @param options [Hash] Default: {}
+#          Specification options -- see https://slurm.schedmd.com/sacctmgr.html
+#          Elligible keys:  # Classification, Cluster, ClusterNodes,
+#                             ControlHost, ControlPort, DefaultQOS,
+#                             Fairshare, Flags, GrpTRESMins, GrpTRES GrpJobs,
+#                             GrpMemory, GrpNodes, GrpSubmitJob, MaxTRESMins,
+#                             MaxTRES, MaxJobs, MaxNodes, MaxSubmitJobs,
+#                             MaxWall, NodeCount, PluginIDSelect, RPC, TRES
 #
 # @example Adding the cluster 'thor' to Slurm
 #
@@ -22,42 +30,19 @@
   #     ensure    => 'present',
   #   }
 #
+# TODO/ from the manpage, we can provide the following options to this definition
+#
 #
 define slurm::acct::cluster(
-  String  $ensure = $slurm::ensure,
+  String  $ensure  = $slurm::ensure,
+  Hash    $options = {}
 )
 {
-  include ::slurm
-  include ::slurm::params
   validate_legacy('String',  'validate_re',   $ensure, ['^present', '^absent'])
-
-  # $name is provided at define invocation
-  $clustername = $name
-
-  $action = $ensure ? {
-    'absent' => 'del',
-    default  => 'add',
-  }
-
-  case $ensure {
-    'absent': {
-      $label        = "delete-${clustername}"
-      $cmd          = "sacctmgr -i del cluster ${clustername}"
-      $check_onlyif = undef
-      $check_unless = undef
-    }
-    default: {
-      $label        = "add-${clustername}"
-      $cmd          = "sacctmgr -i add cluster ${clustername}"
-      $check_onlyif = 'test -z "$(sacctmgr --noheader -p list cluster)"'
-      $check_unless = "test -n \"$(sacctmgr --noheader -p list cluster | grep ${clustername})\""
-    }
-  }
-  #notice($cmd)
-  exec { $label:
-    path    => '/sbin:/usr/bin:/usr/sbin:/bin',
-    command => $cmd,
-    onlyif  => $check_onlyif,
-    unless  => $check_unless,
+  slurm::acct::mgr { "cluster/${name}":
+    ensure  => $ensure,
+    entity  => 'cluster',
+    value   => $name,
+    options => $options
   }
 }
