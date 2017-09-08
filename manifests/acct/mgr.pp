@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-09-07 19:31 svarrette>
+# Time-stamp: <Fri 2017-09-08 14:31 svarrette>
 #
 # File::      <tt>acct/mgr.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -34,14 +34,18 @@
 #                                'wckeys', ]
 # @param value   [String]
 #          Value to associate to the entity. Uses $name by default
-# @param options [Hash] Default: {}
-#          Specification options -- depends on the entity
+# @param content   [String]    Default: ''
+#          Eventual content as a string for the specifications of the entity.
+#          You probably SHOULDN'T mix this with the options
+# @param options     [Hash]    Default: {}
+#          Specification options, preferably as a hash -- depends on the entity
 #          See https://slurm.schedmd.com/sacctmgr.html
 #
 define slurm::acct::mgr(
   String $ensure  = $slurm::params::ensure,
   String $entity  = '',
   String $value   = '',
+  String $content = '',
   $options        = undef,
 )
 {
@@ -72,16 +76,27 @@ define slurm::acct::mgr(
     default => $value
   }
   $cmd_options = ($options == undef) ? {
-    true    => [],
-    default => $options.map |$k, $v| {
-      $key = ($k =~ /[A-Z]/) ? {
-        true    => $k,
-        default => camelcase($k),
-      }
-      join([ $key, $v ], '=')
-    },
+    true    => [ ],
+    default => ($options.is_a(String) or $options.is_a(Array)) ? {
+      true    => flatten([ $options ]),
+      default => $options.map |$k, $v| {
+        $key = ($k =~ /[A-Z]/) ? {
+          true    => $k,
+          default => camelcase($k),
+        }
+        if ($k == 'content') {
+          $v
+        }
+        else {
+          join([ $key, $v ], '=')
+        }
+      },
+    }
   }
-  $opts = join($cmd_options, ' ')
+  $opts = empty($content) ? {
+    true    => join($cmd_options, ' '),
+    default => join(concat($content, $cmd_options), ' '),
+  }
   case $ensure {
     'absent': {
       $label        = "$delete-${entity}-${real_name}"

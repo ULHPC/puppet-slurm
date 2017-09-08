@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-09-07 18:32 svarrette>
+# Time-stamp: <Fri 2017-09-08 11:39 svarrette>
 #
 # File::      <tt>acct/qos.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -17,10 +17,10 @@
 # and a working SLURMDBD.
 # The name of this resource is expected to be the qos name.
 #
-# @param ensure      [String]  Default: 'present'
+# @param ensure      [String]            Default: 'present'
 #          Ensure the presence (or absence) of the entity
-# @param priority    [Integer] Default: 0
-# @param options     [Hash] Default: {}
+# @param priority    [Integer]           Default: 0
+# @param options     [Hash]              Default: {}
 #          Specification options -- see https://slurm.schedmd.com/sacctmgr.html
 #          Elligible keys:  Description=, Flags=, GraceTime=, GrpJobs=,
 #                           GrpSubmitJob=, GrpTRES=, GrpTRESMins=, GrpWall=,
@@ -31,14 +31,23 @@
 #
 # @example Adding the qos 'qos-interactive' to Slurm
 #
-#     slurm::acct::qos { 'qos-interactive':
-  #     ensure    => 'present',
-  #   }
+# slurm::acct::qos { 'qos-interactive':
+  #   ensure    => 'present',
+  #   priority  => 20,
+  #   options   => {
+    #     preempt  => 'qos-besteffort',
+    #     grpnodes => 30,
+    #   }
+  # }
 #
+# this will run the following command:
+#   sacctmgr -i add qos qos-interactive Priority=20 Preempt=qos-besteffort Grpnodes=30
 #
+# @example
 define slurm::acct::qos(
   String  $ensure   = $slurm::params::ensure,
   Integer $priority = 0,
+  String  $content  = '',
   Hash    $options  = {},
 )
 {
@@ -46,10 +55,25 @@ define slurm::acct::qos(
   $default_options = {
     'priority' => $priority,
   }
+  if $options == undef {
+    $real_options = $default_options
+  }
+  elsif $options.is_a(String) {
+    $real_options = ($options =~ /[pP]riority=/) ? {
+      true    => { content => $options, },
+      default => merge($default_options, { content => $options }),
+    }
+  }
+  elsif $options.is_a(Array) {
+    $real_options = merge($default_options, { content => join($options, ' ') })
+  }
+  else {
+    $real_options = merge($default_options, $options)
+  }
   slurm::acct::mgr { "qos/${name}":
     ensure  => $ensure,
     entity  => 'qos',
     value   => $name,
-    options => merge($default_options, $options),
+    options => $real_options
   }
 }

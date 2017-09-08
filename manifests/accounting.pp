@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-09-07 19:27 svarrette>
+# Time-stamp: <Fri 2017-09-08 14:33 svarrette>
 #
 # File::      <tt>munge.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -68,28 +68,37 @@ inherits slurm::params
     unless $slurm::partitions[regsubst($qosname, '^qos-', '')] {
       slurm::acct::qos{ $qosname:
         ensure  => $ensure,
-        options => $h,
+      }
+      if $h.is_a(String) {
+        Slurm::Acct::Qos[$qosname] {
+          content => $h,
+        }
+      }
+      else {
+        Slurm::Acct::Qos[$qosname] {
+          options => $h,
+        }
       }
     }
   }
   # if $qos != undef {
-  #   if $qos.is_a(String) or $qos.is_a(Array) {
-  #     slurm::acct::qos{ $qos:
-  #       ensure => $ensure,
-  #     }
-  #   }
-  #   elsif $qos.is_a(Hash) {
-  #     $qos.each |$k, $v| {
-  #       slurm::acct::qos{ $k:
-  #         ensure => $ensure,
-  #       }
-  #       unless $v == undef {
-  #         Slurm::Acct::Qos[$k] {
-  #           options => $v,
-  #         }
-  #       }
-  #     }
-  #   }
-  # }
+    #   if $qos.is_a(String) or $qos.is_a(Array) {
+      #     slurm::acct::qos{ $qos:
+        #       ensure => $ensure,
+        #     }
+      #   }
+    #   elsif $qos.is_a(Hash) {
+      #     $qos.each |$k, $v| {
+        #       slurm::acct::qos{ $k:
+          #         ensure => $ensure,
+          #       }
+        #       unless $v == undef {
+          #         Slurm::Acct::Qos[$k] {
+            #           options => $v,
+            #         }
+          #       }
+        #     }
+      #   }
+    # }
 
 }
