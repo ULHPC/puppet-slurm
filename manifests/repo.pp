@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-29 09:41 svarrette>
+# Time-stamp: <Fri 2017-09-29 10:41 svarrette>
 #
 # File::      <tt>repo.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -105,7 +105,7 @@ inherits slurm::params
   }
 
 
-  if $ensure == 'present' {
+  if $ensure in [ 'present', 'latest' ] {
     exec { "mkdir -p ${real_path}":
       path   => '/sbin:/usr/bin:/usr/sbin:/bin',
       unless => "test -d ${real_path}",
