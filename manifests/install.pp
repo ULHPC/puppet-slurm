@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-09-05 10:36 svarrette>
+# Time-stamp: <Fri 2017-09-29 14:53 svarrette>
 #
 # File::      <tt>install.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -41,6 +41,7 @@ class slurm::install {
   if $slurm::do_package_install {
     slurm::install::packages { $slurm::version :
       ensure    => $slurm::ensure,
+      pkgdir    => $slurm::builddir,
       slurmd    => ($slurm::with_slurmd    or defined(Class['slurm::slurmd'])),
       slurmctld => ($slurm::with_slurmctld or defined(Class['slurm::slurmctld'])),
       slurmdbd  => ($slurm::with_slurmdbd  or defined(Class['slurm::slurmdbd'])),
