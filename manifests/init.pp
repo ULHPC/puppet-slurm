@@ -38,7 +38,7 @@
 # @param uid                      [Integer]     Default: 991
 # @param gid                      [Integer]     Default: as $uid
 # @param version                  [String]      Default: '17.02.7'
-# @param with_slurmd              [Boolean]     Default: true
+# @param with_slurmd              [Boolean]     Default: false
 # @param with_slurmctld           [Boolean]     Default: false
 # @param with_slurmdbd            [Boolean]     Default: false
 # @param manage_munge             [Boolean]     Default: true

@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-09-06 18:44 svarrette>
+# Time-stamp: <Fri 2017-09-29 09:41 svarrette>
 #
 # File::      <tt>repo.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -52,6 +52,8 @@
 #          The branch/revision to pull
 # @param linkdir      [String]  Default: ''
 #          An Optional link to create pointing to the working copy of the repository (Ex: "/etc/slurm-${slurm::clustername}")
+# @param link_subdir      [String]  Default: ''
+#          An Optional subdirectory within the control repository the link is supposed to point to
 #
 # @example Clone the SLURM control repository into '/usr/local/src/git/ULHPC/slurm'
 # # Create the SSH key, using for instance the maestrodev/ssh_keygen module
@@ -67,15 +69,15 @@
   #  }
 #
 class slurm::repo(
-  String $ensure     = $slurm::params::ensure,
-  String $provider   = 'git',
-  String $basedir    = $slurm::params::repo_basedir,
-  String $path       = '',
-  $source            = undef,
-  String $branch     = 'HEAD',
-  String $syncscript = '',
-  String $linkdir    = '',
-
+  String $ensure      = $slurm::params::ensure,
+  String $provider    = 'git',
+  String $basedir     = $slurm::params::repo_basedir,
+  String $path        = '',
+  $source             = undef,
+  String $branch      = 'HEAD',
+  String $syncscript  = '',
+  String $linkdir     = '',
+  String $link_subdir = '',
 )
 inherits slurm::params
 {
@@ -141,9 +143,13 @@ inherits slurm::params
       'present' => 'link',
       default   => $ensure
     }
+    $link_target = empty($link_subdir) ? {
+      true    => $real_path,
+      default => "${real_path}/${link_subdir}",
+    }
     file { $linkdir:
       ensure => $link_ensure,
-      target => $real_path,
+      target => $link_target,
     }
   }
 
