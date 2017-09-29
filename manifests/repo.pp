@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-29 10:41 svarrette>
+# Time-stamp: <Fri 2017-09-29 12:13 svarrette>
 #
 # File::      <tt>repo.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -140,8 +140,8 @@ inherits slurm::params
 
   if !empty($linkdir) {
     $link_ensure = $ensure ? {
-      'present' => 'link',
-      default   => $ensure
+      /(present|latest)/ => 'link',
+      default            => $ensure
     }
     $link_target = empty($link_subdir) ? {
       true    => $real_path,
