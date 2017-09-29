@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-29 13:24 svarrette>
+# Time-stamp: <Fri 2017-09-29 14:11 svarrette>
 #
 # File::      <tt>repo.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -115,13 +115,15 @@ inherits slurm::params
       unless => "test -d ${real_path}",
       before => File[$real_path],
     }
-    if !defined(File[$real_path]) {
-      file { $real_path:
-        ensure => 'directory',
-        owner  => $user,
-        group  => $group,
-        mode   => $slurm::params::configdir_mode,
-        before => Vcsrepo[$real_path],
+    [ dirname($real_path), $real_path ].each |String $d| {
+      if !defined(File[$d]) {
+        file { $d:
+          ensure => 'directory',
+          owner  => $user,
+          group  => $group,
+          mode   => $slurm::params::configdir_mode,
+          before => Vcsrepo[$real_path],
+        }
       }
     }
   }
