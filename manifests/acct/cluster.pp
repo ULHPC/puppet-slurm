@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-09-07 15:00 svarrette>
+# Time-stamp: <Sat 2017-09-30 01:00 svarrette>
 #
 # File::      <tt>acct/cluster.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -43,6 +43,6 @@ define slurm::acct::cluster(
     ensure  => $ensure,
     entity  => 'cluster',
     value   => $name,
-    options => $options
+    options => $options,
   }
 }

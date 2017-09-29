@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-08 14:31 svarrette>
+# Time-stamp: <Sat 2017-09-30 01:04 svarrette>
 #
 # File::      <tt>acct/mgr.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -73,7 +73,7 @@ define slurm::acct::mgr(
   }
   $real_name = empty($value) ? {
     true    => $name,
-    default => $value
+    default => $value,
   }
   $cmd_options = ($options == undef) ? {
     true    => [ ],
@@ -99,7 +99,7 @@ define slurm::acct::mgr(
   }
   case $ensure {
     'absent': {
-      $label        = "$delete-${entity}-${real_name}"
+      $label        = "delete-${entity}-${real_name}"
       $cmd          = "sacctmgr -i del ${entity} ${real_name}"
       $check_onlyif = undef
       $check_unless = undef

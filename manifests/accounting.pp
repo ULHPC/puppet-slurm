@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-08 14:33 svarrette>
+# Time-stamp: <Sat 2017-09-30 00:59 svarrette>
 #
 # File::      <tt>munge.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -36,7 +36,7 @@ inherits slurm::params
   elsif $clusters.is_a(Hash) {
     $clusters.each |$k, $v| {
       slurm::acct::cluster{ $k:
-        ensure => $ensure,
+        ensure  => $ensure,
         options => $v,
       }
     }

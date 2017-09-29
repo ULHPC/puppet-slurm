@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-08 11:39 svarrette>
+# Time-stamp: <Sat 2017-09-30 01:03 svarrette>
 #
 # File::      <tt>acct/qos.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -60,8 +60,8 @@ define slurm::acct::qos(
   }
   elsif $options.is_a(String) {
     $real_options = ($options =~ /[pP]riority=/) ? {
-      true    => { content => $options, },
-      default => merge($default_options, { content => $options }),
+      true    => { 'content' => $options, },
+      default => merge($default_options, { 'content' => $options }),
     }
   }
   elsif $options.is_a(Array) {
@@ -74,6 +74,6 @@ define slurm::acct::qos(
     ensure  => $ensure,
     entity  => 'qos',
     value   => $name,
-    options => $real_options
+    options => $real_options,
   }
 }
