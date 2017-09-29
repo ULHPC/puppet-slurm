@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-09-07 18:10 svarrette>
+# Time-stamp: <Fri 2017-09-29 16:48 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -207,6 +207,7 @@ $prologflags             = []
 $prologslurmctld         = ''
 $propagateresourcelimits = []
 $propagateresourcelimits_except = [ 'MEMLOCK'] # see https://slurm.schedmd.com/faq.html#memlock
+$resumetimeout           = 60
 # Controls when a DOWN node will be returned to service
 $returntoservice         = 1  # in [0, 1, 2]
 $schedulertype           = 'backfill' # in ['backfill', 'builtin', 'hold']
