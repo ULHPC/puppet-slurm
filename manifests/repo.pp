@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-29 12:13 svarrette>
+# Time-stamp: <Fri 2017-09-29 13:24 svarrette>
 #
 # File::      <tt>repo.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -37,6 +37,9 @@
 #
 # @param ensure       [String]  Default: 'present'
 #          Ensure the presence (or absence) of the repository
+# @param force        [Boolean] Default: force
+#          Specifies whether to delete any existing files in the repository path
+#          if creating a new repository. Use with care.
 # @param provider     [String]  Default: 'git'
 #          Specifies the backend to use for this vcsrepo resource.
 #          Valid options: 'bzr', 'git', 'hg', and 'svn'.
@@ -69,15 +72,16 @@
   #  }
 #
 class slurm::repo(
-  String $ensure      = $slurm::params::ensure,
-  String $provider    = 'git',
-  String $basedir     = $slurm::params::repo_basedir,
-  String $path        = '',
-  $source             = undef,
-  String $branch      = 'HEAD',
-  String $syncscript  = '',
-  String $linkdir     = '',
-  String $link_subdir = '',
+  String  $ensure      = $slurm::params::ensure,
+  String  $provider    = 'git',
+  String  $basedir     = $slurm::params::repo_basedir,
+  String  $path        = '',
+  $source              = undef,
+  String  $branch      = 'HEAD',
+  String  $syncscript  = '',
+  String  $linkdir     = '',
+  String  $link_subdir = '',
+  Boolean $force       = false,
 )
 inherits slurm::params
 {
@@ -136,6 +140,7 @@ inherits slurm::params
     source   => $source,
     user     => $user,
     revision => $branch,
+    force    => $force,
   }
 
   if !empty($linkdir) {
