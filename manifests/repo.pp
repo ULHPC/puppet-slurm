@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-29 14:11 svarrette>
+# Time-stamp: <Sat 2017-09-30 09:39 svarrette>
 #
 # File::      <tt>repo.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -135,6 +135,24 @@ inherits slurm::params
   }
   # notice($source)
   # notice($real_path)
+  if !defined(Git::Config['push.default']) {
+    git::config { 'push.default':
+      value => 'matching',
+      user  => $slurm::params::username,
+    }
+  }
+  if !defined(Git::Config['user.name']) {
+    git::config { 'user.name':
+      value => $slurm::params::comment,
+      user  => $slurm::params::username,
+    }
+  }
+  if !defined(Git::Config['user.email']) {
+    git::config { 'user.email':
+      value => "${slurm::params::username}@${::fqdn}",
+      user  => $slurm::params::username,
+    }
+  }
 
   vcsrepo { $real_path:
     ensure   => $ensure,
