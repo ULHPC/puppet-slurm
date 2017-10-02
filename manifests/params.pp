@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-29 16:48 svarrette>
+# Time-stamp: <Mon 2017-10-02 17:44 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -303,8 +303,8 @@ $topology_tree = {}
   $cgroup_maxrampercent             = 100   # upper bound in percent of total RAM on the RAM constraint for a job.
   $cgroup_maxswappercent            = 100   # upper bound (in percent of total RAM) on the amount of RAM+Swap
   $cgroup_maxkmempercent            = 100   # upper bound in percent of total Kmem for a job.
-  $cgroup_minkmemspace              = '30M' # lower bound (in MB) on the memory limits defined by AllowedKmemSpace.
-  $cgroup_minramspace               = '30M' # lower bound (in MB) on the memory limits defined by AllowedRAMSpace & AllowedSwapSpace.
+  $cgroup_minkmemspace              = 30    # lower bound (in MB) on the memory limits defined by AllowedKmemSpace.
+  $cgroup_minramspace               = 30    # lower bound (in MB) on the memory limits defined by AllowedRAMSpace & AllowedSwapSpace.
   $cgroup_taskaffinity              = true  # This feature requires the Portable Hardware Locality (hwloc) library
 
   ###

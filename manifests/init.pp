@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-29 16:47 svarrette>
+# Time-stamp: <Mon 2017-10-02 17:45 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -563,8 +563,8 @@ class slurm(
   Numeric $cgroup_maxrampercent           = $slurm::params::cgroup_maxrampercent,
   Numeric $cgroup_maxswappercent          = $slurm::params::cgroup_maxswappercent,
   Numeric $cgroup_maxkmempercent          = $slurm::params::cgroup_maxkmempercent,
-  String  $cgroup_minkmemspace            = $slurm::params::cgroup_minkmemspace,
-  String  $cgroup_minramspace             = $slurm::params::cgroup_minramspace,
+  Integer $cgroup_minkmemspace            = $slurm::params::cgroup_minkmemspace,
+  Integer $cgroup_minramspace             = $slurm::params::cgroup_minramspace,
   Boolean $cgroup_taskaffinity            = $slurm::params::cgroup_taskaffinity,
   #
   # gres.conf
