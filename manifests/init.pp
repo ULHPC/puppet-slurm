@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-10-02 23:01 svarrette>
+# Time-stamp: <Mon 2017-10-02 23:05 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -372,8 +372,16 @@
 #        Whether or not use the pam_slurm_adopt  module (to Adopt incoming
 #        connections into jobs) -- see
 #        https://github.com/SchedMD/slurm/tree/master/contribs/pam_slurm_adopt
-
-
+###
+### SPANK - Slurm Plug-in Architecture for Node and job (K)control
+### See <https://slurm.schedmd.com/spank.html>
+###
+# @param pluginsdir_target          [String] Default: undef,
+#          If definied, symlink target base directory for all plugins
+#          <plugin>.conf _i.e._ <configdir>/plugstack.conf.d/<plugin>.conf
+#          points to <pluginsdir_target>/<plugin>.conf
+# @param plugins                    [Array] Default: []
+#          List of plugins to see in <configdir>/plugstack.conf.d/
 
 #
 # @example Default instance
