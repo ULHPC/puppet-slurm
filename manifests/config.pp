@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 16:23 svarrette>
+# Time-stamp: <Mon 2017-10-02 19:13 svarrette>
 #
 # File::      <tt>config.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -37,6 +37,15 @@ class slurm::config {
       mode   => $slurm::params::configdir_mode,
     }
     File[$slurm::configdir] -> File[$pluginsdir]
+    if ((!empty($slurm::plugins)) and ($slurm::pluginsdir_target != undef)) {
+      $slurm::plugins.each |String $plugin| {
+        file { "${pluginsdir}/${plugin}.conf":
+          ensure  => 'link',
+          target  => "${slurm::pluginsdir_target}/${plugin}.conf",
+          require => File[$pluginsdir],
+        }
+      }
+    }
   }
   else {
     file { $slurmdirs:
@@ -53,9 +62,9 @@ class slurm::config {
         undef   => template('slurm/slurm.conf.erb'),
         default => $slurm::content,
       },
-    default => $slurm::content
+      default => $slurm::content
     },
-  default => $slurm::content,
+    default => $slurm::content,
   }
   $ensure = $slurm::target ? {
     undef   => $slurm::ensure,

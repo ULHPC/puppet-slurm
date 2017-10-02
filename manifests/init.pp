@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-10-02 17:45 svarrette>
+# Time-stamp: <Mon 2017-10-02 19:14 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -591,6 +591,12 @@ class slurm(
   String  $pam_content                    = $slurm::params::pam_content,
   String  $pam_limits_source              = $slurm::params::pam_limits_source,
   Boolean $use_pam_slurm_adopt            = $slurm::params::use_pam_slurm_adopt,
+  #
+  # SPANK - Slurm Plug-in Architecture for Node and job (K)control
+  # See <https://slurm.schedmd.com/spank.html>
+  #
+  $pluginsdir_target                      = undef,
+  Array $plugins                          = [],
 )
 inherits slurm::params
 {
