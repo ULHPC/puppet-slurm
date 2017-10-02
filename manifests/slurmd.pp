@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-10-02 22:58 svarrette>
+# Time-stamp: <Mon 2017-10-02 23:12 svarrette>
 #
 # File::      <tt>slurmd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -33,13 +33,6 @@ class slurm::slurmd inherits slurm
     File <| tag == 'slurm::configfile' |> {
       require => File[$slurm::configdir],
     }
-  }
-
-  # Bash completion
-  file { '/etc/bash_completion.d/slurm_completion.sh':
-    ensure => $slurm::ensure,
-    source => 'puppet:///modules/slurm/slurm_completion.sh',
-    mode   => '0644',
   }
 
   if $slurm::service_manage == true {

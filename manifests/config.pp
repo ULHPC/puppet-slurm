@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-10-02 19:23 svarrette>
+# Time-stamp: <Mon 2017-10-02 23:12 svarrette>
 #
 # File::      <tt>config.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -78,6 +78,13 @@ class slurm::config {
   # notice(defined(Class['slurm::slurmd']))
 
   if $slurm::with_slurmctld or $slurm::with_slurmd or defined(Class['slurm::slurmctld']) or defined(Class['slurm::slurmd']) {
+
+    # Bash completion
+    file { '/etc/bash_completion.d/slurm_completion.sh':
+      ensure => $slurm::ensure,
+      source => 'puppet:///modules/slurm/slurm_completion.sh',
+      mode   => '0644',
+    }
 
     # Main slurm.conf
     $filename = "${slurm::configdir}/${slurm::params::configfile}"
