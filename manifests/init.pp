@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-10-03 10:58 svarrette>
+# Time-stamp: <Tue 2017-10-03 11:07 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -521,7 +521,7 @@ class slurm(
   Hash    $qos                            = $slurm::params::qos,
   Integer $resumetimeout                  = $slurm::params::resumetimeout,
   Integer $returntoservice                = $slurm::params::returntoservice,
-  String  $savestateloc                   = $slurm::params::savestateloc,
+  String  $statesavelocation              = $slurm::params::statesavelocation,
   String  $schedulertype                  = $slurm::params::schedulertype,
   String  $selecttype                     = $slurm::params::selecttype,
   Array   $selecttype_params              = $slurm::params::selecttype_params,
