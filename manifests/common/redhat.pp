@@ -11,6 +11,7 @@ class slurm::common::redhat inherits slurm::common {
 
   include ::epel
   include ::yum
+  include ::selinux
 
   yum::group { $slurm::params::groupinstall:
     ensure  => 'present',
@@ -21,6 +22,10 @@ class slurm::common::redhat inherits slurm::common {
   # Resource default statements
   Package {
     require => Yum::Group[$slurm::params::groupinstall],
+  }
+
+  if versioncmp($facts['os']['release']['major'], '7') >= 0 {
+    include ::firewalld
   }
 
 }
