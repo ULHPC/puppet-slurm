@@ -164,7 +164,7 @@ CompleteWait=<%= scope['slurm::completewait'] %>
 <% end -%>
 
 #EpilogMsgTime=2000
-#GetEnvTimeout=2
+GetEnvTimeout=<%= scope['slurm::getenvtimeout'] %>
 <% if scope['slurm::healthcheckprogram'].empty? %>
 #HealthCheckProgram=/usr/sbin/nhc
 #HealthCheckInterval=30
@@ -177,7 +177,7 @@ HealthCheckNodeState=<%= scope['slurm::healthchecknodestate'] %>
 <% end %>
 InactiveLimit=<%= scope['slurm::inactivelimit'] %>
 KillWait=<%= scope['slurm::killwait'] %>
-#MessageTimeout=10
+MessageTimeout=<%= scope['slurm::messagetimeout'] %>
 #ResvOverRun=0
 MinJobAge=300
 #OverTimeLimit=0

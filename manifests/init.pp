@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-10-02 23:05 svarrette>
+# Time-stamp: <Tue 2017-10-03 09:41 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -468,6 +468,7 @@ class slurm(
   String  $epilog                         = $slurm::params::epilog,
   String  $epilogslurmctld                = $slurm::params::epilogslurmctld,
   Integer $fastschedule                   = $slurm::params::fastschedule,
+  Integer $getenvtimeout                  = $slurm::params::getenvtimeout,
   Array   $grestypes                      = $slurm::params::grestypes,
   Integer $healthcheckinterval            = $slurm::params::healthcheckinterval,
   String  $healthchecknodestate           = $slurm::params::healthchecknodestate,
@@ -488,6 +489,7 @@ class slurm(
   String  $maildomain                     = $slurm::params::maildomain,
   String  $mailprog                       = $slurm::params::mailprog,
   Integer $maxtaskspernode                = $slurm::params::maxtaskspernode,
+  Integer $messagetimeout                 = $slurm::params::messagetimeout,
   # Default type of MPI to be used.
   String  $mpidefault                     = $slurm::params::mpidefault,
   String  $mpiparams                      = $slurm::params::mpiparams,

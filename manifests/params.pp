@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-10-02 19:04 svarrette>
+# Time-stamp: <Tue 2017-10-03 09:37 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -134,6 +134,7 @@ class slurm::params {
   $acct_storageenforce     = ['qos', 'limits', 'associations']
   $acct_gatherenergytype   = 'none'
   $batchstarttimeout       = 10
+  $getenvtimeout           = 2
   $checkpointtype          = 'none'  # in ['blcr', 'none', 'ompi', 'poe']
   $completewait            = 0
   $corespecplugin          = 'none'
