@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-10-03 11:07 svarrette>
+# Time-stamp: <Tue 2017-10-03 23:53 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -419,6 +419,7 @@ class slurm(
   $content                                = undef,
   $source                                 = undef,
   $target                                 = undef,
+  Boolean $manage_firewall                = $slurm::params::manage_firewall,
   Boolean $manage_munge                   = $slurm::params::manage_munge,
   Boolean $manage_pam                     = $slurm::params::manage_pam,
   Boolean $service_manage                 = $slurm::params::service_manage,

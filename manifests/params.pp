@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-10-03 11:06 svarrette>
+# Time-stamp: <Tue 2017-10-03 23:57 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -50,6 +50,9 @@ class slurm::params {
   $with_slurmd    = false
   $with_slurmctld = false
   $with_slurmdbd  = false
+
+  # Whether or not this module should configure firewall[d]
+  $manage_firewall = false
 
   # Configuration directory & file
   $configdir = $::operatingsystem ? {
