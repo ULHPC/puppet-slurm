@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-10-03 09:37 svarrette>
+# Time-stamp: <Tue 2017-10-03 10:55 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -211,6 +211,7 @@ $propagateresourcelimits_except = [ 'MEMLOCK'] # see https://slurm.schedmd.com/f
 $resumetimeout           = 60
 # Controls when a DOWN node will be returned to service
 $returntoservice         = 1  # in [0, 1, 2]
+$statesavelocation       = '/var/lib/slurmctld'
 $schedulertype           = 'backfill' # in ['backfill', 'builtin', 'hold']
 $selecttype              = 'cons_res' # in ['bluegene','cons_res','cray','linear','serial' ]
 $selecttype_params       = [ 'CR_Core_Memory', 'CR_CORE_DEFAULT_DIST_BLOCK' ]

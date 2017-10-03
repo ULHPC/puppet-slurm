@@ -242,7 +242,7 @@ PropagateResourceLimits=<%= scope['slurm::propagateresourcelimits'].join(',') %>
 <% else -%>
 PropagateResourceLimitsExcept=<%= scope['slurm::propagateresourcelimits_except'].join(',') %>
 <% end -%>
-StateSaveLocation=/var/lib/slurmctld
+StateSaveLocation=<%= scope['slurm::statesavelocation'] %>
 
 
 ###########################

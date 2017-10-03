@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-10-03 09:41 svarrette>
+# Time-stamp: <Tue 2017-10-03 10:58 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -200,6 +200,9 @@
 
 # @param returntoservice          [Integer]     Default: 1
 #           Elligible values in [0, 1, 2]
+# @param statesavelocation        [String]      Default: '/var/lib/slurmctld'
+#           Fully qualified pathname of a directory into which the Slurm
+#           controller, slurmctld, saves its state
 # @param schedulertype            [String ]     Default: 'backfill'
 #           Elligible values in ['backfill', 'builtin', 'hold']
 # @param selecttype               [String ]     Default: 'cons_res'
@@ -518,6 +521,7 @@ class slurm(
   Hash    $qos                            = $slurm::params::qos,
   Integer $resumetimeout                  = $slurm::params::resumetimeout,
   Integer $returntoservice                = $slurm::params::returntoservice,
+  String  $savestateloc                   = $slurm::params::savestateloc,
   String  $schedulertype                  = $slurm::params::schedulertype,
   String  $selecttype                     = $slurm::params::selecttype,
   Array   $selecttype_params              = $slurm::params::selecttype_params,
