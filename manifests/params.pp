@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-10-03 23:57 svarrette>
+# Time-stamp: <Wed 2017-10-04 15:14 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -148,6 +148,7 @@ class slurm::params {
   $defmempercpu            = 0           # 0 = unlimited, mutually exclusive with $defmempernode
   $maxmempercpu            = 0           # 0 = unlimited
   $maxmempernode           = undef
+  $messagetimeout          = 10
   $defmempernode           = undef       # 0 = unlimited, mutually exclusive with $defmempercpu
 
   $disablerootjobs         = true

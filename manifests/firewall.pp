@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-10-04 00:02 svarrette>
+# Time-stamp: <Wed 2017-10-04 15:18 svarrette>
 #
 # File::      <tt>firewall.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -25,12 +25,12 @@ define slurm::firewall(
 {
   include ::slurm::params
 
-  if ($::osfamily != 'RedHat' or versioncmp($facts['os']['release']['major'], '7') < 0 {
+  if (($::osfamily != 'RedHat') or (versioncmp($facts['os']['release']['major'], '7') < 0)) {
     fail("Module ${module_name} is not supported on ${::operatingsystem}")
   }
 
   # $name is provided at define invocation
-  $port_range = empty($port) {
+  $port_range = empty($port) ? {
     true    => $name,
     default => $port,
   }

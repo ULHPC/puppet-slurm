@@ -7,7 +7,8 @@ node default {
   #include ::slurm::params
 
   class { '::slurm':
-    service_manage => false,
+    service_manage  => false,
+    manage_firewall => true,
   }
   include ::slurm::slurmctld
 }

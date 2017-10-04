@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-10-04 00:00 svarrette>
+# Time-stamp: <Wed 2017-10-04 15:17 svarrette>
 #
 # File::      <tt>slurmctld.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -43,7 +43,7 @@ class slurm::slurmctld inherits slurm
   Class['slurm::install'] -> Class['slurm::config']
 
   if $slurm::manage_firewall {
-    slurm::firewall { $slurm::slurmctldport:
+    slurm::firewall { "${slurm::slurmctldport}":
       ensure => $slurm::ensure,
     }
   }
