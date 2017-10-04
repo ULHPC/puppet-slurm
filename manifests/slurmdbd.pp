@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-09-07 10:20 svarrette>
+# Time-stamp: <Wed 2017-10-04 14:35 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -145,6 +145,11 @@ inherits slurm
   include ::slurm::install
   include ::slurm::config
   Class['slurm::install'] -> Class['slurm::config']
+  if $slurm::manage_firewall {
+    slurm::firewall { $dbdport:
+      ensure => $slurm::ensure,
+    }
+  }
 
 
   # [Eventually] bootstrap the MySQL DB
