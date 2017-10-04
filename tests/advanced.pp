@@ -68,15 +68,17 @@ node default {
 
   # Let's go, all-in-one run
   class { '::slurm':
-    clustername    => $clustername,
-    # with_slurmdbd  => true,
-    # with_slurmctld => true,
-    # topology       => 'tree',
-    # topology_tree  => $tree,
-    # nodes          => $nodes,
-    partitions     => $partitions,
-    qos            => $qos,
-    service_manage => false,
+    clustername     => $clustername,
+    with_slurmdbd   => true,
+    with_slurmctld  => true,
+    with_slurmd     => true,
+    manage_firewall => true,
+    # topology      => 'tree',
+    # topology_tree => $tree,
+    # nodes         => $nodes,
+    partitions      => $partitions,
+    #qos             => $qos,
+    service_manage  => false,
   }
 
   notice(inline_template("<%= scope['slurm::qos'].to_yaml %>"))

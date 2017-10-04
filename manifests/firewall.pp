@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-10-04 15:18 svarrette>
+# Time-stamp: <Wed 2017-10-04 15:33 svarrette>
 #
 # File::      <tt>firewall.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -37,7 +37,7 @@ define slurm::firewall(
 
   if (defined(Class['firewalld'])) {
     ###### CentOS/RHEL 7 with firewalld
-    firewalld_port { "slurm-${range}":
+    firewalld_port { "slurm-${port_range}":
       ensure   => $ensure,
       zone     => $zone,
       port     => $port_range,

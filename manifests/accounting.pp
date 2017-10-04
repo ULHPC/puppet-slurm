@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Sat 2017-09-30 00:59 svarrette>
+# Time-stamp: <Wed 2017-10-04 15:39 svarrette>
 #
 # File::      <tt>munge.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -52,9 +52,11 @@ inherits slurm::params
         priority => ($h['priority'] + 0),
       }
       # Eventually complete it with entries from the $slurm::qos hash
-      if $slurm::qos[$qosname] {
-        Slurm::Acct::Qos[$qosname] {
-          options => $slurm::qos[$qosname],
+      unless empty($qos) {
+        if $slurm::qos[$qosname] {
+          Slurm::Acct::Qos[$qosname] {
+            options => $slurm::qos[$qosname],
+          }
         }
       }
     }

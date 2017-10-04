@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Sat 2017-09-30 01:04 svarrette>
+# Time-stamp: <Wed 2017-10-04 16:15 svarrette>
 #
 # File::      <tt>acct/mgr.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -111,11 +111,16 @@ define slurm::acct::mgr(
       $check_unless = "test -n \"$(sacctmgr --noheader -p list ${entity} | grep ${real_name})\""
     }
   }
-  notice($cmd)
-  exec { $label:
-    path    => '/sbin:/usr/bin:/usr/sbin:/bin',
-    command => $cmd,
-    onlyif  => $check_onlyif,
-    unless  => $check_unless,
+  if $slurm::service_manage {
+    #notice($cmd)
+    exec { $label:
+      path    => '/sbin:/usr/bin:/usr/sbin:/bin',
+      command => $cmd,
+      onlyif  => $check_onlyif,
+      unless  => $check_unless,
+    }
+  }
+  else {
+    warning("SKIPPING Application of ${module_name}{'${label}'} as slurm::service_manage == ${slurm::service_manage}")
   }
 }
