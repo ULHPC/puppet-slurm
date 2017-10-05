@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-10-04 15:14 svarrette>
+# Time-stamp: <Thu 2017-10-05 17:49 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -52,7 +52,9 @@ class slurm::params {
   $with_slurmdbd  = false
 
   # Whether or not this module should configure firewall[d]
-  $manage_firewall = false
+  $manage_firewall   = false
+  # Whether or not this module should manage the accounting
+  $manage_accounting = false
 
   # Configuration directory & file
   $configdir = $::operatingsystem ? {
@@ -501,8 +503,16 @@ $manage_pam          = true   # Whether or not this module should manage pam
 $use_pam             = true
 $pam_allowed_users   = []
 $pam_servicename     = 'slurm'
+$pam_configfile      = '/etc/pam.d/slurm'
 # Default content of /etc/pam.d/slurm
 $pam_content         = template('slurm/pam_slurm.erb')
+# Default ulimit -- update at least PAM MEMLOCK limits (required for MPI) +
+# nproc (max number of processes)
+$ulimits             = {
+  'memlock' => 'unlimited',
+  'nproc'   => 10240,
+}
+
 # Source file for /etc/security/limits.d/slurm.conf
 $pam_limits_source   = 'puppet:///modules/slurm/limits.memlock'
 # Whether or not use the pam_slurm_adopt  module (to Adopt incoming

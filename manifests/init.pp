@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-10-03 23:53 svarrette>
+# Time-stamp: <Thu 2017-10-05 17:51 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -41,6 +41,8 @@
 # @param with_slurmd              [Boolean]     Default: false
 # @param with_slurmctld           [Boolean]     Default: false
 # @param with_slurmdbd            [Boolean]     Default: false
+# @param manage_accounting        [Boolean]     Default: false
+#           Whether or not this module should manage the accounting DB
 # @param manage_munge             [Boolean]     Default: true
 #           Whether or not this module should manage
 # @param manage_pam               [Boolean]     Default: true
@@ -419,6 +421,7 @@ class slurm(
   $content                                = undef,
   $source                                 = undef,
   $target                                 = undef,
+  Boolean $manage_accounting              = $slurm::params::manage_accounting,
   Boolean $manage_firewall                = $slurm::params::manage_firewall,
   Boolean $manage_munge                   = $slurm::params::manage_munge,
   Boolean $manage_pam                     = $slurm::params::manage_pam,
