@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Sat 2017-09-30 09:39 svarrette>
+# Time-stamp: <Thu 2017-10-05 17:58 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -54,13 +54,8 @@ class slurm::common {
     User['slurm'] -> Group['slurm']
   }
 
-  if ($slurm::manage_pam and $slurm::use_pam and $slurm::with_slurmd) {
-    class { '::slurm::pam':
-      ensure        => $slurm::ensure,
-      content       => $slurm::pam_content,
-      limits_source => $slurm::pam_limits_source,
-      allowed_users => $slurm::pam_allowed_users,
-    }
+  if ($slurm::manage_pam and $slurm::use_pam and ($slurm::with_slurmd or defined(Class['slurm::slurmd'])) {
+    include ::slurm::pam
   }
 
   if ($slurm::manage_munge and $slurm::authtype =~ /munge/) {

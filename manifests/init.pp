@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-10-05 17:51 svarrette>
+# Time-stamp: <Thu 2017-10-05 18:49 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -367,16 +367,7 @@
 ############################ PAM Settings ####################################
 ############################              ####################################
 # @param use_pam                  [Boolean]       Default: true
-# @param pam_allowed_users        [Array]         Default: []
-#        Manage login access (see PAM_ACCESS(8)) in addition to 'root'
-# @param pam_content              [String]        Default: 'templates/pam_slurm.erb'
-#        Content of /etc/pam.d/slurm
-# @param pam_limits_source        [String]        Default: 'puppet:///modules/slurm/limits.memlock'
-#        Source file for /etc/security/limits.d/slurm.conf
-# @param pam_use_pam_slurm_adopt  [Boolean] Default: false
-#        Whether or not use the pam_slurm_adopt  module (to Adopt incoming
-#        connections into jobs) -- see
-#        https://github.com/SchedMD/slurm/tree/master/contribs/pam_slurm_adopt
+#
 ###
 ### SPANK - Slurm Plug-in Architecture for Node and job (K)control
 ### See <https://slurm.schedmd.com/spank.html>
@@ -605,10 +596,10 @@ class slurm(
   # PAM settings
   #
   Boolean $use_pam                        = $slurm::params::use_pam,
-  Array   $pam_allowed_users              = $slurm::params::pam_allowed_users,
-  String  $pam_content                    = $slurm::params::pam_content,
-  String  $pam_limits_source              = $slurm::params::pam_limits_source,
-  Boolean $use_pam_slurm_adopt            = $slurm::params::use_pam_slurm_adopt,
+  # Array   $pam_allowed_users              = $slurm::params::pam_allowed_users,
+  # String  $pam_content                    = $slurm::params::pam_content,
+  # String  $pam_limits_source              = $slurm::params::pam_limits_source,
+  # Boolean $use_pam_slurm_adopt            = $slurm::params::use_pam_slurm_adopt,
   #
   # SPANK - Slurm Plug-in Architecture for Node and job (K)control
   # See <https://slurm.schedmd.com/spank.html>

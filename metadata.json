@@ -49,6 +49,10 @@
       "version_requirement": ">=1.2.2 <2.0.0"
     },
     {
+      "name": "svarrette-ulimit",
+      "version_requirement": ">=1.0.6 <2.0.0"
+    },
+    {
       "name": "crayfishx-firewalld",
       "version_requirement": ">=3.4.0 <4.0.0"
     },

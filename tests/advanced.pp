@@ -77,11 +77,11 @@ node default {
     # topology_tree => $tree,
     # nodes         => $nodes,
     partitions      => $partitions,
-    #qos             => $qos,
+    qos             => $qos,
     service_manage  => false,
   }
 
-  notice(inline_template("<%= scope['slurm::qos'].to_yaml %>"))
+  #notice(inline_template("<%= scope['slurm::qos'].to_yaml %>"))
   include ::slurm::accounting
 
 }

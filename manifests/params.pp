@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-10-05 17:49 svarrette>
+# Time-stamp: <Thu 2017-10-05 18:10 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -510,7 +510,8 @@ $pam_content         = template('slurm/pam_slurm.erb')
 # nproc (max number of processes)
 $ulimits             = {
   'memlock' => 'unlimited',
-  'nproc'   => 10240,
+  'stack'   => 'unlimited',
+  'nproc'   => '10240',
 }
 
 # Source file for /etc/security/limits.d/slurm.conf
