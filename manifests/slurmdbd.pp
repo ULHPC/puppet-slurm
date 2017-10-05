@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-10-06 00:12 svarrette>
+# Time-stamp: <Fri 2017-10-06 00:41 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -176,7 +176,7 @@ inherits slurm
         setting     => 'bind-address',
         value       => $bind_setting,
         notify      => Service['mysqld'],
-        refreshonly => true,
+        # refreshonly => true,   # FAIL, does not work...
       }
     }
     mysql::db { $storageloc:
