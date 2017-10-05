@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-10-02 23:12 svarrette>
+# Time-stamp: <Thu 2017-10-05 18:52 svarrette>
 #
 # File::      <tt>config.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -42,8 +42,8 @@ class slurm::config {
         file { "${pluginsdir}/${plugin}.conf":
           ensure  => 'link',
           target  => "${slurm::pluginsdir_target}/${plugin}.conf",
-          owner  => $slurm::params::username,
-          group  => $slurm::params::group,
+          owner   => $slurm::params::username,
+          group   => $slurm::params::group,
           require => File[$pluginsdir],
         }
       }

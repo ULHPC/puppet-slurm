@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-10-05 18:06 svarrette>
+# Time-stamp: <Thu 2017-10-05 18:53 svarrette>
 #
 # File::      <tt>pam.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -110,7 +110,7 @@ inherits slurm::params
   {
     $ulimits.each |String $item, $value| {
       ulimit::rule { "slurm-${item}":
-        ensure => $ensure,
+        ensure        => $ensure,
         ulimit_domain => '*',
         ulimit_type   => [ 'soft', 'hard' ],
         ulimit_item   => $item,

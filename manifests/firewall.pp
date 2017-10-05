@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-10-04 15:33 svarrette>
+# Time-stamp: <Thu 2017-10-05 18:53 svarrette>
 #
 # File::      <tt>firewall.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -13,10 +13,7 @@
 #
 #
 define slurm::firewall(
-  Enum[
-    'present',
-    'absent'
-  ]       $ensure   = 'present',
+  String $ensure    = 'present',
   String  $zone     = 'public',
   String  $port     = '',
   String  $seltype  = '',
@@ -24,6 +21,7 @@ define slurm::firewall(
 )
 {
   include ::slurm::params
+  validate_legacy('String', 'validate_re', $ensure, ['^present', '^absent'])
 
   if (($::osfamily != 'RedHat') or (versioncmp($facts['os']['release']['major'], '7') < 0)) {
     fail("Module ${module_name} is not supported on ${::operatingsystem}")
