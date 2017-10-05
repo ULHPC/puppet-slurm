@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-10-05 17:51 svarrette>
+# Time-stamp: <Fri 2017-10-06 00:12 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -170,12 +170,13 @@ inherits slurm
         default   => '127.0.0.1',
       }
       ini_setting { "[mysqld]/bind-address = ${bind_setting}":
-        ensure  => 'present',
-        path    => $mysql::server::config_file,
-        section => 'mysqld',
-        setting => 'bind-address',
-        value   => $bind_setting,
-        notify  => Service['mysqld'],
+        ensure      => 'present',
+        path        => $mysql::server::config_file,
+        section     => 'mysqld',
+        setting     => 'bind-address',
+        value       => $bind_setting,
+        notify      => Service['mysqld'],
+        refreshonly => true,
       }
     }
     mysql::db { $storageloc:
