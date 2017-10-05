@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-09-04 14:58 svarrette>
+# Time-stamp: <Thu 2017-10-05 17:51 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -146,6 +146,12 @@ inherits slurm
   include ::slurm::config
   Class['slurm::install'] -> Class['slurm::config']
 
+  if $slurm::manage_firewall {
+    slurm::firewall { "${dbdport}":
+      ensure => $slurm::ensure,
+    }
+  }
+
 
   # [Eventually] bootstrap the MySQL DB
   if $storagetype == 'mysql' {
@@ -201,9 +207,9 @@ inherits slurm
         undef   => template('slurm/slurmdbd.conf.erb'),
         default => $content,
       },
-    default => $content
+      default => $content
     },
-  default => $content,
+    default => $content,
   }
   $dbdconf_ensure = $target ? {
     undef   => $ensure,
@@ -233,32 +239,39 @@ inherits slurm
   if $slurm::ensure == 'present' {
     File[$slurm::params::dbd_configfile] {
       require => File[$slurm::configdir],
+    }
+  }
+
+  if $slurm::service_manage == true {
+
+    if $slurm::manage_accounting {
+      # Ensure the cluster have been created
+      slurm::acct::cluster{ $slurm::clustername:
+        ensure  => $slurm::ensure,
+        require => Service['slurmdbd'],
+      }
+    }
+
+    File[$slurm::params::dbd_configfile] {
       notify  => Service['slurmdbd'],
     }
 
-    # Ensure the cluster have been created
-    slurm::acct::cluster{ $slurm::clustername:
-      ensure  => $slurm::ensure,
-      require => Service['slurmdbd'],
+    service { 'slurmdbd':
+      ensure     => ($ensure == 'present'),
+      enable     => ($ensure == 'present'),
+      name       => $slurm::params::dbd_servicename,
+      pattern    => $slurm::params::dbd_processname,
+      hasrestart => $slurm::params::hasrestart,
+      hasstatus  => $slurm::params::hasstatus,
+    }
+    if $slurm::with_slurmd or defined(Class['slurm::slurmd']) {
+      Service['slurmdbd'] -> Service['slurmd']
+    }
+    if $slurm::with_slurmctld or defined(Class['slurm::slurmctld']) {
+      Service['slurmdbd'] -> Service['slurmctld']
     }
 
   }
-
-  service { 'slurmdbd':
-    ensure     => ($ensure == 'present'),
-    enable     => ($ensure == 'present'),
-    name       => $slurm::params::dbd_servicename,
-    pattern    => $slurm::params::dbd_processname,
-    hasrestart => $slurm::params::hasrestart,
-    hasstatus  => $slurm::params::hasstatus,
-  }
-  if $slurm::with_slurmd or defined(Class['slurm::slurmd']) {
-    Service['slurmdbd'] -> Service['slurmd']
-  }
-  if $slurm::with_slurmctld or defined(Class['slurm::slurmctld']) {
-    Service['slurmdbd'] -> Service['slurmctld']
-  }
-
 
 
 }

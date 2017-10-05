@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 11:23 svarrette>
+# Time-stamp: <Thu 2017-10-05 18:10 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -51,6 +51,11 @@ class slurm::params {
   $with_slurmctld = false
   $with_slurmdbd  = false
 
+  # Whether or not this module should configure firewall[d]
+  $manage_firewall   = false
+  # Whether or not this module should manage the accounting
+  $manage_accounting = false
+
   # Configuration directory & file
   $configdir = $::operatingsystem ? {
     default => '/etc/slurm',
@@ -68,6 +73,13 @@ class slurm::params {
   $pluginsdir = 'plugstack.conf.d'
 
   $configdir_mode = '0755'
+
+  # The below directory (absolute path) is used as a target for synchronizing the
+  # Slurm configuration
+  $shared_configdir = ''
+
+  # Where the [git] control repository will be cloned
+  $repo_basedir = '/usr/local/src/git'
 
   # $configdir_owner = $::operatingsystem ? {
     #   default => 'root',
@@ -125,7 +137,9 @@ class slurm::params {
 
   # What level of association-based enforcement to impose on job submissions
   $acct_storageenforce     = ['qos', 'limits', 'associations']
+  $acct_gatherenergytype   = 'none'
   $batchstarttimeout       = 10
+  $getenvtimeout           = 2
   $checkpointtype          = 'none'  # in ['blcr', 'none', 'ompi', 'poe']
   $completewait            = 0
   $corespecplugin          = 'none'
@@ -136,6 +150,7 @@ class slurm::params {
   $defmempercpu            = 0           # 0 = unlimited, mutually exclusive with $defmempernode
   $maxmempercpu            = 0           # 0 = unlimited
   $maxmempernode           = undef
+  $messagetimeout          = 10
   $defmempernode           = undef       # 0 = unlimited, mutually exclusive with $defmempercpu
 
   $disablerootjobs         = true
@@ -199,8 +214,10 @@ $prologflags             = []
 $prologslurmctld         = ''
 $propagateresourcelimits = []
 $propagateresourcelimits_except = [ 'MEMLOCK'] # see https://slurm.schedmd.com/faq.html#memlock
+$resumetimeout           = 60
 # Controls when a DOWN node will be returned to service
 $returntoservice         = 1  # in [0, 1, 2]
+$statesavelocation       = '/var/lib/slurmctld'
 $schedulertype           = 'backfill' # in ['backfill', 'builtin', 'hold']
 $selecttype              = 'cons_res' # in ['bluegene','cons_res','cray','linear','serial' ]
 $selecttype_params       = [ 'CR_Core_Memory', 'CR_CORE_DEFAULT_DIST_BLOCK' ]
@@ -248,274 +265,292 @@ $topology_tree = {}
 ### Partition / QOS definition ###
 ##################################
 # Default Partition / QoS. Format:
-  # '<name>' => {
-    #     nodes         => n,           # Number of nodes
-    #     default       => true|false,  # Default partition?
-    #     hidden        => true|false,  # Hidden partition?
-    #     allowgroups   => 'ALL|group[,group]*'
-    #     allowaccounts => 'ALL|acct[,acct]*'
-    #     allowqos      => 'ALL|qos[,qos]*'
-    #     state         => 'UP|DOWN|DRAIN|INACTIVE'
-    #     oversubscribe => 'EXCLUSIVE|FORCE|YES|NO' (replace :shared)
-    #     #=== Time: Format is minutes, minutes:seconds, hours:minutes:seconds, days-hours,
-    #             days-hours:minutes, days-hours:minutes:seconds or "UNLIMITED"
-    #     default_time  => 'UNLIMITED|DD-HH:MM:SS',
-    #     max_time      => 'UNLIMITED|DD-HH:MM:SS',
-    #     #=== associated QoS config, named 'qos-<partition>' ===
-    #     priority      => n           # QoS priority (default: 0)
-    #     preempt       => 'qos-<name>
-    # }
-  $partitions              = {}
+# '<name>' => {
+  #     nodes         => n,           # Number of nodes
+  #     default       => true|false,  # Default partition?
+  #     hidden        => true|false,  # Hidden partition?
+  #     allowgroups   => 'ALL|group[,group]*'
+  #     allowaccounts => 'ALL|acct[,acct]*'
+  #     allowqos      => 'ALL|qos[,qos]*'
+  #     state         => 'UP|DOWN|DRAIN|INACTIVE'
+  #     oversubscribe => 'EXCLUSIVE|FORCE|YES|NO' (replace :shared)
+  #     #=== Time: Format is minutes, minutes:seconds, hours:minutes:seconds, days-hours,
+  #             days-hours:minutes, days-hours:minutes:seconds or "UNLIMITED"
+  #     default_time  => 'UNLIMITED|DD-HH:MM:SS',
+  #     max_time      => 'UNLIMITED|DD-HH:MM:SS',
+  #     #=== associated QoS config, named 'qos-<partition>' ===
+  #     priority      => n           # QoS priority (default: 0)
+  #     preempt       => 'qos-<name>
+  # }
+$partitions = {}
+$qos        = {}
 
-  ###
-  ### Cgroup support -- cgroup.conf
-  ###
-  # $cgroup_releaseagentdir = $::operatingsystem ? {
-    #   default => '/etc/slurm/cgroup'
-    # }
-  $cgroup_configfile = 'cgroup.conf'
-  $cgroup_automount  = true
-  $cgroup_mountpoint = $::operatingsystem ? {
-    default          => '/sys/fs/cgroup'
-  }
-  ### task/cgroup plugin ###
-  $cgroup_alloweddevices            = []    # if non-empty, cgroup_allowed_devices_file.conf
-  # will host the list of devices that need to be allowed by default for all the jobs
-  $cgroup_alloweddevices_configfile = 'cgroup_allowed_devices_file.conf'
-  $cgroup_allowedkmemspace          = undef   # amount of the allocated kernel memory
-  $cgroup_allowedramspace           = 100     # percentage of the allocated memory
-  $cgroup_allowedswapspace          = 0       # percentage of the swap space
-  $cgroup_constraincores            = true
-  $cgroup_constraindevices          = false   #  constrain the job's allowed devices based on GRES allocated resources.
-  $cgroup_constrainkmemspace        = true
-  $cgroup_constrainramspace         = true
-  $cgroup_constrainswapspace        = true
-  $cgroup_maxrampercent             = 100   # upper bound in percent of total RAM on the RAM constraint for a job.
-  $cgroup_maxswappercent            = 100   # upper bound (in percent of total RAM) on the amount of RAM+Swap
-  $cgroup_maxkmempercent            = 100   # upper bound in percent of total Kmem for a job.
-  $cgroup_minkmemspace              = '30M' # lower bound (in MB) on the memory limits defined by AllowedKmemSpace.
-  $cgroup_minramspace               = '30M' # lower bound (in MB) on the memory limits defined by AllowedRAMSpace & AllowedSwapSpace.
-  $cgroup_taskaffinity              = true  # This feature requires the Portable Hardware Locality (hwloc) library
+###
+### Cgroup support -- cgroup.conf
+###
+# $cgroup_releaseagentdir = $::operatingsystem ? {
+  #   default => '/etc/slurm/cgroup'
+  # }
+$cgroup_configfile = 'cgroup.conf'
+$cgroup_automount  = true
+$cgroup_mountpoint = $::operatingsystem ? {
+  default          => '/sys/fs/cgroup'
+}
+### task/cgroup plugin ###
+$cgroup_alloweddevices            = []    # if non-empty, cgroup_allowed_devices_file.conf
+# will host the list of devices that need to be allowed by default for all the jobs
+$cgroup_alloweddevices_configfile = 'cgroup_allowed_devices_file.conf'
+$cgroup_allowedkmemspace          = undef   # amount of the allocated kernel memory
+$cgroup_allowedramspace           = 100     # percentage of the allocated memory
+$cgroup_allowedswapspace          = 0       # percentage of the swap space
+$cgroup_constraincores            = true
+$cgroup_constraindevices          = false   #  constrain the job's allowed devices based on GRES allocated resources.
+$cgroup_constrainkmemspace        = true
+$cgroup_constrainramspace         = true
+$cgroup_constrainswapspace        = true
+$cgroup_maxrampercent             = 100   # upper bound in percent of total RAM on the RAM constraint for a job.
+$cgroup_maxswappercent            = 100   # upper bound (in percent of total RAM) on the amount of RAM+Swap
+$cgroup_maxkmempercent            = 100   # upper bound in percent of total Kmem for a job.
+$cgroup_minkmemspace              = 30    # lower bound (in MB) on the memory limits defined by AllowedKmemSpace.
+$cgroup_minramspace               = 30    # lower bound (in MB) on the memory limits defined by AllowedRAMSpace & AllowedSwapSpace.
+$cgroup_taskaffinity              = true  # This feature requires the Portable Hardware Locality (hwloc) library
 
-  ###
-  ### Generic RESource management -- gres.conf
-  ###
-  $gres_configfile    = 'gres.conf'
+###
+### Generic RESource management -- gres.conf
+###
+$gres_configfile    = 'gres.conf'
 
-  #####################
-  ### SLURM Daemons ###
-  #####################
-  # ensure the presence (or absence) of slurm
-  $ensure = 'present'
+#
+# SPANK - Slurm Plug-in Architecture for Node and job (K)control
+# See <https://slurm.schedmd.com/spank.html>
+#
+$pluginsdir_target = undef
 
-  # Make sure the clocks, users and groups (UIDs and GIDs) are synchronized
-  # across the cluster.
-  # Slurm user / group identifiers
-  $username = 'slurm'
-  $uid      = 991
-  $group    = $username
-  $gid      = $uid
-  $home     = "/var/lib/${username}"
-  $comment  = 'SLURM workload manager'
-  $shell    = '/bin/bash'
+#####################
+### SLURM Daemons ###
+#####################
+# ensure the presence (or absence) of slurm
+$ensure = 'present'
 
-  # Slurmd associated services
-  $servicename = $::operatingsystem ? {
-    default => 'slurmd'
-  }
-  $controller_servicename = $::operatingsystem ? {
-    default => 'slurmctld'
-  }
-  $dbd_servicename = $::operatingsystem ? {
-    default => 'slurmdbd'
-  }
-  # used for pattern in a service ressource
-  $processname            = $servicename
-  $controller_processname = $controller_servicename
-  $dbd_processname        = $dbd_servicename
+# Make sure the clocks, users and groups (UIDs and GIDs) are synchronized
+# across the cluster.
+# Slurm user / group identifiers
+$username = 'slurm'
+$uid      = 991
+$group    = $username
+$gid      = $uid
+$home     = "/var/lib/${username}"
+$comment  = 'SLURM workload manager'
+$shell    = '/bin/bash'
 
-  $hasstatus = $::operatingsystem ? {
-    /(?i-mx:ubuntu|debian)/        => false,
-    /(?i-mx:centos|fedora|redhat)/ => true,
-    default => true,
-  }
-  $hasrestart = $::operatingsystem ? {
-    default => true,
-  }
+# Slurmd associated services
+$servicename = $::operatingsystem ? {
+  default => 'slurmd'
+}
+$controller_servicename = $::operatingsystem ? {
+  default => 'slurmctld'
+}
+$dbd_servicename = $::operatingsystem ? {
+  default => 'slurmdbd'
+}
+# used for pattern in a service ressource
+$processname            = $servicename
+$controller_processname = $controller_servicename
+$dbd_processname        = $dbd_servicename
 
-  ##########################################
-  ### SLURM Sources and Building Process ###
-  ##########################################
-  # Which group install is required to build the Slurm sources -- see slurm::build[::redhat]
-  # Makes only sense on yum-based systems
-  $groupinstall = $::osfamily ? {
-    'Redhat' => 'Development tools',
-    default  => undef
-  }
-  # Which version of Slurm to grab and build
-  $version = '17.02.7'
+$hasstatus = $::operatingsystem ? {
+  /(?i-mx:ubuntu|debian)/        => false,
+  /(?i-mx:centos|fedora|redhat)/ => true,
+  default => true,
+}
+$hasrestart = $::operatingsystem ? {
+  default => true,
+}
+# Whether to manage the slurm services
+$service_manage = true
 
-  ### SLURM Sources
-  # Checksum for the slurm source archive (empty means no check will be done)
-  $src_checksum = '64009c1ed120b9ce5d79424dca743a06'
-  # From where the Slurm sources can be downloaded
-  $download_baseurl    = 'https://www.schedmd.com/downloads'
-  $download_latestdir  = 'latest'
-  $download_archivedir = 'archive'
-  # Whether the remote source archive has been already archived  - this
-  # unfortunately changes the URL to download from
+##########################################
+### SLURM Sources and Building Process ###
+##########################################
+# Which group install is required to build the Slurm sources -- see slurm::build[::redhat]
+# Makes only sense on yum-based systems
+$groupinstall = $::osfamily ? {
+  'Redhat' => 'Development tools',
+  default  => undef
+}
+# Which version of Slurm to grab and build
+$version = '17.02.7'
 
-  $do_build            = true
-  $do_package_install  = true
-  $src_archived        = false
-  # Where to place the sources
-  $srcdir = $::operatingsystem ? {
-    default => '/usr/local/src'
-  }
-  ### Slurm Build
-  # Where to place the builds of the sources (i.e. RPMs, debs...)
-  $builddir = $::osfamily ? {
-    'Redhat' => '/root/rpmbuild', # rpmbuild _topdir Build directory
-    default  => '/tmp/slurmbuild',
-  }
-  # Build options -- see https://github.com/SchedMD/slurm/blob/master/slurm.spec
-  $build_with = [
-    #'auth_none',    # build auth-none RPM
-    #'blcr',         # require blcr support
-    #'bluegene',     # build bluegene RPM
-    #'cray',         # build for a Cray system without ALPS
-    #'cray_alps',    # build for a Cray system with ALPS
-    #'cray_network', # build for a non-Cray system with a Cray network
-    'lua',           # build Slurm lua bindings (proctrack only for now)
-    'mysql',         # require mysql/mariadb support
-    'openssl',       # require openssl RPM to be installed
-    #'percs',        # build IBM PERCS RPM
-    #'sgijob',       # build proctrack-sgi-job RPM
-  ]
-  $build_without = [
-    #'debug',        # don't compile with debugging symbols
-    #'munge',        # don't build auth-munge RPM
-    #'netloc',       # require netloc support
-    #'pam',          # don't require pam-devel RPM to be installed
-    #'readline',     # don't require readline-devel RPM to be installed
-  ]
-  # Generated RPMs basenames, without versions and os specific suffixes.
-  # Exact filename will be on the form
-  #    <basename>-<version>-<n>.el7.centos.x86_64.rpm
-  #$rpm_basename = 'slurm'
-  $common_rpms_basename = [
-    'slurm',           # Main RPM basename covering slurmd and slurmctld
-    'slurm-contribs',  # Perl tool to print Slurm job state information
-    'slurm-devel',     # Development package for Slurm
-    'slurm-lua',       # Slurm lua bindings
-    'slurm-munge',     # Slurm authentication and crypto implementation using Munge
-    'slurm-pam_slurm', # PAM module for restricting access to compute nodes via Slurm
-    'slurm-perlapi',   # Perl API to Slurm
-    'slurm-plugins',   # Slurm plugins (loadable shared objects)
-  ]
-  $slurmdbd_rpms_basename = [
-    'slurm-slurmdbd',  # Slurm database daemon
-    'slurm-sql',       # Slurm SQL support
-  ]
-  $wrappers = $extra_rpms_basename = [
-    'slurm-openlava',  # openlava/LSF wrappers for transitition from OpenLava/LSF to Slurm
-    'slurm-torque',    # Torque/PBS wrappers for transitition from Torque/PBS to Slurm
-  ]
-  ####################################
-  ### MUNGE authentication service ###
-  ####################################
-  # see https://github.com/dun/munge
-  # We assume it will be used for shared key authentication, and the shared key
-  # can be provided to puppet via a URI.
-  $manage_munge     = true   # Whether or not this module should manage munge
-  # Munge user/group identifiers, and attributes for the munge user
-  $munge_username   = 'munge'
-  $munge_uid        = 992
-  $munge_group      = $munge_username
-  $munge_gid        = $munge_uid
-  $munge_home       = "/var/lib/${munge_username}"
-  $munge_comment    = "MUNGE Uid 'N' Gid Emporium"
-  $munge_shell      = '/sbin/nologin'
-  # Should the key be created if absent ?
-  $munge_create_key = true #false
-  $munge_key        = '/etc/munge/munge.key'
-  # Set the content of the DAEMON_ARGS variable
-  $munge_daemon_args = []
-  # Packages to install
-  $munge_package = $::operatingsystem ? {
-    default => 'munge'
-  }
-  $munge_extra_packages = $::operatingsystem ? {
-    /(?i-mx:ubuntu|debian)/        => [ 'libmunge-dev' ],
-    /(?i-mx:centos|fedora|redhat)/ => [ 'munge-devel', 'munge-libs' ],
-    default => [ ]
-  }
-  $munge_configdir = $::operatingsystem ? {
-    default => '/etc/munge',
-  }
-  $munge_logdir = $::operatingsystem ? {
-    default => '/var/log/munge',
-  }
-  $munge_piddir = $::operatingsystem ? {
-    default => '/var/run/munge',
-  }
-  $munge_default_sysconfig = $::operatingsystem ? {
-    /(?i-mx:ubuntu|debian)/ => '/etc/default/munge',
-    default                 => '/etc/sysconfig/munge'
-  }
-  $munge_servicename = $::operatingsystem ? {
-    default => 'munge'
-  }
-  $munge_processname = $::operatingsystem ? {
-    default => 'munge'
-  }
+### SLURM Sources
+# Checksum for the slurm source archive (empty means no check will be done)
+$src_checksum = '64009c1ed120b9ce5d79424dca743a06'
+# From where the Slurm sources can be downloaded
+$download_baseurl    = 'https://www.schedmd.com/downloads'
+$download_latestdir  = 'latest'
+$download_archivedir = 'archive'
+# Whether the remote source archive has been already archived  - this
+# unfortunately changes the URL to download from
 
-  ##############################################
-  ### Pluggable Authentication Modules (PAM) ###
-  ##############################################
-  $manage_pam          = true   # Whether or not this module should manage pam
-  $use_pam             = true
-  $pam_allowed_users   = []
-  $pam_servicename     = 'slurm'
-  # Default content of /etc/pam.d/slurm
-  $pam_content         = template('slurm/pam_slurm.erb')
-  # Source file for /etc/security/limits.d/slurm.conf
-  $pam_limits_source   = 'puppet:///modules/slurm/limits.memlock'
-  # Whether or not use the pam_slurm_adopt  module (to Adopt incoming
-  # connections into jobs) -- see
-  # https://github.com/SchedMD/slurm/tree/master/contribs/pam_slurm_adopt
-  $use_pam_slurm_adopt = false
+$do_build            = true
+$do_package_install  = true
+$src_archived        = false
+# Where to place the sources
+$srcdir = $::operatingsystem ? {
+  default => '/usr/local/src'
+}
+### Slurm Build
+# Where to place the builds of the sources (i.e. RPMs, debs...)
+$builddir = $::osfamily ? {
+  'Redhat' => '/root/rpmbuild', # rpmbuild _topdir Build directory
+  default  => '/tmp/slurmbuild',
+}
+# Build options -- see https://github.com/SchedMD/slurm/blob/master/slurm.spec
+$build_with = [
+  #'auth_none',    # build auth-none RPM
+  #'blcr',         # require blcr support
+  #'bluegene',     # build bluegene RPM
+  #'cray',         # build for a Cray system without ALPS
+  #'cray_alps',    # build for a Cray system with ALPS
+  #'cray_network', # build for a non-Cray system with a Cray network
+  'lua',           # build Slurm lua bindings (proctrack only for now)
+  'mysql',         # require mysql/mariadb support
+  'openssl',       # require openssl RPM to be installed
+  #'percs',        # build IBM PERCS RPM
+  #'sgijob',       # build proctrack-sgi-job RPM
+]
+$build_without = [
+  #'debug',        # don't compile with debugging symbols
+  #'munge',        # don't build auth-munge RPM
+  #'netloc',       # require netloc support
+  #'pam',          # don't require pam-devel RPM to be installed
+  #'readline',     # don't require readline-devel RPM to be installed
+]
+# Generated RPMs basenames, without versions and os specific suffixes.
+# Exact filename will be on the form
+#    <basename>-<version>-<n>.el7.centos.x86_64.rpm
+#$rpm_basename = 'slurm'
+$common_rpms_basename = [
+  'slurm',           # Main RPM basename covering slurmd and slurmctld
+  'slurm-contribs',  # Perl tool to print Slurm job state information
+  'slurm-devel',     # Development package for Slurm
+  'slurm-lua',       # Slurm lua bindings
+  'slurm-munge',     # Slurm authentication and crypto implementation using Munge
+  'slurm-pam_slurm', # PAM module for restricting access to compute nodes via Slurm
+  'slurm-perlapi',   # Perl API to Slurm
+  'slurm-plugins',   # Slurm plugins (loadable shared objects)
+]
+$slurmdbd_rpms_basename = [
+  'slurm-slurmdbd',  # Slurm database daemon
+  'slurm-sql',       # Slurm SQL support
+]
+$wrappers = $extra_rpms_basename = [
+  'slurm-openlava',  # openlava/LSF wrappers for transitition from OpenLava/LSF to Slurm
+  'slurm-torque',    # Torque/PBS wrappers for transitition from Torque/PBS to Slurm
+]
+####################################
+### MUNGE authentication service ###
+####################################
+# see https://github.com/dun/munge
+# We assume it will be used for shared key authentication, and the shared key
+# can be provided to puppet via a URI.
+$manage_munge     = true   # Whether or not this module should manage munge
+# Munge user/group identifiers, and attributes for the munge user
+$munge_username   = 'munge'
+$munge_uid        = 992
+$munge_group      = $munge_username
+$munge_gid        = $munge_uid
+$munge_home       = "/var/lib/${munge_username}"
+$munge_comment    = "MUNGE Uid 'N' Gid Emporium"
+$munge_shell      = '/sbin/nologin'
+# Should the key be created if absent ?
+$munge_create_key = true #false
+$munge_key        = '/etc/munge/munge.key'
+# Set the content of the DAEMON_ARGS variable
+$munge_daemon_args = []
+# Packages to install
+$munge_package = $::operatingsystem ? {
+  default => 'munge'
+}
+$munge_extra_packages = $::operatingsystem ? {
+  /(?i-mx:ubuntu|debian)/        => [ 'libmunge-dev' ],
+  /(?i-mx:centos|fedora|redhat)/ => [ 'munge-devel', 'munge-libs' ],
+  default => [ ]
+}
+$munge_configdir = $::operatingsystem ? {
+  default => '/etc/munge',
+}
+$munge_logdir = $::operatingsystem ? {
+  default => '/var/log/munge',
+}
+$munge_piddir = $::operatingsystem ? {
+  default => '/var/run/munge',
+}
+$munge_default_sysconfig = $::operatingsystem ? {
+  /(?i-mx:ubuntu|debian)/ => '/etc/default/munge',
+  default                 => '/etc/sysconfig/munge'
+}
+$munge_servicename = $::operatingsystem ? {
+  default => 'munge'
+}
+$munge_processname = $::operatingsystem ? {
+  default => 'munge'
+}
 
-  ######################
-  ### SLURM Plugins  ###
-  ######################
-  $job_submit_lua = 'job_submit.lua'
+##############################################
+### Pluggable Authentication Modules (PAM) ###
+##############################################
+$manage_pam          = true   # Whether or not this module should manage pam
+$use_pam             = true
+$pam_allowed_users   = []
+$pam_servicename     = 'slurm'
+$pam_configfile      = '/etc/pam.d/slurm'
+# Default content of /etc/pam.d/slurm
+$pam_content         = template('slurm/pam_slurm.erb')
+# Default ulimit -- update at least PAM MEMLOCK limits (required for MPI) +
+# nproc (max number of processes)
+$ulimits             = {
+  'memlock' => 'unlimited',
+  'stack'   => 'unlimited',
+  'nproc'   => '10240',
+}
 
-  #####################################################
-  ### SLURM DataBase Configuration (slurmdbd.conf)  ###
-  #####################################################
-  $dbd_configfile      = 'slurmdbd.conf'
-  $dbd_configfile_mode = '0400'
-  $archivedir          = '/tmp'
-  $archiveevents       = false # When purging events also archive them?
-  $archivejobs         = false # When purging jobs also archive them?
-  $archiveresv         = false # When purging reservations also archive them?
-  $archivesteps        = false # When purging steps also archive them?
-  $archivesuspend      = false # When purging suspend data also archive it?
-  $archivetxn          = false # When purging transaction data also archive it?
-  $archiveusage        = false # When purging usage data (Cluster, Association and WCKey) also archive it.
-  $commitdelay         = 0 # How many seconds between commits on a connection from a Slurmctld
-  $dbdhost             = 'localhost'
-  $dbdaddr             = 'localhost'
-  $dbdbackuphost       = ''
-  $storagehost         = $::hostname
-  $storagebackuphost   = ''
-  $storageloc          = 'slurm'
-  $storageport         = 3306
-  $storagetype         = 'mysql'
-  $storageuser         = $username
-  $storagepass         = 'janIR4TvYoSEqNF94QM' # use 'openssl rand 14 -base64' for instance
-  $trackslurmctlddown  = false
+# Source file for /etc/security/limits.d/slurm.conf
+$pam_limits_source   = 'puppet:///modules/slurm/limits.memlock'
+# Whether or not use the pam_slurm_adopt  module (to Adopt incoming
+# connections into jobs) -- see
+# https://github.com/SchedMD/slurm/tree/master/contribs/pam_slurm_adopt
+$use_pam_slurm_adopt = false
+
+######################
+### SLURM Plugins  ###
+######################
+$job_submit_lua = 'job_submit.lua'
+
+#####################################################
+### SLURM DataBase Configuration (slurmdbd.conf)  ###
+#####################################################
+$dbd_configfile      = 'slurmdbd.conf'
+$dbd_configfile_mode = '0400'
+$archivedir          = '/tmp'
+$archiveevents       = false # When purging events also archive them?
+$archivejobs         = false # When purging jobs also archive them?
+$archiveresv         = false # When purging reservations also archive them?
+$archivesteps        = false # When purging steps also archive them?
+$archivesuspend      = false # When purging suspend data also archive it?
+$archivetxn          = false # When purging transaction data also archive it?
+$archiveusage        = false # When purging usage data (Cluster, Association and WCKey) also archive it.
+$commitdelay         = 0 # How many seconds between commits on a connection from a Slurmctld
+$dbdhost             = 'localhost'
+$dbdaddr             = 'localhost'
+$dbdbackuphost       = ''
+$storagehost         = $::hostname
+$storagebackuphost   = ''
+$storageloc          = 'slurm'
+$storageport         = 3306
+$storagetype         = 'mysql'
+$storageuser         = $username
+$storagepass         = 'janIR4TvYoSEqNF94QM' # use 'openssl rand 14 -base64' for instance
+$trackslurmctlddown  = false
 
 
 

@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 16:40 svarrette>
+# Time-stamp: <Thu 2017-10-05 17:58 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -18,7 +18,7 @@ class slurm::common {
   require ::slurm::params
 
   # Install preliminary packages
-  $required_pkgs = concat($slurm::params::pre_requisite_packages, $slurm::params::extra_packages)
+  $required_pkgs = concat($slurm::params::pre_requisite_packages, $slurm::params::extra_packages, $slurm::params::munge_extra_packages)
   $required_pkgs.each |String $pkg| {
     # Safeguard to avoid incompatibility with other puppet modules
     if (!defined(Package[$pkg])) {
@@ -54,13 +54,8 @@ class slurm::common {
     User['slurm'] -> Group['slurm']
   }
 
-  if ($slurm::manage_pam and $slurm::use_pam and $slurm::with_slurmd) {
-    class { '::slurm::pam':
-      ensure        => $slurm::ensure,
-      content       => $slurm::pam_content,
-      limits_source => $slurm::pam_limits_source,
-      allowed_users => $slurm::pam_allowed_users,
-    }
+  if ($slurm::manage_pam and $slurm::use_pam and ($slurm::with_slurmd or defined(Class['slurm::slurmd'])) {
+    include ::slurm::pam
   }
 
   if ($slurm::manage_munge and $slurm::authtype =~ /munge/) {

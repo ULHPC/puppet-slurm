@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2017-09-04 14:58 svarrette>
+# Time-stamp: <Wed 2017-10-04 15:17 svarrette>
 #
 # File::      <tt>slurmctld.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -42,31 +42,43 @@ class slurm::slurmctld inherits slurm
   include ::slurm::config
   Class['slurm::install'] -> Class['slurm::config']
 
-  if $slurm::ensure == 'present' {
-    File <| tag == 'slurm::configfile' |> {
-      require => File[$slurm::configdir],
-      notify  +> Service['slurmctld'],
+  if $slurm::manage_firewall {
+    slurm::firewall { "${slurm::slurmctldport}":
+      ensure => $slurm::ensure,
     }
   }
 
-  service { 'slurmctld':
-    ensure     => ($slurm::ensure == 'present'),
-    enable     => ($slurm::ensure == 'present'),
-    name       => $slurm::params::controller_servicename,
-    pattern    => $slurm::params::controller_processname,
-    hasrestart => $slurm::params::hasrestart,
-    hasstatus  => $slurm::params::hasstatus,
+  if $slurm::ensure == 'present' {
+    File <| tag == 'slurm::configfile' |> {
+      require => File[$slurm::configdir],
+    }
   }
 
-  # if $slurm::ensure == 'present' {
-  #   Class['slurm::install'] ->
-  #   Class['slurm::config'] ->
-  #   Service['slurmctld']
-  # }
-  # else {
-  #   Service['slurmctld'] ->
-  #   Class['slurm::install'] ->
-  #   Class['slurm::config']
-  # }
+  if $slurm::service_manage == true {
+
+    File <| tag == 'slurm::configfile' |> {
+      notify  +> Service['slurmctld'],
+    }
+
+    service { 'slurmctld':
+      ensure     => ($slurm::ensure == 'present'),
+      enable     => ($slurm::ensure == 'present'),
+      name       => $slurm::params::controller_servicename,
+      pattern    => $slurm::params::controller_processname,
+      hasrestart => $slurm::params::hasrestart,
+      hasstatus  => $slurm::params::hasstatus,
+    }
+
+    # if $slurm::ensure == 'present' {
+      #   Class['slurm::install'] ->
+      #   Class['slurm::config'] ->
+      #   Service['slurmctld']
+      # }
+    # else {
+      #   Service['slurmctld'] ->
+      #   Class['slurm::install'] ->
+      #   Class['slurm::config']
+      # }
+  }
 
 }

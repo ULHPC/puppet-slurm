@@ -16,5 +16,4 @@
 #
 node default {
   include ::slurm::pam
-
 }

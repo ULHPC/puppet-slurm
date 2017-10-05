@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 16:23 svarrette>
+# Time-stamp: <Thu 2017-10-05 18:52 svarrette>
 #
 # File::      <tt>config.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -37,6 +37,17 @@ class slurm::config {
       mode   => $slurm::params::configdir_mode,
     }
     File[$slurm::configdir] -> File[$pluginsdir]
+    if ((!empty($slurm::plugins)) and ($slurm::pluginsdir_target != undef)) {
+      $slurm::plugins.each |String $plugin| {
+        file { "${pluginsdir}/${plugin}.conf":
+          ensure  => 'link',
+          target  => "${slurm::pluginsdir_target}/${plugin}.conf",
+          owner   => $slurm::params::username,
+          group   => $slurm::params::group,
+          require => File[$pluginsdir],
+        }
+      }
+    }
   }
   else {
     file { $slurmdirs:
@@ -53,9 +64,9 @@ class slurm::config {
         undef   => template('slurm/slurm.conf.erb'),
         default => $slurm::content,
       },
-    default => $slurm::content
+      default => $slurm::content
     },
-  default => $slurm::content,
+    default => $slurm::content,
   }
   $ensure = $slurm::target ? {
     undef   => $slurm::ensure,
@@ -67,6 +78,13 @@ class slurm::config {
   # notice(defined(Class['slurm::slurmd']))
 
   if $slurm::with_slurmctld or $slurm::with_slurmd or defined(Class['slurm::slurmctld']) or defined(Class['slurm::slurmd']) {
+
+    # Bash completion
+    file { '/etc/bash_completion.d/slurm_completion.sh':
+      ensure => $slurm::ensure,
+      source => 'puppet:///modules/slurm/slurm_completion.sh',
+      mode   => '0644',
+    }
 
     # Main slurm.conf
     $filename = "${slurm::configdir}/${slurm::params::configfile}"

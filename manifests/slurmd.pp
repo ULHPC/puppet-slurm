@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 11:10 svarrette>
+# Time-stamp: <Thu 2017-10-05 18:55 svarrette>
 #
 # File::      <tt>slurmd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -27,22 +27,42 @@ class slurm::slurmd inherits slurm
 
   include ::slurm::install
   include ::slurm::config
+  Class['slurm::install'] -> Class['slurm::config']
 
-  File <| tag == 'slurm::configfile' |> {
-    notify  +> Service['slurmd'],
+  if $slurm::manage_firewall {
+    slurm::firewall { "${slurm::slurmdport}":
+      ensure => $slurm::ensure,
+    }
+    slurm::firewall { "${slurm::srunportrange}":
+      ensure => $slurm::ensure,
+    }
   }
 
-  service { 'slurmd':
-    ensure     => ($slurm::ensure == 'present'),
-    enable     => ($slurm::ensure == 'present'),
-    name       => $slurm::params::servicename,
-    pattern    => $slurm::params::processname,
-    hasrestart => $slurm::params::hasrestart,
-    hasstatus  => $slurm::params::hasstatus,
-    require    => Class['::slurm::config'],
+
+  if $slurm::ensure == 'present' {
+    File <| tag == 'slurm::configfile' |> {
+      require => File[$slurm::configdir],
+    }
   }
 
-  if ($slurm::with_slurmctld or defined(Class['slurm::slurmctld'])) {
-    Service['slurmctld'] -> Service['slurmd']
+  if $slurm::service_manage == true {
+
+    File <| tag == 'slurm::configfile' |> {
+      notify  +> Service['slurmd'],
+    }
+
+    service { 'slurmd':
+      ensure     => ($slurm::ensure == 'present'),
+      enable     => ($slurm::ensure == 'present'),
+      name       => $slurm::params::servicename,
+      pattern    => $slurm::params::processname,
+      hasrestart => $slurm::params::hasrestart,
+      hasstatus  => $slurm::params::hasstatus,
+      require    => Class['::slurm::config'],
+    }
+
+    if ($slurm::with_slurmctld or defined(Class['slurm::slurmctld'])) {
+      Service['slurmctld'] -> Service['slurmd']
+    }
   }
 }

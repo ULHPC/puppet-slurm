@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 11:25 svarrette>
+# Time-stamp: <Tue 2017-09-05 10:49 svarrette>
 #
 # File::      <tt>munge.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -54,14 +54,15 @@
 # does not care about it
 #
 class slurm::munge(
-  String  $ensure      = $slurm::params::ensure,
-  Boolean $create_key  = $slurm::params::munge_create_key,
-  Array $daemon_args   = $slurm::params::munge_daemon_args,
-  Integer $uid         = $slurm::params::munge_uid,
-  Integer $gid         = $slurm::params::munge_gid,
-  String $key_filename = $slurm::params::munge_key,
-  $key_source          = undef,
-  $key_content         = undef,
+  String  $ensure         = $slurm::params::ensure,
+  Boolean $create_key     = $slurm::params::munge_create_key,
+  Array $daemon_args      = $slurm::params::munge_daemon_args,
+  Integer $uid            = $slurm::params::munge_uid,
+  Integer $gid            = $slurm::params::munge_gid,
+  String $key_filename    = $slurm::params::munge_key,
+  $key_source             = undef,
+  $key_content            = undef,
+  Boolean $service_manage = $slurm::service_manage,
 )
 inherits slurm::params
 {
@@ -85,11 +86,15 @@ inherits slurm::params
     ensure => $ensure,
     name   => $slurm::params::munge_package,
   }
-  package { $slurm::params::munge_extra_packages:
-    ensure  => $ensure,
-    require => Package['munge'],
+  $slurm::params::munge_extra_packages.each |String $pkg| {
+    # Safeguard to avoid incompatibility with other puppet modules
+    if (!defined(Package[$pkg])) {
+      package { $slurm::params::munge_extra_packages:
+        ensure  => $ensure,
+        require => Package['munge'],
+      }
+    }
   }
-
   # Prepare the user and group
   group { 'munge':
     ensure => $ensure,
@@ -179,22 +184,24 @@ inherits slurm::params
     content => template('slurm/munge_sysconfig.erb'),
   }
 
-  # Run munge service
-  service { 'munge':
-    ensure     => ($ensure == 'present'),
-    name       => $slurm::params::munge_servicename,
-    enable     => ($ensure == 'present'),
-    pattern    => $slurm::params::munge_processname,
-    hasrestart => $slurm::params::hasrestart,
-    hasstatus  => $slurm::params::hasstatus,
-    require    => [
-      Package['munge'],
-      File[$key_filename],
-      File[$slurm::params::munge_configdir],
-      File[$slurm::params::munge_logdir],
-      File[$slurm::params::munge_piddir]
-    ],
-    subscribe  => File[$key_filename],
+  if $service_manage == true {
+    # Run munge service
+    service { 'munge':
+      ensure     => ($ensure == 'present'),
+      name       => $slurm::params::munge_servicename,
+      enable     => ($ensure == 'present'),
+      pattern    => $slurm::params::munge_processname,
+      hasrestart => $slurm::params::hasrestart,
+      hasstatus  => $slurm::params::hasstatus,
+      require    => [
+        Package['munge'],
+        File[$key_filename],
+        File[$slurm::params::munge_configdir],
+        File[$slurm::params::munge_logdir],
+        File[$slurm::params::munge_piddir]
+      ],
+      subscribe  => File[$key_filename],
+    }
   }
 
 

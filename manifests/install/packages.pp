@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 19:01 svarrette>
+# Time-stamp: <Fri 2017-09-29 15:06 svarrette>
 #
 # File::      <tt>install/packages.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -86,7 +86,7 @@ define slurm::install::packages(
     true    => $default_packages,
     default => $pkgs
   }
-  #notice($pkglist)
+  # notice($pkglist)
   # ... including the version numbers
   $pkgs = suffix($pkglist, "-${version}")
 
@@ -95,10 +95,11 @@ define slurm::install::packages(
       include ::epel
       include ::yum
       $rpms   = suffix($pkgs, '*.rpm')
-      $cwddir = ($pkgdir == $slurm::params::builddir) ? {
-        true    => "${pkgdir}/RPMS/${::architecture}",
-        default => $pkgdir,
-      }
+      $cwddir = "${pkgdir}/RPMS/${::architecture}"
+      # $cwddir = ($pkgdir == $slurm::params::builddir) ? {
+      #   true    => "${pkgdir}/RPMS/${::architecture}",
+      #   default => $pkgdir,
+      # }
       case $ensure {
         'absent': {
           #$execname = "yum-remove-slurm*${version}*.rpm"

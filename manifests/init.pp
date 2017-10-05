@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 09:23 svarrette>
+# Time-stamp: <Thu 2017-10-05 18:49 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -38,9 +38,11 @@
 # @param uid                      [Integer]     Default: 991
 # @param gid                      [Integer]     Default: as $uid
 # @param version                  [String]      Default: '17.02.7'
-# @param with_slurmd              [Boolean]     Default: true
+# @param with_slurmd              [Boolean]     Default: false
 # @param with_slurmctld           [Boolean]     Default: false
 # @param with_slurmdbd            [Boolean]     Default: false
+# @param manage_accounting        [Boolean]     Default: false
+#           Whether or not this module should manage the accounting DB
 # @param manage_munge             [Boolean]     Default: true
 #           Whether or not this module should manage
 # @param manage_pam               [Boolean]     Default: true
@@ -65,19 +67,26 @@
 #          Top directory of the sources builds (i.e. RPMs, debs...)
 #          For instance, built RPMs will be placed under
 #          ${builddir}/RPMS/${::architecture}
-# @param build_with               [Array] Default: [ 'lua', ... ]
+# @param build_with               [Array]       Default: [ 'lua', ... ]
 #          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
 #          List of --with build options to pass to rpmbuild
-# @param build_without            [Array] Default: []
+# @param build_without            [Array]       Default: []
 #          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
 #          List of --without build options to pass to rpmbuild
-#
+# @param service_manage           [Boolean]     Default: true
+#          Whether to manage the slurm services.
 ########################                       ####################################
 ######################## slurm.conf attributes ####################################
 ########################                       ####################################
 # @param configdir                [String]      Default: '/etc/slurm'
 # @param clustername              [String]      Default: 'cluster'
 #          The name by which this Slurm managed cluster is known in the accounting database
+#
+# @param acct_gatherenergytype    [String]   Default: 'none'
+#          Identifies the plugin to be used for energy consumption accounting
+#          Elligible values in [ 'none', 'ipmi', 'rapl' ]
+# @paraù acct_storageenforce      [Array]       Default: ['qos', 'limits', 'associations']
+#          What level of association-based enforcement to impose on job submissions.
 # @param authtype                 [String]      Default: 'munge'
 #          Elligible values in [ 'none', 'munge' ]
 # @param authinfo                 [String]      Default: ''
@@ -193,6 +202,9 @@
 
 # @param returntoservice          [Integer]     Default: 1
 #           Elligible values in [0, 1, 2]
+# @param statesavelocation        [String]      Default: '/var/lib/slurmctld'
+#           Fully qualified pathname of a directory into which the Slurm
+#           controller, slurmctld, saves its state
 # @param schedulertype            [String ]     Default: 'backfill'
 #           Elligible values in ['backfill', 'builtin', 'hold']
 # @param selecttype               [String ]     Default: 'cons_res'
@@ -355,18 +367,17 @@
 ############################ PAM Settings ####################################
 ############################              ####################################
 # @param use_pam                  [Boolean]       Default: true
-# @param pam_allowed_users        [Array]         Default: []
-#        Manage login access (see PAM_ACCESS(8)) in addition to 'root'
-# @param pam_content              [String]        Default: 'templates/pam_slurm.erb'
-#        Content of /etc/pam.d/slurm
-# @param pam_limits_source        [String]        Default: 'puppet:///modules/slurm/limits.memlock'
-#        Source file for /etc/security/limits.d/slurm.conf
-# @param pam_use_pam_slurm_adopt  [Boolean] Default: false
-#        Whether or not use the pam_slurm_adopt  module (to Adopt incoming
-#        connections into jobs) -- see
-#        https://github.com/SchedMD/slurm/tree/master/contribs/pam_slurm_adopt
-
-
+#
+###
+### SPANK - Slurm Plug-in Architecture for Node and job (K)control
+### See <https://slurm.schedmd.com/spank.html>
+###
+# @param pluginsdir_target          [String] Default: undef,
+#          If definied, symlink target base directory for all plugins
+#          <plugin>.conf _i.e._ <configdir>/plugstack.conf.d/<plugin>.conf
+#          points to <pluginsdir_target>/<plugin>.conf
+# @param plugins                    [Array] Default: []
+#          List of plugins to see in <configdir>/plugstack.conf.d/
 
 #
 # @example Default instance
@@ -401,8 +412,11 @@ class slurm(
   $content                                = undef,
   $source                                 = undef,
   $target                                 = undef,
+  Boolean $manage_accounting              = $slurm::params::manage_accounting,
+  Boolean $manage_firewall                = $slurm::params::manage_firewall,
   Boolean $manage_munge                   = $slurm::params::manage_munge,
   Boolean $manage_pam                     = $slurm::params::manage_pam,
+  Boolean $service_manage                 = $slurm::params::service_manage,
   Integer $uid                            = $slurm::params::uid,
   Integer $gid                            = $slurm::params::gid,
   String  $version                        = $slurm::params::version,
@@ -423,6 +437,7 @@ class slurm(
   # Main configuration paramaters
   #
   Array   $acct_storageenforce            = $slurm::params::acct_storageenforce,
+  String  $acct_gatherenergytype          = $slurm::params::acct_gatherenergytype,
   String  $configdir                      = $slurm::params::configdir,
   String  $clustername                    = $slurm::params::clustername,
   String  $authtype                       = $slurm::params::authtype,
@@ -451,6 +466,7 @@ class slurm(
   String  $epilog                         = $slurm::params::epilog,
   String  $epilogslurmctld                = $slurm::params::epilogslurmctld,
   Integer $fastschedule                   = $slurm::params::fastschedule,
+  Integer $getenvtimeout                  = $slurm::params::getenvtimeout,
   Array   $grestypes                      = $slurm::params::grestypes,
   Integer $healthcheckinterval            = $slurm::params::healthcheckinterval,
   String  $healthchecknodestate           = $slurm::params::healthchecknodestate,
@@ -471,6 +487,7 @@ class slurm(
   String  $maildomain                     = $slurm::params::maildomain,
   String  $mailprog                       = $slurm::params::mailprog,
   Integer $maxtaskspernode                = $slurm::params::maxtaskspernode,
+  Integer $messagetimeout                 = $slurm::params::messagetimeout,
   # Default type of MPI to be used.
   String  $mpidefault                     = $slurm::params::mpidefault,
   String  $mpiparams                      = $slurm::params::mpiparams,
@@ -496,7 +513,10 @@ class slurm(
   String  $prologslurmctld                = $slurm::params::prologslurmctld,
   Array   $propagateresourcelimits        = $slurm::params::propagateresourcelimits,
   Array   $propagateresourcelimits_except = $slurm::params::propagateresourcelimits_except,
+  Hash    $qos                            = $slurm::params::qos,
+  Integer $resumetimeout                  = $slurm::params::resumetimeout,
   Integer $returntoservice                = $slurm::params::returntoservice,
+  String  $statesavelocation              = $slurm::params::statesavelocation,
   String  $schedulertype                  = $slurm::params::schedulertype,
   String  $selecttype                     = $slurm::params::selecttype,
   Array   $selecttype_params              = $slurm::params::selecttype_params,
@@ -552,8 +572,8 @@ class slurm(
   Numeric $cgroup_maxrampercent           = $slurm::params::cgroup_maxrampercent,
   Numeric $cgroup_maxswappercent          = $slurm::params::cgroup_maxswappercent,
   Numeric $cgroup_maxkmempercent          = $slurm::params::cgroup_maxkmempercent,
-  String  $cgroup_minkmemspace            = $slurm::params::cgroup_minkmemspace,
-  String  $cgroup_minramspace             = $slurm::params::cgroup_minramspace,
+  Integer $cgroup_minkmemspace            = $slurm::params::cgroup_minkmemspace,
+  Integer $cgroup_minramspace             = $slurm::params::cgroup_minramspace,
   Boolean $cgroup_taskaffinity            = $slurm::params::cgroup_taskaffinity,
   #
   # gres.conf
@@ -576,10 +596,16 @@ class slurm(
   # PAM settings
   #
   Boolean $use_pam                        = $slurm::params::use_pam,
-  Array   $pam_allowed_users              = $slurm::params::pam_allowed_users,
-  String  $pam_content                    = $slurm::params::pam_content,
-  String  $pam_limits_source              = $slurm::params::pam_limits_source,
-  Boolean $use_pam_slurm_adopt            = $slurm::params::use_pam_slurm_adopt,
+  # Array   $pam_allowed_users              = $slurm::params::pam_allowed_users,
+  # String  $pam_content                    = $slurm::params::pam_content,
+  # String  $pam_limits_source              = $slurm::params::pam_limits_source,
+  # Boolean $use_pam_slurm_adopt            = $slurm::params::use_pam_slurm_adopt,
+  #
+  # SPANK - Slurm Plug-in Architecture for Node and job (K)control
+  # See <https://slurm.schedmd.com/spank.html>
+  #
+  $pluginsdir_target                      = undef,
+  Array $plugins                          = [],
 )
 inherits slurm::params
 {
