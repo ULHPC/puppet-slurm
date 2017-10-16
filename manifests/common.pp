@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-10-05 17:58 svarrette>
+# Time-stamp: <Fri 2017-10-06 00:22 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -54,7 +54,7 @@ class slurm::common {
     User['slurm'] -> Group['slurm']
   }
 
-  if ($slurm::manage_pam and $slurm::use_pam and ($slurm::with_slurmd or defined(Class['slurm::slurmd'])) {
+  if ($slurm::manage_pam and $slurm::use_pam and ($slurm::with_slurmd or defined(Class['slurm::slurmd']))) {
     include ::slurm::pam
   }
 

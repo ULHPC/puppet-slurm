@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-10-05 17:51 svarrette>
+# Time-stamp: <Fri 2017-10-06 00:41 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -147,7 +147,7 @@ inherits slurm
   Class['slurm::install'] -> Class['slurm::config']
 
   if $slurm::manage_firewall {
-    slurm::firewall { "${dbdport}":
+    slurm::firewall { $dbdport:
       ensure => $slurm::ensure,
     }
   }
@@ -176,6 +176,7 @@ inherits slurm
         setting => 'bind-address',
         value   => $bind_setting,
         notify  => Service['mysqld'],
+        # refreshonly => true,   # FAIL, does not work...
       }
     }
     mysql::db { $storageloc:

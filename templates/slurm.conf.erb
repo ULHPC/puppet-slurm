@@ -263,7 +263,12 @@ PreemptType=preempt/<%= scope['slurm::preempttype'] %>
 PreemptMode=<%= scope['slurm::preemptmode'].join(',') %>
 
 ### JOB PRIORITY
+# PriorityFlags: Comma delimited list of priority engine modifiers
+<% if scope['slurm::priorityflags'].empty? -%>
 #PriorityFlags=
+<% else -%>
+PriorityFlags=<%= scope['slurm::priorityflags'].join(',') %>
+<% end -%>
 <% if scope['slurm::prioritytype'].empty? -%>
 #PriorityType=priority/basic
 <% else -%>
