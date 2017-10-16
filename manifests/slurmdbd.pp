@@ -147,7 +147,7 @@ inherits slurm
   Class['slurm::install'] -> Class['slurm::config']
 
   if $slurm::manage_firewall {
-    slurm::firewall { "${dbdport}":
+    slurm::firewall { $dbdport:
       ensure => $slurm::ensure,
     }
   }
@@ -170,12 +170,12 @@ inherits slurm
         default   => '127.0.0.1',
       }
       ini_setting { "[mysqld]/bind-address = ${bind_setting}":
-        ensure      => 'present',
-        path        => $mysql::server::config_file,
-        section     => 'mysqld',
-        setting     => 'bind-address',
-        value       => $bind_setting,
-        notify      => Service['mysqld'],
+        ensure  => 'present',
+        path    => $mysql::server::config_file,
+        section => 'mysqld',
+        setting => 'bind-address',
+        value   => $bind_setting,
+        notify  => Service['mysqld'],
         # refreshonly => true,   # FAIL, does not work...
       }
     }
