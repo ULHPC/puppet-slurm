@@ -36,6 +36,24 @@ FalkorLib.config.gitflow do |c|
 	}
 end
 
+###########   up   ###########
+desc "Update your local branches"
+task :up do |t|
+    info "#{t.comment}"
+    FalkorLib::Git.fetch
+    branches = FalkorLib::Git.list_branch
+    #puts branches.to_yaml
+    unless FalkorLib::Git.dirty?
+        FalkorLib.config.gitflow[:branches].each do |t, br|
+            info "updating Git Flow #{t} branch '#{br}' with the 'origin' remote"
+            run %{ git checkout #{br} && git merge origin/#{br} }
+        end
+        run %{ git checkout #{branches[0]} }  # Go back to the initial branch
+    else
+        warning "Unable to update -- your local repository copy is dirty"
+    end
+
+end # task up
 
 require 'falkorlib/tasks/git'
 require 'falkorlib/tasks/puppet'
