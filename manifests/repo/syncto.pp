@@ -21,15 +21,14 @@
 # @param purge        [Boolean] Default: false
 #          If set, rsync will use '--delete'
 define slurm::repo::syncto(
-  Enum[
-    'present',
-    'absent',
-  ]  $ensure      = $slurm::params::ensure,
+  String  $ensure = $slurm::params::ensure,
   String  $target = '',
   String  $subdir = '',
   Boolean $purge  = false,
 )
 {
+  validate_legacy('String', 'validate_re', $ensure, ['^present', '^absent'])
+
   include ::slurm::params
   if !defined(Class['slurm::repo']) {
     include ::slurm::repo

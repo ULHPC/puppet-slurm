@@ -35,7 +35,7 @@ define slurm::acct::user(
   $default_options = empty($defaultaccount) ? {
     true    => {},
     default => { 'DefaultAccount' => $defaultaccount, }
-  }xs
+  }
   slurm::acct::mgr { "user/${name}":
     ensure  => $ensure,
     entity  => 'user',
