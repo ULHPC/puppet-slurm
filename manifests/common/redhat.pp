@@ -24,7 +24,7 @@ class slurm::common::redhat inherits slurm::common {
     require => Yum::Group[$slurm::params::groupinstall],
   }
 
-  if versioncmp($facts['os']['release']['major'], '7') >= 0 {
+  if $slurm::manage_firewall and versioncmp($facts['os']['release']['major'], '7') >= 0 {
     include ::firewalld
   }
 
