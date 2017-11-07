@@ -142,14 +142,14 @@ class { '::slurm':
 
 ### Class `slurm::slurmd`
 
-The main helper class specializing the main slurm class for setting up a Slurmctld daemon aka the slurm controller.
+The main helper class specializing the main slurm class for setting up a Slurmd daemon.
 
 ```ruby
 include ::slurm
-include ::slurm::slurmctld
+include ::slurm::slurmd
 ```
 
-Alternatively, you can use the `with_slurd` parameter of the `::slurm` class:
+Alternatively, you can use the `with_slurmd` parameter of the `::slurm` class:
 
 ```ruby
 class { '::slurm':
