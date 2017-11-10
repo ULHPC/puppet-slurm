@@ -422,6 +422,13 @@ MaxMemPerCPU=<%= scope['slurm::maxmempercpu'] %>
 #MaxMemPerCPU=4196
 <% end -%>
 
+<% unless scope['slurm::defmempernode'].nil? -%>
+DefMemPerNode=<%= scope['slurm::defmempernode'] %>
+<% end -%>
+<% unless scope['slurm::maxmempernode'].nil? -%>
+MaxMemPerNode=<%= scope['slurm::maxmempernode'] %>
+<% end -%>
+
 #
 # CPUs:    Number of logical processors on the node, default to Sockets*CoresPerSocket*ThreadsPerCore
 # Sockets: Number of physical processor sockets/chips on the node
