@@ -1,0 +1,40 @@
+---
+sudo: false
+language: ruby
+cache: bundler
+os:
+  - linux
+script:
+  - "bundle exec rake validate"
+before_install:
+  - gem update bundler
+addons:
+  hosts:
+    - travis.dev
+matrix:
+  fast_finish: true
+  include:
+  - rvm: 2.1.9
+    env: PUPPET_GEM_VERSION="~> 4.6.0"
+  - rvm: 2.1.9
+    env: PUPPET_GEM_VERSION="~> 4.10.0"
+  - rvm: 2.4.1
+    env: PUPPET_GEM_VERSION="~> 5.0.0" STDLIB_LOG_DEPRECATIONS="false"
+  - rvm: 2.4.1
+    env: PUPPET_GEM_VERSION="~> 5.1.0" STDLIB_LOG_DEPRECATIONS="false"
+  - rvm: 2.1.9
+    env: PUPPET_GEM_VERSION="~> 4"
+  - rvm: 2.4.1
+    env: PUPPET_GEM_VERSION="~> 5" STDLIB_LOG_DEPRECATIONS="false"
+  allow_failures:
+  - rvm: 2.1.9
+    env: PUPPET_GEM_VERSION="~> 4.6.0"
+
+notifications:
+  email: false
+# notifications:
+#   email:
+#     on_success: never
+#   slack:
+#     rooms:
+#       secure: S5njaNpzoz3cgjHhGktwE+1Y0BbhADN224OqJoO3RuS1p4hcpvj+YrAfBQGAAm1bH4bPj5e+vJskAELH8GRCgGUHdKJurBM0KHbfSHOM+6wc8iemlyUu9j6x8j17n5BDgKzHgf/WyiQN9GvF8rLWCCdRdlCuaUkLujKQpQk4Wgc=
