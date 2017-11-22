@@ -44,7 +44,6 @@ Style/FormatStringToken:
 Style/Lambda:
   Description: Prefer the keyword for easier discoverability.
   EnforcedStyle: literal
-  AllowInnerSlashes: true
 Style/RegexpLiteral:
   Description: Community preference. See https://github.com/voxpupuli/modulesync_config/issues/168
   EnforcedStyle: slashes

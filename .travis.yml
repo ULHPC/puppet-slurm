@@ -6,6 +6,8 @@ os:
   - linux
 script:
   - "bundle exec rake validate"
+  - "bundle exec rake lint"
+  - "bundle exec rake rubocop"
 before_install:
   - gem update bundler
 addons:
