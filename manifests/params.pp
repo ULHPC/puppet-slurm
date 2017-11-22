@@ -379,11 +379,11 @@ $groupinstall = $::osfamily ? {
   default  => undef
 }
 # Which version of Slurm to grab and build
-$version = '17.02.7'
+$version = '17.02.9'
 
 ### SLURM Sources
 # Checksum for the slurm source archive (empty means no check will be done)
-$src_checksum = '64009c1ed120b9ce5d79424dca743a06'
+$src_checksum = '6bd0b38e6bf08f3426a7dd1e663a2e3c'
 # From where the Slurm sources can be downloaded
 $download_baseurl    = 'https://www.schedmd.com/downloads'
 $download_latestdir  = 'latest'
