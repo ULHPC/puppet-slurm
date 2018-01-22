@@ -202,7 +202,11 @@ ResumeTimeout=<%= scope['slurm::resumetimeout'] %>
 ##################
 ### Accounting ###
 ##################
+<% if scope['slurm::acct_storageenforce'].empty? -%>
+# AccountingStorageEnforce=qos,limits,associations
+<% else -%>
 AccountingStorageEnforce=<%= scope['slurm::acct_storageenforce'].join(',') %>
+<% end -%>
 AccountingStorageHost=<%= scope['slurm::controlmachine'] %>
 AccountingStorageLoc=slurm
 #AccountingStoragePass=
@@ -416,6 +420,13 @@ DefMemPerCPU=<%= scope['slurm::defmempercpu'] %>
 MaxMemPerCPU=<%= scope['slurm::maxmempercpu'] %>
 <% else -%>
 #MaxMemPerCPU=4196
+<% end -%>
+
+<% unless scope['slurm::defmempernode'].nil? -%>
+DefMemPerNode=<%= scope['slurm::defmempernode'] %>
+<% end -%>
+<% unless scope['slurm::maxmempernode'].nil? -%>
+MaxMemPerNode=<%= scope['slurm::maxmempernode'] %>
 <% end -%>
 
 #

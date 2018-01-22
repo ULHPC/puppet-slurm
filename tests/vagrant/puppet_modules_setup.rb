@@ -2,7 +2,7 @@
 ##########################################################################
 # puppet_module_setup.rb
 # @author Sebastien Varrette <Sebastien.Varrette@uni.lu>
-# Time-stamp: <Mon 2017-08-21 13:01 svarrette>
+# Time-stamp: <Wed 2017-11-22 16:31 svarrette>
 #
 # @description Prepare the Vagrant box to test this Puppet module
 #
@@ -18,21 +18,19 @@ include FalkorLib::Common
 
 # Load metadata
 basedir   = File.directory?('/vagrant') ? '/vagrant' : Dir.pwd
-jsonfile  = File.join( basedir, 'metadata.json')
-puppetdir = '/etc/puppetlabs'
+jsonfile  = File.join(basedir, 'metadata.json')
+# puppetdir = '/etc/puppetlabs'
 
-error "Unable to find the metadata.json" unless File.exists?(jsonfile)
+error 'Unable to find the metadata.json' unless File.exist?(jsonfile)
 
-metadata   = JSON.parse( IO.read( jsonfile ) )
-name = metadata["name"].gsub(/^[^\/-]+[\/-]/,'')
-modulepath=`puppet config print modulepath`.chomp
-moduledir=modulepath.split(':').first
+metadata   = JSON.parse(IO.read(jsonfile))
+name       = metadata['name'].gsub(%r{^[^\/-]+[\/-]}, '')
+modulepath = `puppet config print modulepath`.chomp
+moduledir  = modulepath.split(':').first
 
-
-run %{ cd #{moduledir}/.. && librarian-puppet clean && rm Puppetfile* }
-run %{ ln -s /vagrant/metadata.json #{moduledir}/../ }
-run %{ cd #{moduledir}/.. && librarian-puppet install --verbose }
-
+run %( cd #{moduledir}/.. && librarian-puppet clean && rm Puppetfile* )
+run %( ln -s /vagrant/metadata.json #{moduledir}/../ )
+run %( cd #{moduledir}/.. && librarian-puppet install --verbose )
 
 # metadata["dependencies"].each do |dep|
 # 	lib = dep["name"]
@@ -45,13 +43,10 @@ puts "Module path: #{modulepath}"
 puts "Moduledir:   #{moduledir}"
 
 info "set symlink to the '#{basedir}' module for local developments"
-run %{ ln -s #{basedir} #{moduledir}/#{name}  } unless File.exists?("#{moduledir}/#{name}")
+run %( ln -s #{basedir} #{moduledir}/#{name}  } unless File.exist?("#{moduledir}/#{name}") )
 
 # Use of 'hiera.yaml' version 3 is deprecated. It should be converted to version 5
-hiera = '/etc/puppetlabs/puppet/hiera.yaml'
-
-
-
+# hiera = '/etc/puppetlabs/puppet/hiera.yaml'
 
 # Prepare hiera
 # unless File.exists?('/etc/puppet/hiera.yaml')
