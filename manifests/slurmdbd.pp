@@ -155,30 +155,28 @@ inherits slurm
 
   # [Eventually] bootstrap the MySQL DB
   if $storagetype == 'mysql' {
-    include ::mysql::server
-    include ::mysql::server::account_security
     # you now need to  allow remote access from a different host rather than
     # localhost within /etc/my.cnf.d/server.cnf i.e. $mysql::server::config_file
     # i.e. comment the line
     # [mysqld]
     # ...
     # bind-address = 127.0.0.1
-    #
     if $storagehost != 'localhost' {
       $bind_setting = $ensure ? {
         'present' => '0.0.0.0',
         default   => '127.0.0.1',
       }
-      ini_setting { "[mysqld]/bind-address = ${bind_setting}":
-        ensure  => 'present',
-        path    => $mysql::server::config_file,
-        section => 'mysqld',
-        setting => 'bind-address',
-        value   => $bind_setting,
-        notify  => Service['mysqld'],
-        # refreshonly => true,   # FAIL, does not work...
-      }
     }
+    class { '::mysql::server':
+      override_options => {
+        'mysqld' => {
+          'bind-address' => $bind_setting,
+        }
+      },
+    }
+
+    include ::mysql::server::account_security
+
     mysql::db { $storageloc:
       user     => $storageuser,
       password => $storagepass,
