@@ -171,7 +171,7 @@ inherits slurm
       override_options => {
         'mysqld' => {
           'bind-address' => $bind_setting,
-        }
+        },
       },
     }
 
