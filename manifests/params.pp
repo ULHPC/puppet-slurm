@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2018-02-08 14:52 svarrette>
+# Time-stamp: <Thu 2018-02-08 15:09 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -441,7 +441,7 @@ $common_rpms_basename = [
 ]
 $slurmdbd_rpms_basename = [
   'slurm-slurmdbd',  # Slurm database daemon
-  'slurm-sql',       # Slurm SQL support
+  #  'slurm-sql',       # Slurm SQL support
 ]
 $wrappers = $extra_rpms_basename = [
   'slurm-openlava',  # openlava/LSF wrappers for transitition from OpenLava/LSF to Slurm
