@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2018-02-07 17:21 svarrette>
+# Time-stamp: <Thu 2018-02-08 14:52 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -433,11 +433,11 @@ $common_rpms_basename = [
   'slurm',           # Main RPM basename covering slurmd and slurmctld
   'slurm-contribs',  # Perl tool to print Slurm job state information
   'slurm-devel',     # Development package for Slurm
-  'slurm-lua',       # Slurm lua bindings
-  'slurm-munge',     # Slurm authentication and crypto implementation using Munge
+  #'slurm-lua',       # Slurm lua bindings
+  #'slurm-munge',     # Slurm authentication and crypto implementation using Munge
   'slurm-pam_slurm', # PAM module for restricting access to compute nodes via Slurm
   'slurm-perlapi',   # Perl API to Slurm
-  'slurm-plugins',   # Slurm plugins (loadable shared objects)
+  #'slurm-plugins',   # Slurm plugins (loadable shared objects)
 ]
 $slurmdbd_rpms_basename = [
   'slurm-slurmdbd',  # Slurm database daemon
