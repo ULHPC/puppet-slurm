@@ -1,6 +1,6 @@
 {
   "name": "ULHPC-slurm",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "UL HPC Team",
   "mail": "hpc-sysadmins@uni.lu",
   "summary": "Configure and manage Slurm: A Highly Scalable Resource Manager",
@@ -19,10 +19,6 @@
     {
       "name": "puppetlabs-mysql",
       "version_requirement": ">=3.11.0 <4.0.0"
-    },
-    {
-      "name": "puppetlabs-inifile",
-      "version_requirement": ">=2.0.0 <3.0.0"
     },
     {
       "name": "puppetlabs-vcsrepo",
