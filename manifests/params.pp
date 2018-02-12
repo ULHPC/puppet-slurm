@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2018-02-08 15:09 svarrette>
+# Time-stamp: <Mon 2018-02-12 10:22 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -35,6 +35,8 @@ class slurm::params {
       'pam-devel',
       'perl-devel', 'perl-CPAN',
       'readline', 'readline-devel',
+      'libX11-devel',
+      'libssh2-devel',
     ],
     default => []
   }
