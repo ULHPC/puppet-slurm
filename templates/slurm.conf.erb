@@ -78,7 +78,7 @@ JobCheckpointDir=<%= scope['slurm::jobcheckpointdir'] %>
 #JobCredentialPrivateKey=
 #JobCredentialPublicCertificate=
 #JobFileAppend=0
-#JobRequeue=1
+JobRequeue=<%= scope['slurm::jobrequeue'] ? 1 : 0 %>
 #KillOnBadExit=0
 TmpFS=<%= scope['slurm::tmpfs'] %>
 #TrackWCKey=no

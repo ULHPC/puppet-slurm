@@ -141,6 +141,7 @@
 #           Elligible values in ["none", "elasticsearch", "filetxt", "mysql", "script"]
 # @param jobcontainertype         [String]      Default: 'none'
 #           Elligible values in ['cncu', 'none'] (CNCU = Compute Node Clean Up on Cray)
+# @param jobrequeue               [Boolean]     Default: true
 # @param jobsubmitplugins         [Array]       Default: [ 'lua' ]
 # @param killwait                 [Integer]     Default: 30
 #           interval (in seconds) given to a jobs processes between the SIGTERM and SIGKILL
@@ -480,6 +481,7 @@ class slurm(
   String  $jobcomploc                     = $slurm::params::jobcomploc,
   String  $jobcomptype                    = $slurm::params::jobcomptype,
   String  $jobcontainertype               = $slurm::params::jobcontainertype,
+  Boolean $jobrequeue                     = $slurm::params::jobrequeue,
   Array   $jobsubmitplugins               = $slurm::params::jobsubmitplugins,
   Integer $killwait                       = $slurm::params::killwait,
   String  $launchtype                     = $slurm::params::launchtype,
