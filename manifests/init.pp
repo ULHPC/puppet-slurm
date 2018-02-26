@@ -182,9 +182,13 @@
 #           in ['none', 'partition_prio', 'qos']
 # @param prioritydecayhalflife    [String]      Default: '5-0'
 #           aka 5 days
+# @param priorityfavorsmall       [Boolean]     Default: false
 # @param priorityflags            [Array]       Default: []
+# @param prioritymaxage           [String]      Default: '7-0'
 # @param prioritytype             [String]      Default: 'multifactor'
 #           Elligible values in ['basic', 'multifactor']
+# @param priorityusageresetperiod [String]      Default: 'NONE'
+#           Elligible values in ['NONE','NOW','DAILY','WEEKLY','MONTHLY','QUARTERLY','YEARLY']
 # @param priorityweightage        [Integer]     Default: 0
 # @param priorityweightfairshare  [Integer]     Default: 0
 # @param priorityweightjobsize    [Integer]     Default: 0
@@ -200,7 +204,8 @@
 # @param prologslurmctld          [String]      Default: ''
 # @param propagateresourcelimits  [Array]       Default: []
 # @param propagateresourcelimits_except [Array] Default: ['MEMLOCK']
-
+# @param resvoverrun              [Integer]     Default: 0
+# @param resumetimeout            [Integer]     Default: 60
 # @param returntoservice          [Integer]     Default: 1
 #           Elligible values in [0, 1, 2]
 # @param statesavelocation        [String]      Default: '/var/lib/slurmctld'
@@ -217,6 +222,8 @@
 
 # @param slurmctldport            [Integer]     Default: 6817
 # @param slurmdport               [Integer]     Default: 6818
+# @param slurmctldtimeout         [Integer]     Default: 120
+# @param slurmdtimeout            [Integer]     Default: 300
 # @param srunportrange            [String ]     Default: '50000-53000'
 # @param srunepilog               [String ]     Default: ''
 # @param srunprolog               [String ]     Default: ''
@@ -501,7 +508,9 @@ class slurm(
   String  $preempttype                    = $slurm::params::preempttype,
   String  $prioritydecayhalflife          = $slurm::params::prioritydecayhalflife,
   Array   $priorityflags                  = $slurm::params::priorityflags,
+  String  $prioritymaxage                 = $slurm::params::prioritymaxage,
   String  $prioritytype                   = $slurm::params::prioritytype,
+  String  $priorityusageresetperiod       = $slurm::params::priorityusageresetperiod,
   Integer $priorityweightage              = $slurm::params::priorityweightage,
   Integer $priorityweightfairshare        = $slurm::params::priorityweightfairshare,
   Integer $priorityweightjobsize          = $slurm::params::priorityweightjobsize,
@@ -511,11 +520,13 @@ class slurm(
   String  $proctracktype                  = $slurm::params::proctracktype,
   #
   String  $prolog                         = $slurm::params::prolog,
+  Boolean $priorityfavorsmall             = $slurm::params::priorityfavorsmall,
   Array   $prologflags                    = $slurm::params::prologflags,
   String  $prologslurmctld                = $slurm::params::prologslurmctld,
   Array   $propagateresourcelimits        = $slurm::params::propagateresourcelimits,
   Array   $propagateresourcelimits_except = $slurm::params::propagateresourcelimits_except,
   Hash    $qos                            = $slurm::params::qos,
+  Integer $resvoverrun                    = $slurm::params::resvoverrun,
   Integer $resumetimeout                  = $slurm::params::resumetimeout,
   Integer $returntoservice                = $slurm::params::returntoservice,
   String  $statesavelocation              = $slurm::params::statesavelocation,
@@ -528,6 +539,9 @@ class slurm(
   # Ports
   Integer $slurmctldport                  = $slurm::params::slurmctldport,
   Integer $slurmdport                     = $slurm::params::slurmdport,
+  # Timeout
+  Integer $slurmctldtimeout               = $slurm::params::slurmctldtimeout,
+  Integer $slurmdtimeout                  = $slurm::params::slurmdtimeout,
   String  $srunportrange                  = $slurm::params::srunportrange,
   String  $srunepilog                     = $slurm::params::srunepilog,
   String  $srunprolog                     = $slurm::params::srunprolog,

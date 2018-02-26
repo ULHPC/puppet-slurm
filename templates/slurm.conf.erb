@@ -89,7 +89,7 @@ UsePAM=<%= scope['slurm::use_pam'] ? 1 : 0 %>
 SlurmUser=<%= scope['slurm::params::username'] %>
 #SlurmdUser=root
 
-#MailProg=<%= scope['slurm::mailprog'] %>
+MailProg=<%= scope['slurm::mailprog'] %>
 MailDomain=<%= scope['slurm::maildomain'] %>
 RebootProgram=/sbin/reboot
 ReturnToService=<%= scope['slurm::returntoservice'] %>
@@ -178,11 +178,11 @@ HealthCheckNodeState=<%= scope['slurm::healthchecknodestate'] %>
 InactiveLimit=<%= scope['slurm::inactivelimit'] %>
 KillWait=<%= scope['slurm::killwait'] %>
 MessageTimeout=<%= scope['slurm::messagetimeout'] %>
-#ResvOverRun=0
+ResvOverRun=<%= scope['slurm::resvoverrun'] %>
 MinJobAge=300
 #OverTimeLimit=0
-SlurmctldTimeout=120
-SlurmdTimeout=300
+SlurmctldTimeout=<%= scope['slurm::slurmctldtimeout'] %>
+SlurmdTimeout=<%= scope['slurm::slurmdtimeout'] %>
 #UnkillableStepTimeout=60
 #VSizeFactor=0
 Waittime=<%= scope['slurm::waittime'] %>
@@ -284,9 +284,9 @@ PriorityType=priority/<%= scope['slurm::prioritytype'] %>
 PriorityDecayHalfLife=<%= scope['slurm::prioritydecayhalflife'] %>
 <% end -%>
 #PriorityCalcPeriod=
-#PriorityFavorSmall=NO
-#PriorityMaxAge=7-0
-#PriorityUsageResetPeriod=
+PriorityFavorSmall=<%= scope['slurm::priorityfavorsmall'] ? 'YES' : 'NO' %>
+PriorityMaxAge=<%= scope['slurm::prioritymaxage'] %>
+PriorityUsageResetPeriod=<%= scope['slurm::priorityusageresetperiod'] %>
 <% if scope['slurm::priorityweightage'] > 0 -%>
 PriorityWeightAge=<%= scope['slurm::priorityweightage'] %>
 <% else -%>
