@@ -202,8 +202,11 @@ $nodes                   = {}
 $preemptmode             = [ 'REQUEUE' ] # in ['OFF','CANCEL','CHECKPOINT','GANG','REQUEUE','SUSPEND']
 $preempttype             = 'qos'         # in ['none', 'partition_prio', 'qos']
 $prioritydecayhalflife   = '5-0'         # aka 5 days
+$priorityfavorsmall      = false
 $priorityflags           = []            # in ['ACCRUE_ALWAYS','CALCULATE_RUNNING','DEPTH_OBLIVIOUS','FAIR_TREE','INCR_ONLY','MAX_TRES','SMALL_RELATIVE_TO_TIME']
+$prioritymaxage          = '7-0'
 $prioritytype            = 'multifactor' # in ['basic', 'multifactor']
+$priorityusageresetperiod = 'NONE'       # in ['NONE','NOW','DAILY','WEEKLY','MONTHLY','QUARTERLY','YEARLY']
 $priorityweightage       = 0
 $priorityweightfairshare = 0
 $priorityweightjobsize   = 0
@@ -217,6 +220,7 @@ $prologflags             = []
 $prologslurmctld         = ''
 $propagateresourcelimits = []
 $propagateresourcelimits_except = [ 'MEMLOCK'] # see https://slurm.schedmd.com/faq.html#memlock
+$resvoverrun             = 0
 $resumetimeout           = 60
 # Controls when a DOWN node will be returned to service
 $returntoservice         = 1  # in [0, 1, 2]
@@ -232,6 +236,9 @@ $slurmddebug             = 'info'
 $slurmctldport           = 6817
 $slurmdport              = 6818
 $slurmdbdport            = 6819
+# Timeout
+$slurmctldtimeout        = 120
+$slurmdtimeout           = 300
 $srunportrange           = '50000-53000'
 $srunepilog              = ''
 $srunprolog              = ''
@@ -382,11 +389,11 @@ $groupinstall = $::osfamily ? {
   default  => undef
 }
 # Which version of Slurm to grab and build
-$version = '17.11.3'
+$version = '17.11.5'
 
 ### SLURM Sources
 # Checksum for the slurm source archive (empty means no check will be done)
-$src_checksum = '30cb15ae222a142107919383387abbeb'
+$src_checksum = '21fbe051aee43689dcd7711e47064f89'
 # From where the Slurm sources can be downloaded
 $download_baseurl    = 'https://www.schedmd.com/downloads'
 $download_latestdir  = 'latest'
