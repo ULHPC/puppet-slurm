@@ -77,6 +77,7 @@
 # @param storagetype        [String]      Default: 'mysql'
 # @param storageuser        [String]      Default: 'slurm'
 # @param trackslurmctlddown [Boolean]     Default: false
+# @param bootstrap_mysql    [Boolean]     Default: true
 #
 # === Authors
 #
@@ -132,6 +133,7 @@ class slurm::slurmdbd(
   String  $storagetype        = $slurm::params::storagetype,
   String  $storageuser        = $slurm::params::storageuser,
   Boolean $trackslurmctlddown = $slurm::params::trackslurmctlddown,
+  Boolean $bootstrap_mysql    = $slurm::params::bootstrap_mysql,
 )
 inherits slurm
 {
@@ -154,7 +156,7 @@ inherits slurm
 
 
   # [Eventually] bootstrap the MySQL DB
-  if $storagetype == 'mysql' {
+  if $bootstrap_mysql == true {
     # you now need to  allow remote access from a different host rather than
     # localhost within /etc/my.cnf.d/server.cnf i.e. $mysql::server::config_file
     # i.e. comment the line

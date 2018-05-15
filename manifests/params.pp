@@ -575,6 +575,7 @@ $storagetype         = 'mysql'
 $storageuser         = $username
 $storagepass         = 'janIR4TvYoSEqNF94QM' # use 'openssl rand 14 -base64' for instance
 $trackslurmctlddown  = false
+$bootstrap_mysql     = true
 
 
 
