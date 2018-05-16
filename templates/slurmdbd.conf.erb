@@ -30,6 +30,13 @@ DebugLevel=<%= scope['slurm::slurmdbd::debuglevel'] %>
 DebugFlags=<%= scope['slurm::slurmdbd::debugflags'].join(',') %>
 <% end -%>
 LogFile=<%= scope['slurm::logdir'] %>/slurmdbd.log
+
+<% if scope['slurm::slurmdbddebugsyslog'].empty? -%>
+#DebugLevelSyslog=
+<% else -%>
+DebugLevelSyslog=<%= scope['slurm::slurmdbddebugsyslog']%>
+<% end -%>
+
 #PidFile=/var/run/slurmdbd.pid
 # Authentication for communications with the other Slurm components
 AuthType=auth/<%= scope['slurm::authtype'] %>

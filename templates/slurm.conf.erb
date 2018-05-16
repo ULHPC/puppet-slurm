@@ -136,6 +136,19 @@ SlurmctldDebug=<%= scope['slurm::slurmctlddebug'] %>
 SlurmctldLogFile=<%= scope['slurm::params::logdir'] %>/slurmctld.log
 SlurmdDebug=<%= scope['slurm::slurmddebug'] %>
 SlurmdLogFile=<%= scope['slurm::params::logdir'] %>/slurmd.log
+
+<% if scope['slurm::slurmddebugsyslog'].empty? -%>
+#SlurmdSyslogDebug=
+<% else -%>
+SlurmdSyslogDebug=<%= scope['slurm::slurmddebugsyslog']%>
+<% end -%>
+
+<% if scope['slurm::slurmctlddebugsyslog'].empty? -%>
+#SlurmctldSyslogDebug=
+<% else -%>
+SlurmctldSyslogDebug=<%= scope['slurm::slurmctlddebugsyslog']%>
+<% end -%>
+
 #SlurmSchedLogFile=
 #SlurmSchedLogLevel=
 

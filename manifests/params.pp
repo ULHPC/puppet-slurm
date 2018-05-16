@@ -235,8 +235,11 @@ $selecttype              = 'cons_res' # in ['bluegene','cons_res','cray','linear
 $selecttype_params       = [ 'CR_Core_Memory', 'CR_CORE_DEFAULT_DIST_BLOCK' ]
 # Log details
 $slurmdbddebug           = 'info'
+$slurmdbddebugsyslog     = ''
 $slurmctlddebug          = 'info'
+$slurmctlddebugsyslog    = ''
 $slurmddebug             = 'info'
+$slurmddebugsyslog       = ''
 # Ports
 $slurmctldport           = 6817
 $slurmdport              = 6818
