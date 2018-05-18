@@ -550,11 +550,16 @@ class slurm::params {
   $munge_package = $::operatingsystem ? {
     default => 'munge'
   }
-  $munge_extra_packages = $::operatingsystem ? {
-    /(?i-mx:ubuntu|debian)/        => [ 'libmunge-dev' ],
-    /(?i-mx:centos|fedora|redhat)/ => [ 'munge-devel', 'munge-libs' ],
-    default => [ ]
+  $munge_extra_packages = if $slurm::do_build {
+    $::operatingsystem ? {
+      /(?i-mx:ubuntu|debian)/        => [ 'libmunge-dev' ],
+      /(?i-mx:centos|fedora|redhat)/ => [ 'munge-devel', 'munge-libs' ],
+      default => [],
+    }
+  } else {
+    []
   }
+
   $munge_configdir = $::operatingsystem ? {
     default => '/etc/munge',
   }
