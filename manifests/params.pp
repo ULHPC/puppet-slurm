@@ -26,19 +26,24 @@ class slurm::params {
   #### MODULE INTERNAL VARIABLES  #########
   # (Modify to adapt to unsupported OSes)
   #########################################
-  $pre_requisite_packages = $::osfamily ? {
-    'Redhat' => [
-      'hwloc', 'hwloc-devel', 'hwloc-plugins', 'numactl', 'numactl-devel',
-      'lua', 'lua-devel',
-      'mysql-devel',
-      'openssl', 'openssl-devel',
-      'pam-devel',
-      'perl-devel', 'perl-CPAN',
-      'readline', 'readline-devel',
-      'libX11-devel',
-      'libssh2-devel',
-    ],
-    default => []
+  unless $slurm::do_build {
+    $pre_requisite_packages = []
+  }
+  else {
+    $pre_requisite_packages = $::osfamily ? {
+      'Redhat' => [
+        'hwloc', 'hwloc-devel', 'hwloc-plugins', 'numactl', 'numactl-devel',
+        'lua', 'lua-devel',
+        'mysql-devel',
+        'openssl', 'openssl-devel',
+        'pam-devel',
+        'perl-devel', 'perl-CPAN',
+        'readline', 'readline-devel',
+        'libX11-devel',
+        'libssh2-devel',
+      ],
+      default => []
+    }
   }
   # Probably out of scope here, but useful
   $extra_packages = $::osfamily ? {
