@@ -500,10 +500,15 @@ $munge_daemon_args = []
 $munge_package = $::operatingsystem ? {
   default => 'munge'
 }
-$munge_extra_packages = $::operatingsystem ? {
-  /(?i-mx:ubuntu|debian)/        => [ 'libmunge-dev' ],
-  /(?i-mx:centos|fedora|redhat)/ => [ 'munge-devel', 'munge-libs' ],
-  default => [ ]
+
+unless $slurm::do_build {
+  $munge_extra_packages = []
+} else {
+  $munge_extra_packages = $::operatingsystem ? {
+    /(?i-mx:ubuntu|debian)/        => [ 'libmunge-dev' ],
+    /(?i-mx:centos|fedora|redhat)/ => [ 'munge-devel', 'munge-libs' ],
+    default => [ ]
+  }
 }
 $munge_configdir = $::operatingsystem ? {
   default => '/etc/munge',
