@@ -201,17 +201,49 @@ SlurmdTimeout=<%= scope['slurm::slurmdtimeout'] %>
 Waittime=<%= scope['slurm::waittime'] %>
 
 ### POWER SAVE SUPPORT FOR IDLE NODES (optional)
+<% if scope['slurm::suspendprogram'].empty? -%>
 #SuspendProgram=
+<% else -%>
+SuspendProgram=<%= scope['slurm::suspendprogram'] %>
+<% end -%>
+
+<% if scope['slurm::resumeprogram'].empty? -%>
 #ResumeProgram=
+<% else -%>
+ResumeProgram=<%= scope['slurm::resumeprogram'] %>
+<% end -%>
+
+<% if scope['slurm::suspendtimeout'] > 0 -%>
+SuspendTimeout=<%= scope['slurm::suspendtimeout'] %>
+<% else -%>
 #SuspendTimeout=
+<% end -%>
+
+<% if scope['slurm::resumetimeout'] > 0 -%>
 ResumeTimeout=<%= scope['slurm::resumetimeout'] %>
+<% else -%>
+#ResumeTimeout=
+<% end -%>
+
+<% if scope['slurm::resumerate'] > 0 -%>
+ResumeRate=<%= scope['slurm::resumerate'] %>
+<% else -%>
 #ResumeRate=
+<% end -%>
+
+<% if scope['slurm::suspendexcnodes'].empty? -%>
 #SuspendExcNodes=
+<% else -%>
+SuspendExcNodes=<%= scope['slurm::suspendexcnodes'] %>
+<% end -%>
+
 #SuspendExcParts=
 #SuspendRate=
+<% if scope['slurm::suspendtime'] > 0 -%>
+SuspendTime=<%= scope['slurm::suspendtime'] %>
+<% else -%>
 #SuspendTime=
-
-
+<% end -%>
 ##################
 ### Accounting ###
 ##################
