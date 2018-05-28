@@ -271,6 +271,12 @@ JobAcctGatherParams=<%= scope['slurm::jobacctgatherparams'] %>
 Licenses=<%= scope['slurm::licenses'] %>
 <% end -%>
 
+<% if scope['slurm::acctgatherprofiletype'].empty? -%>
+#AcctGatherProfileType=
+<% else -%>
+AcctGatherProfileType=<%= scope['slurm::acctgatherprofiletype'] %>
+<% end -%>
+
 
 
 #MaxJobCount=5000

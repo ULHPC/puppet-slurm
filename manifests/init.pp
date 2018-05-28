@@ -138,7 +138,7 @@
 #           0 = unlimited
 # @param jobacctgathertype        [String]      Default: 'cgroup'
 #           Elligible values in [ "linux", "cgroup", "none"]
-# @param jobacctgatherfrequency   [Integer]     Default: 30
+# @param jobacctgatherfrequency   Variant[String,Integer] Default: 30
 # @param jobacctgatherparams      [String]      Default: ''
 #           Elligible values in [ 'NoShared', 'UsePss', 'NoOverMemoryKill']
 # @param jobcheckpointdir         [String]      Default: ''
@@ -223,6 +223,7 @@
 # @param suspendexcnodes          [String]      Default: ''
 # @param suspendexcparts          [String]      Default: ''
 # @param resumerate               [Integer]     Default: 300
+# @param acctgatherprofiletype    [String]      Default: 'acct_gather_profile/none'
 # @param returntoservice          [Integer]     Default: 1
 #           Elligible values in [0, 1, 2]
 # @param statesavelocation        [String]      Default: '/var/lib/slurmctld'
@@ -506,7 +507,7 @@ class slurm(
   String  $healthcheckprogram             = $slurm::params::healthcheckprogram,
   Integer $inactivelimit                  = $slurm::params::inactivelimit,
   String  $jobacctgathertype              = $slurm::params::jobacctgathertype,
-  Integer $jobacctgatherfrequency         = $slurm::params::jobacctgatherfrequency,
+  Variant[String,Integer]  $jobacctgatherfrequency         = $slurm::params::jobacctgatherfrequency,
   String  $jobacctgatherparams            = $slurm::params::jobacctgatherparams,
   String  $jobcheckpointdir               = $slurm::params::jobcheckpointdir,
   String  $jobcomphost                    = $slurm::params::jobcomphost,
@@ -560,6 +561,7 @@ class slurm(
   String  $suspendexcnodes                = $slurm::params::suspendexcnodes,
   String  $suspendexcparts                = $slurm::params::suspendexcparts,
   Integer $resumerate                     = $slurm::params::resumerate,
+  String  $acctgatherprofiletype          = $slurm::params::acctgatherprofiletype,
   Integer $returntoservice                = $slurm::params::returntoservice,
   String  $statesavelocation              = $slurm::params::statesavelocation,
   String  $schedulertype                  = $slurm::params::schedulertype,
