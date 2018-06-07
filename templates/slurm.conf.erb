@@ -541,6 +541,7 @@ NodeName=<%= name.ljust(12) %> <%= content %>
 <%       content << " AllowQos=#{v['allowqos'].is_a?(Array) ? v['allowqos'].join(',') : v['allowqos']}"      if v['allowqos'] -%>
 <%       content << ' DisableRootJobs=YES'  if (!v['disablerootjobs'].nil?  and v['disablerootjobs']  and content !~ /DisableRootJobs=/) -%>
 <%       content << " TRESBillingWeights=#{v['TRESbillingweights'].is_a?(Array) ? v['TRESbillingweights'].join(',') : v['TRESbillingweights']}" if v['TRESbillingweights'] -%>
+<%       content << " MaxTime=#{v['maxtime']}" unless (v['maxtime'].nil? or content =~ /MaxTime=/) -%>
 <%    end -%>
 <%    unless (content.nil? or content.empty?) -%>
 PartitionName=<%= name.ljust(12)  %> <%= content %>
