@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-10-05 18:49 svarrette>
+# Time-stamp: <Mon 2019-01-28 22:11 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -82,6 +82,7 @@
 # @param clustername              [String]      Default: 'cluster'
 #          The name by which this Slurm managed cluster is known in the accounting database
 #
+# @param accountingstorageTRES    [String]   Default: ''
 # @param acct_gatherenergytype    [String]   Default: 'none'
 #          Identifies the plugin to be used for energy consumption accounting
 #          Elligible values in [ 'none', 'ipmi', 'rapl' ]
@@ -194,6 +195,7 @@
 # @param priorityweightjobsize    [Integer]     Default: 0
 # @param priorityweightpartition  [Integer]     Default: 0
 # @param priorityweightqos        [Integer]     Default: 0
+# @param $priorityweightTRES      [String]      Default: ''
 # @param privatedata              [Array]       Default: []
 #           Elligible values in ['accounts','cloud','jobs','nodes','partitions','reservations','usage','users']
 # @param proctracktype            [String]      Default: 'cgroup'
@@ -235,6 +237,7 @@
 # @param taskpluginparams         [Array  ]     Default: ['cpusets']
 # @param taskprolog               [String ]     Default: ''
 # @param tmpfs                    [String ]     Default: '/tmp'
+# @param TRESbillingweights       [String]      Default: ''
 # @param waittime                 [Integer]     Default: 0
 #
 ############################                          ####################################
@@ -552,6 +555,12 @@ class slurm(
   String  $taskprolog                     = $slurm::params::taskprolog,
   String  $tmpfs                          = $slurm::params::tmpfs,
   Integer $waittime                       = $slurm::params::waittime,
+  # Trackable RESources (TRES)
+  String  $accountingstorageTRES          = $slurm::params::accountingstorageTRES,
+  String  $priorityweightTRES             = $slurm::params::priorityweightTRES,
+  String  $TRESbillingweights             = $slurm::params::TRESbillingweights,
+
+
   #
   # Which topology plugin to be used for determining the network topology and
   # optimizing job allocations to minimize network contention
