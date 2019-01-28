@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2018-10-01 13:36 svarrette>
+# Time-stamp: <Mon 2019-01-28 17:22 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -389,11 +389,11 @@ $groupinstall = $::osfamily ? {
   default  => undef
 }
 # Which version of Slurm to grab and build
-$version = '17.11.9-2'
+$version = '17.11.12'
 
 ### SLURM Sources
 # Checksum for the slurm source archive (empty means no check will be done)
-$src_checksum = 'f0d0fbc730a0f7d1fa02081e2c514ee8'
+$src_checksum = '94fb13b509d23fcf9733018d6c961ca9'
 # From where the Slurm sources can be downloaded
 $download_baseurl    = 'https://www.schedmd.com/downloads'
 $download_latestdir  = 'latest'
