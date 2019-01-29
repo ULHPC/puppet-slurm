@@ -2,7 +2,7 @@
 ##########################################################################
 # puppet_module_setup.rb
 # @author Sebastien Varrette <Sebastien.Varrette@uni.lu>
-# Time-stamp: <Wed 2017-11-22 16:31 svarrette>
+# Time-stamp: <Tue 2019-01-29 08:34 svarrette>
 #
 # @description Prepare the Vagrant box to test this Puppet module
 #
@@ -43,7 +43,7 @@ puts "Module path: #{modulepath}"
 puts "Moduledir:   #{moduledir}"
 
 info "set symlink to the '#{basedir}' module for local developments"
-run %( ln -s #{basedir} #{moduledir}/#{name}  } unless File.exist?("#{moduledir}/#{name}") )
+run %( ln -s #{basedir} #{moduledir}/#{name} ) unless File.exist?("#{moduledir}/#{name}")
 
 # Use of 'hiera.yaml' version 3 is deprecated. It should be converted to version 5
 # hiera = '/etc/puppetlabs/puppet/hiera.yaml'

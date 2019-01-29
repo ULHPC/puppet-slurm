@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Time-stamp: <Sun 2017-08-20 19:08 svarrette>
+# Time-stamp: <Tue 2019-01-29 08:27 svarrette>
 ###########################################################################################
 # __     __                          _     ____              _       _
 # \ \   / /_ _  __ _ _ __ __ _ _ __ | |_  | __ )  ___   ___ | |_ ___| |_ _ __ __ _ _ __
@@ -64,6 +64,10 @@ EOF
 
 #######################  Per OS Bootstrapping function ##########################
 setup_redhat() {
+    info "fix screen title"
+    touch    /etc/sysconfig/bash-prompt-screen
+    chmod +x /etc/sysconfig/bash-prompt-screen
+
     info "Running yum update"
     yum update -y  >/dev/null
 
