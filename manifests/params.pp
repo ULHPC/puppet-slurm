@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2019-01-29 08:30 svarrette>
+# Time-stamp: <Tue 2019-01-29 10:42 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -456,10 +456,17 @@ $slurmdbd_rpms_basename = [
   'slurm-slurmdbd',  # Slurm database daemon
   #  'slurm-sql',       # Slurm SQL support
 ]
-$wrappers = $extra_rpms_basename = [
+$slurmctld_rpms_basename = [
+  'slurm-slurmctld',  # Slurm controller daemon - only on the head node
+]
+$slurmd_rpms_basename = [
+  'slurm-slurmd',     # Slurm daemon - only on the compute nodes
+]
+$extra_rpms_basename = [
   'slurm-openlava',  # openlava/LSF wrappers for transitition from OpenLava/LSF to Slurm
   'slurm-torque',    # Torque/PBS wrappers for transitition from Torque/PBS to Slurm
 ]
+$wrappers = []
 ####################################
 ### MUNGE authentication service ###
 ####################################
