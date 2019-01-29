@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2019-01-28 22:09 svarrette>
+# Time-stamp: <Tue 2019-01-29 08:30 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -250,7 +250,7 @@ $taskplugin              = 'cgroup' # in ['affinity', 'cgroup','none']
 $taskpluginparams        = ['cpusets']
 $taskprolog              = ''
 $tmpfs                   = '/tmp'
-$TRESbillingweights      = ''
+$tresbillingweights      = ''
 $waittime                = 0
 ######
 ###### Hierarchical Network Topology description -- topology.conf

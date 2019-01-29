@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2019-01-28 22:11 svarrette>
+# Time-stamp: <Tue 2019-01-29 08:29 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -237,7 +237,8 @@
 # @param taskpluginparams         [Array  ]     Default: ['cpusets']
 # @param taskprolog               [String ]     Default: ''
 # @param tmpfs                    [String ]     Default: '/tmp'
-# @param TRESbillingweights       [String]      Default: ''
+# @param tresbillingweights       [String]      Default: ''
+#           Normally associated to your partition definitions (typically under the 'DEFAULT' partition settings)
 # @param waittime                 [Integer]     Default: 0
 #
 ############################                          ####################################
@@ -558,8 +559,7 @@ class slurm(
   # Trackable RESources (TRES)
   String  $accountingstorageTRES          = $slurm::params::accountingstorageTRES,
   String  $priorityweightTRES             = $slurm::params::priorityweightTRES,
-  String  $TRESbillingweights             = $slurm::params::TRESbillingweights,
-
+  String  $tresbillingweights             = $slurm::params::tresbillingweights,
 
   #
   # Which topology plugin to be used for determining the network topology and
