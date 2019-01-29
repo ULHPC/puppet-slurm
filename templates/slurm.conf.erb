@@ -313,6 +313,29 @@ PriorityWeightQOS=<%= scope['slurm::priorityweightqos'] %>
 #PriorityWeightQOS=
 <% end -%>
 
+###########################################
+### Trackable RESources (TRES) policies ###
+###########################################
+# See https://slurm.schedmd.com/tres.html
+# Define which TRES are to be tracked on the system
+<% if scope['slurm::accountingstorageTRES'].empty? -%>
+# AccountingStorageTRES   = cpu,mem,energy,node,billing
+<% else -%>
+AccountingStorageTRES=<%= scope['slurm::accountingstorageTRES'] %>
+<% end -%>
+<% if scope['slurm::priorityweightTRES'].empty? -%>
+# PriorityWeightTRES =
+<% else -%>
+PriorityWeightTRES=<%= scope['slurm::priorityweightTRES'] %>
+<% end -%>
+# For each partition this option is used to define the billing weights of each
+# TRES type that will be used in calculating the usage of a job.
+<% if scope['slurm::tresbillingweights'].empty? -%>
+# TRESBillingWeights =
+<% else -%>
+TRESBillingWeights=<%= scope['slurm::tresbillingweights'] %>
+<% end -%>
+
 
 ###########################
 ### Allocation policies ###
