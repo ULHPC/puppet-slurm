@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Time-stamp: <Tue 2019-01-29 08:27 svarrette>
+# Time-stamp: <Thu 2019-01-31 20:05 svarrette>
 ###########################################################################################
 # __     __                          _     ____              _       _
 # \ \   / /_ _  __ _ _ __ __ _ _ __ | |_  | __ )  ___   ___ | |_ ___| |_ _ __ __ _ _ __
@@ -7,7 +7,7 @@
 #   \ V / (_| | (_| | | | (_| | | | | |_  | |_) | (_) | (_) | |_\__ \ |_| | | (_| | |_) |
 #    \_/ \__,_|\__, |_|  \__,_|_| |_|\__| |____/ \___/ \___/ \__|___/\__|_|  \__,_| .__/
 #              |___/                                                              |_|
-#                  Copyright (c) 2017 UL HPC Team <hpc-sysadmins@uni.lu>
+#                  Copyright (c) 2017-2019 UL HPC Team <hpc-sysadmins@uni.lu>
 ###########################################################################################
 # ULHPC (prefered) way to see a Vagrant box configured.
 #
@@ -30,7 +30,7 @@ SUPPORT_MAIL='hpc-sysadmins@uni.lu'
 EXTRA_PACKAGES=
 
 # List of default packages to install
-COMMON_DEFAULT_PACKAGES="ruby wget figlet git screen bash-completion rsync vim"
+COMMON_DEFAULT_PACKAGES="ruby wget figlet git screen bash-completion rsync vim htop"
 
 GEMS="librarian-puppet falkorlib"
 
@@ -197,6 +197,7 @@ EOF
 }
 
 setup_gems() {
+    info "installing gems ${GEMS}"
     sudo gem install --no-ri --no-rdoc ${GEMS}
 }
 
