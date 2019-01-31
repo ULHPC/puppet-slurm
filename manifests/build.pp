@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-08-31 16:41 svarrette>
+# Time-stamp: <Thu 2019-01-31 20:03 svarrette>
 #
 # File::      <tt>build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -113,6 +113,7 @@ define slurm::build(
     command => $cmd,
     cwd     => '/root',
     user    => 'root',
+    timeout => 600,
     onlyif  => $check_onlyif,
     unless  => $check_unless,
   }
