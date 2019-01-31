@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Time-stamp: <Thu 2019-01-31 20:05 svarrette>
+# Time-stamp: <Thu 2019-01-31 23:04 svarrette>
 ###########################################################################################
 # __     __                          _     ____              _       _
 # \ \   / /_ _  __ _ _ __ __ _ _ __ | |_  | __ )  ___   ___ | |_ ___| |_ _ __ __ _ _ __
@@ -30,7 +30,7 @@ SUPPORT_MAIL='hpc-sysadmins@uni.lu'
 EXTRA_PACKAGES=
 
 # List of default packages to install
-COMMON_DEFAULT_PACKAGES="ruby wget figlet git screen bash-completion rsync vim htop"
+COMMON_DEFAULT_PACKAGES="ruby wget figlet git screen bash-completion rsync vim htop mailx"
 
 GEMS="librarian-puppet falkorlib"
 
