@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2019-01-29 11:42 svarrette>
+# Time-stamp: <Thu 2019-01-31 17:03 svarrette>
 #
 # File::      <tt>install/packages.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -49,9 +49,9 @@ define slurm::install::packages(
     fail("Module ${module_name} expects a non-empty list of [built] packages to install OR specification of which daemon to install (i.e slurm{d,ctld,dbd})")
   }
 
-  notice("Package installation for slurmd    = ${slurmd}")
-  notice("Package installation for slurmctld = ${slurmctld}")
-  notice("Package installation for slurmdbd  = ${slurmdbd}")
+  # notice("Package installation for slurmd    = ${slurmd}")
+  # notice("Package installation for slurmctld = ${slurmctld}")
+  # notice("Package installation for slurmdbd  = ${slurmdbd}")
 
   # Let's build the [default] package list
   if  $::osfamily == 'RedHat' {
