@@ -1,0 +1,15 @@
+# -*- mode: yaml -*-
+# Time-stamp: <Thu 2019-01-31 01:03 svarrette>
+###########################################################################
+# Puppet hiera settings for a SLURM controller
+---
+
+# Profiles key may be used to include profile classes
+profiles:
+- '::profiles::slurm'
+- '::profiles::slurm::slurmdbd'
+- '::profiles::slurm::slurmctld'
+
+slurm::with_slurmd: false
+slurm::with_slurmctld: true
+slurm::with_slurmdbd: true
