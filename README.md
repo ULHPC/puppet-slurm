@@ -6,7 +6,7 @@
 
 Configure and manage [Slurm](https://slurm.schedmd.com/): A Highly Scalable Resource Manager
 
-      Copyright (c) 2017 UL HPC Team <hpc-sysadmins@uni.lu>
+      Copyright (c) 2017-2019 UL HPC Team <hpc-sysadmins@uni.lu>
       .             see also http://hpc.uni.lu
 
 ## Overview
@@ -34,15 +34,19 @@ In particular, this module implements the following elements:
 | `slurm::slurmdbd`  | Specialized class for [Slurmdbd](https://slurm.schedmd.com/slurmdbd.html), the Slurm Database Daemon.                |
 | `slurm::slurmctld` | Specialized class for [Slurmctld](https://slurm.schedmd.com/slurmctld.html), the central management daemon of Slurm. |
 | `slurm::slurmd`    | Specialized class for [Slurmd](https://slurm.schedmd.com/slurmd.html), the compute node daemon for Slurm.            |
+| `slurm::login`     | Specialized class to configure a Login node (i.e. without any of the slurm daemons)                                  |
 | `slurm::munge`     | Manages [MUNGE]( https://github.com/dun/munge), an authentication service for creating and validating credentials.   |
 | `slurm::pam`       | Handle PAM aspects  for SLURM (Memlock for MPI etc.)                                                                 |
+| `slurm::repo`      | Takes care of the control repository hosting the slurm configuration of the cluster                                  |
 
-| Puppet Defines             | Description                                                                                                    |
-|----------------------------|----------------------------------------------------------------------------------------------------------------|
-| `slurm::download`          | takes care of downloading the SLURM sources for a given version  passed as resource name                       |
-| `slurm::build`             | building Slurm sources into packages (_i.e. RPMs for the moment) for a given version  passed as resource name  |
-| `slurm::install::packages` | installs the Slurm packages, typically built from `slurm::build`, for a given version passed as resource name. |
-| `slurm::acct::cluster`     | adding (or removing) a cluster to the slurm database                                                           |
+| Puppet Defines                            | Description                                                                                                    |
+|-------------------------------------------|----------------------------------------------------------------------------------------------------------------|
+| `slurm::download`                         | takes care of downloading the SLURM sources for a given version  passed as resource name                       |
+| `slurm::build`                            | building Slurm sources into packages (_i.e. RPMs for the moment) for a given version  passed as resource name  |
+| `slurm::install::packages`                | installs the Slurm packages, typically built from `slurm::build`, for a given version passed as resource name. |
+| `slurm::acct:mgr`                         | Generic wrapper for all sacctmgr commands                                                                      |
+| `slurm::acct::{account,cluster,qos,user}` | adding (or removing) a {account,cluster,qos,user} to the slurm accounting database                             |
+| `slurm::firewall`                         | takes care of firewall aspects for SLURM                                                                       |
 
 In addition, this puppet module implements several **private** classes:
 
@@ -50,6 +54,11 @@ In addition, this puppet module implements several **private** classes:
 * `slurm::install`: install the Slurm packages, eventually built from downloaded sources
 * `slurm::config[::{cgroup,gres,topology}]`: handles the various aspects of the configuration of SLURM daemons -- see <https://slurm.schedmd.com/slurm.conf.html#lbAN>
 * `slurm::plugins::lua`: takes care of the Job Submit plugin 'lua' i.e. of the file [`job_submit.lua`](https://github.com/SchedMD/slurm/blob/master/contribs/lua/job_submit.lua).
+* `slurm::accounting`: Setup the accounting structure
+
+Also, a couple of extra definition in used in our infrastructure:
+
+* `slurm::repo::syncto`: synchronize the control repository of the slurm configuration (which is cloned using the '`slurm::repo`' class) toward a directory (typically a shared GPFS/NFS mountpoint to make it available to all login and compute nodes)
 
 All these components are configured through a set of variables you will find in [`manifests/params.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/manifests/params.pp).
 
@@ -87,6 +96,20 @@ See [`metadata.json`](https://github.com/ULHPC/puppet-slurm/blob/devel/metadata.
 
 ## Overview and Usage
 
+The best way to use this module in a flexible way is to rely on [Hiera](https://puppet.com/docs/puppet/5.4/hiera_intro.html) coupled with a [role and profile](https://puppet.com/docs/pe/2017.1/r_n_p_intro.html).
+
+* See the generic manifest [`default.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/manifests/default.pp)
+* See the [`hiera.yaml`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/hiera.yaml) and the associated [`hieradata/`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/hieradata/), aimed at taking advantage of a custom `role` [facts](https://puppet.com/docs/facter/3.9/fact_overview.html)
+* sample/simple profiles for each type of deployment can be found in [site/profiles/manifests/](site/profiles/manifests/)
+    - [`profiles::slurm`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm.pp): Profile (base) class used for slurm general settings
+    - [`profiles::slurm::slurmctld`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm/slurmctld.pp): Profile class used for setting up a Slurm Head node (where the slurmctld daemon runs)
+    - [`profiles::slurm::slurmdbd`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm/slurmdbd.pp): Profile class used for setting up a Slurm DBD (DataBase Daemon) node
+    - [`profiles::slurm::slurmd`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm/slurmd.pp): Profile class used for setting up a Slurm Compute node
+    - [`profiles::slurm::login`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm/login.pp): Profile class used for setting up a Login node (cluster frontend/access) i.e. without any daemon.
+
+
+The main classes are now detailed.
+
 ### Class `slurm`
 
 This is the main class defined in this module.
@@ -97,11 +120,16 @@ Use it as follows:
 include ::slurm
 ```
 
-See also [`tests/init.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/init.pp) or a more advanced usage (defining the network topology, the computing nodes and the SLURM partitions) in [`tests/advanced.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/advanced.pp)
+In which case you can define the class parameters using [Hiera](https://puppet.com/docs/puppet/5.4/hiera_intro.html) -- see for instance the default hiera configuration (used effectively in the vagrant deployment) in [`hieradata/default.yaml`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/hieradata/defaults.yaml).
+
+You can also prefer a profile-based approach -- see [`profiles::slurm`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm.pp) as a sample profile (base) class used for slurm general settings.
+
+Other usage examples are proposed in [`tests/init.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/init.pp), a more advanced usage (defining the network topology, the computing nodes and the SLURM partitions) in [`tests/advanced.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/advanced.pp).
+
 
 ### Class `slurm::slurmdbd`
 
-This class is responsible for setting up a [Slurm Database Daemon](https://slurm.schedmd.com/slurmdbd.html), which provides a secure enterprise-wide interface to a database for Slurm.
+This class is responsible for setting up a __[Slurm Database Daemon](https://slurm.schedmd.com/slurmdbd.html)__, which provides a secure enterprise-wide interface to a database for Slurm.
 In particular, it can run relatively independently of the other slurm daemon instances and thus is proposed as a separate independent class.
 
 You can simply configure it as follows:
@@ -119,13 +147,16 @@ class { '::slurm':
 }
 ```
 
-See also [`tests/slurmdbd.pp`](tests/slurmdbd.pp)
+See also [`tests/slurmdbd.pp`](tests/slurmdbd.pp), the sample profile [`profiles::slurm::slurmdbd`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm/slurmdbd.pp).
 
-The `slurm::slurmdbd` accepts also so many parameters that they are not listed here -- see the [puppet strings `@param`] comments of [`manifests/slurmdbd.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/manifests/slurmddbd.pp) for more details
+The `slurm::slurmdbd` accepts also so many parameters that they are not listed here -- see the [puppet strings `@param`] comments of [`manifests/slurmdbd.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/manifests/slurmddbd.pp) for more details.
+
+For a sample [Hiera](https://puppet.com/docs/puppet/5.4/hiera_intro.html), see [`hieradata/default.yaml`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/hieradata/defaults.yaml#L19-L25) (effectively used in the vagrant-based deployment).
+
 
 ### Class `slurm::slurmctld`
 
-The main helper class specializing the main slurm class for setting up a Slurmctld daemon aka the slurm controller.
+The main helper class specializing the main slurm class for setting up a __Slurm Head node__ (where the [slurmctld](https://slurm.schedmd.com/slurmctld.html) daemon runs).
 
 ```ruby
 include ::slurm
@@ -140,9 +171,12 @@ class { '::slurm':
 }
 ```
 
+See also [`tests/slurmctld.pp`](tests/slurmctld.pp), the sample profile [`profiles::slurm::slurmctld`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm/slurmctld.pp).
+
+
 ### Class `slurm::slurmd`
 
-The main helper class specializing the main slurm class for setting up a Slurmd daemon.
+The main helper class specializing the main slurm class for setting up __ Slurm Compute node__ _i.e._ where the [`slurmd`](https://slurm.schedmd.com/slurmd.html) daemon runs.
 
 ```ruby
 include ::slurm
@@ -157,8 +191,17 @@ class { '::slurm':
 }
 ```
 
-There are of course *many* configuration parameters that you can set to change the content of the `slurm.conf` configuration file (generated from the ERB template).
-Read the documentation of the `slurm` class to make them suit your tastes and wishes.
+### Class `slurm::login`
+
+The main helper class specializing the main slurm class for setting up __ Slurm Login node__ _i.e._ where none of the slurm daemon runs (yet the slurm CLI commands are installed via the `slurm` package).
+
+```ruby
+include ::slurm
+include ::slurm::login
+```
+
+See also [`tests/login_node.pp`](tests/login_node.pp), the sample profile [`profiles::slurm::login`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm/login.pp).
+
 
 ### Class `slurm::munge`
 
@@ -226,12 +269,12 @@ This definition takes care of downloading the SLURM sources for a given version 
 * `checksum` [String] Default: ''
      -  archive file checksum (match checksum_type)
 
-_Example 1_: Downloading version 17.06.7 (latest at the time of writing) of SLURM
+_Example 1_: Downloading version 17.11.12 (latest at the time of writing) of SLURM
 
 ```ruby
-slurm::download { '17.02.7':
+slurm::download { '17.11.12':
   ensure    => 'present',
-  checksum  => '64009c1ed120b9ce5d79424dca743a06',
+  checksum  => '94fb13b509d23fcf9733018d6c961ca9',
   target    => '/usr/local/src/',
 }
 ```
@@ -265,10 +308,10 @@ This assumes the sources have been downloaded using slurm::download
      - List of --without build options to pass to rpmbuild -- see <https://github.com/SchedMD/slurm/blob/master/slurm.spec>
 
 
-_Example_: Building version 17.06.7 (latest at the time of writing)  of SLURM
+_Example_: Building version 17.11.12 (latest at the time of writing)  of SLURM
 
 ```ruby
-slurm::build { '17.02.7':
+slurm::build { '17.11.12':
   ensure => 'present',
   srcdir => '/usr/local/src',
   dir    => '/root/rpmbuild',
@@ -283,13 +326,12 @@ This definition takes care of installing the Slurm packages, typically built fro
 _Example_: installing slurmd packages in version 17.02.7:
 
 ```ruby
-slurm::install::packages { '17.02.7':
+slurm::install::packages { '17.11.12':
    ensure => 'present',
    pkgdir => "/root/rpmbuild/RPMs/${::architecture}",
    slurmd => true
 }
 ```
-
 
 ## Librarian-Puppet / R10K Setup
 
@@ -303,6 +345,10 @@ or, if you prefer to work on the git version:
      mod "ULHPC/slurm",
          :git => 'https://github.com/ULHPC/puppet-slurm',
          :ref => 'production'
+
+## Hiera
+
+You can see example of hiera configurations for this module under [`tests/vagrant/puppet/hieradata`](https://github.com/ULHPC/puppet-slurm/tree/devel/tests/vagrant/puppet/hieradata).
 
 ## Issues / Feature request
 
@@ -318,7 +364,44 @@ You are more than welcome to contribute to its development by [sending a pull re
 ## Puppet modules tests within a Vagrant box
 
 The best way to test this module in a non-intrusive way is to rely on [Vagrant](http://www.vagrantup.com/).
-The `Vagrantfile` at the root of the repository pilot the provisioning various vagrant boxes available on [Vagrant cloud](https://atlas.hashicorp.com/boxes/search?utf8=%E2%9C%93&sort=&provider=virtualbox&q=svarrette) you can use to test this module.
+The `Vagrantfile` at the root of the repository pilot the provisioning of a virtual cluster configuring Slurm from the puppet provisionning capability of Vagrant over _this_ module.
+
+```
+$> vagrant status
+Current machine states:
+
+slurm-master   not created (virtualbox)
+access         not created (virtualbox)
+node-1         not created (virtualbox)
+node-2         not created (virtualbox)
+
+This environment represents multiple VMs. The VMs are all listed
+above with their current state. For more information about a specific
+VM, run `vagrant status NAME`.
+
+$> vagrant up
+[...]
++--------------|--------------------------|---------|----------|------------|-------------------------------|-------------+
+|                                    Puppet Testing infrastructure deployed on Vagrant                                    |
++--------------|--------------------------|---------|----------|------------|-------------------------------|-------------+
+| Name         | Hostname                 | OS      | vCPU/RAM | Role       | Description                   | IP          |
++--------------|--------------------------|---------|----------|------------|-------------------------------|-------------+
+| slurm-master | slurm-master.vagrant.dev | centos7 | 2/2048   | controller | Slurm Controller #1 (primary) | 10.10.1.11  |
+| access       | access.vagrant.dev       | centos7 | 1/1024   | login      | Cluster frontend              | 10.10.1.2   |
+| node-1       | node-1.vagrant.dev       | centos7 | 2/512    | node       | Computing Node #1             | 10.10.1.101 |
+| node-2       | node-2.vagrant.dev       | centos7 | 2/512    | node       | Computing Node #2             | 10.10.1.102 |
++--------------|--------------------------|---------|----------|------------|-------------------------------|-------------+
+- Virtual Puppet Testing infrastructure deployed deployed!
+```
+
+_Note_: it takes roughly 38 minutes to deploy the full cluster from scratch. So be patient ;)
+
+You can then test modifications of each configuration in the hiera file `tests/vagrant/puppet/custom.yaml` and
+see the result by applying  for instance:
+
+```
+$> vagrant provision --provision-with puppet slurm-master
+```
 
 See [`docs/vagrant.md`](vagrant.md) for more details.
 
