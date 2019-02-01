@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-10-05 18:52 svarrette>
+# Time-stamp: <Fri 2019-02-01 08:51 svarrette>
 #
 # File::      <tt>config.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -77,7 +77,7 @@ class slurm::config {
   # notice(defined(Class['slurm::slurmctld']))
   # notice(defined(Class['slurm::slurmd']))
 
-  if $slurm::with_slurmctld or $slurm::with_slurmd or defined(Class['slurm::slurmctld']) or defined(Class['slurm::slurmd']) {
+  if $slurm::with_slurmctld or $slurm::with_slurmd or defined(Class['slurm::slurmctld']) or defined(Class['slurm::slurmd']) or defined(Class['slurm::login']) {
 
     # Bash completion
     file { '/etc/bash_completion.d/slurm_completion.sh':
