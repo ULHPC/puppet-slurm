@@ -1,6 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-# Time-stamp: <Fri 2019-02-01 16:12 svarrette>
+# Time-stamp: <Fri 2019-02-01 21:28 svarrette>
 ###########################################################################################
 #              __     __                          _    __ _ _
 #              \ \   / /_ _  __ _ _ __ __ _ _ __ | |_ / _(_) | ___
@@ -150,8 +150,8 @@ if File.exist?(config_file)
 end
 abort "Undefined settings" if settings.nil?
 
-puts settings.to_yaml
-exit 0
+# puts settings.to_yaml
+# exit 0
 
 
 ############################################################
@@ -205,7 +205,7 @@ end
 
 hiera_locals_yaml = File.join(TOP_PUPPET_DIR, 'hieradata', 'locals.yaml')
 hiera_locals_erb = %Q{
-# Custom Hiera values for Puppet Slurm
+# Local Hiera values for Puppet Slurm
 ---
 slurm::clustername: '<%= slurm[:clustername] %>'
 slurm::controlmachine: '<%= slurm[:controlmachine] %>'
