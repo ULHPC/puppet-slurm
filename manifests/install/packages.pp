@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2019-01-31 17:03 svarrette>
+# Time-stamp: <Fri 2019-02-01 15:33 svarrette>
 #
 # File::      <tt>install/packages.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -45,8 +45,8 @@ define slurm::install::packages(
   # $name is provided at define invocation
   $version = $name
 
-  if !($slurmd or $slurmctld or $slurmdbd or !empty($packages)) {
-    fail("Module ${module_name} expects a non-empty list of [built] packages to install OR specification of which daemon to install (i.e slurm{d,ctld,dbd})")
+  if !($slurmd or $slurmctld or $slurmdbd or defined(Class['slurm::login']) or !empty($packages)) {
+    fail("Module ${module_name} expects a non-empty list of [built] packages to install OR specification of which daemon to install (i.e slurm{d,ctld,dbd}) or invocation of 'slurm::login' class for Login nodes")
   }
 
   # notice("Package installation for slurmd    = ${slurmd}")
@@ -93,7 +93,7 @@ define slurm::install::packages(
         }),
         default => ($slurmd ? {
           true    => concat($common_rpms, $slurmd_rpms, $wrappers) ,    # slurmd
-          default => [],   #concat($common_rpms, $wrappers),                   # None of the daemons are requested
+          default => concat($common_rpms, $wrappers),                   # None of the daemons are requested -
         }),
       }),
     })
@@ -106,7 +106,7 @@ define slurm::install::packages(
     true    => $default_packages,
     default => $pkgs
   }
-  notice("Package list: ${pkglist}")
+  #notice("Package list: ${pkglist}")
   # ... including the version numbers
   $pkgs = suffix($pkglist, "-${version}")
 

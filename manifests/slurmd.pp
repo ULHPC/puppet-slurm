@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-10-05 18:55 svarrette>
+# Time-stamp: <Fri 2019-02-01 15:01 svarrette>
 #
 # File::      <tt>slurmd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -37,7 +37,6 @@ class slurm::slurmd inherits slurm
       ensure => $slurm::ensure,
     }
   }
-
 
   if $slurm::ensure == 'present' {
     File <| tag == 'slurm::configfile' |> {
