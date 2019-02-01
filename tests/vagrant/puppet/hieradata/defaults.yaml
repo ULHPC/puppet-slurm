@@ -96,6 +96,5 @@ slurm::cgroup_alloweddevices:
 
 
 ### PAM Pluggable Authentication Modules (PAM)
-slurm::manage_pam: true
 slurm::pam::allowed_users:
   - vagrant
