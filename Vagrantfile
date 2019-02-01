@@ -1,6 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-# Time-stamp: <Tue 2017-08-22 23:58 svarrette>
+# Time-stamp: <Mon 2018-10-01 13:45 svarrette>
 ###########################################################################################
 #              __     __                          _    __ _ _
 #              \ \   / /_ _  __ _ _ __ __ _ _ __ | |_ / _(_) | ___
@@ -27,7 +27,7 @@ config_file   = File.join(TOP_VAGRANT_TESTDIR, 'config.yaml')
 # - https://github.com/fgrehm/vagrant-cachier
 # Terminal-table is a nice ruby gem for automatically print tables with nice layout
 ###
-[ 'vagrant-hosts', 'vagrant-vbguest', 'vagrant-triggers', 'vagrant-cachier', 'terminal-table' ].each do |plugin|
+[ 'vagrant-hosts', 'vagrant-vbguest', 'vagrant-cachier', 'terminal-table' ].each do |plugin|
     abort "Install the  '#{plugin}' plugin with 'vagrant plugin install #{plugin}'" unless Vagrant.has_plugin?("#{plugin}")
 end
 require 'terminal-table'
@@ -134,7 +134,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
     end
 
-    config.trigger.after :up do
-        puts Terminal::Table.new __table
-    end
+    # config.trigger.after :up do
+    # puts Terminal::Table.new __table
+    # end
 end

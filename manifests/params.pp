@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2018-02-12 10:22 svarrette>
+# Time-stamp: <Tue 2019-01-29 10:42 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -138,6 +138,7 @@ class slurm::params {
   $cryptotype              = 'munge' # in [ 'munge', 'openssl']
 
   # What level of association-based enforcement to impose on job submissions
+  $accountingstorageTRES   = ''
   $acct_storageenforce     = ['qos', 'limits', 'associations']
   $acct_gatherenergytype   = 'none'
   $batchstarttimeout       = 10
@@ -205,6 +206,7 @@ $prioritydecayhalflife   = '5-0'         # aka 5 days
 $priorityfavorsmall      = false
 $priorityflags           = []            # in ['ACCRUE_ALWAYS','CALCULATE_RUNNING','DEPTH_OBLIVIOUS','FAIR_TREE','INCR_ONLY','MAX_TRES','SMALL_RELATIVE_TO_TIME']
 $prioritymaxage          = '7-0'
+$priorityweightTRES      = ''
 $prioritytype            = 'multifactor' # in ['basic', 'multifactor']
 $priorityusageresetperiod = 'NONE'       # in ['NONE','NOW','DAILY','WEEKLY','MONTHLY','QUARTERLY','YEARLY']
 $priorityweightage       = 0
@@ -248,6 +250,7 @@ $taskplugin              = 'cgroup' # in ['affinity', 'cgroup','none']
 $taskpluginparams        = ['cpusets']
 $taskprolog              = ''
 $tmpfs                   = '/tmp'
+$tresbillingweights      = ''
 $waittime                = 0
 ######
 ###### Hierarchical Network Topology description -- topology.conf
@@ -389,11 +392,11 @@ $groupinstall = $::osfamily ? {
   default  => undef
 }
 # Which version of Slurm to grab and build
-$version = '17.11.5'
+$version = '17.11.12'
 
 ### SLURM Sources
 # Checksum for the slurm source archive (empty means no check will be done)
-$src_checksum = '21fbe051aee43689dcd7711e47064f89'
+$src_checksum = '94fb13b509d23fcf9733018d6c961ca9'
 # From where the Slurm sources can be downloaded
 $download_baseurl    = 'https://www.schedmd.com/downloads'
 $download_latestdir  = 'latest'
@@ -453,10 +456,17 @@ $slurmdbd_rpms_basename = [
   'slurm-slurmdbd',  # Slurm database daemon
   #  'slurm-sql',       # Slurm SQL support
 ]
-$wrappers = $extra_rpms_basename = [
+$slurmctld_rpms_basename = [
+  'slurm-slurmctld',  # Slurm controller daemon - only on the head node
+]
+$slurmd_rpms_basename = [
+  'slurm-slurmd',     # Slurm daemon - only on the compute nodes
+]
+$extra_rpms_basename = [
   'slurm-openlava',  # openlava/LSF wrappers for transitition from OpenLava/LSF to Slurm
   'slurm-torque',    # Torque/PBS wrappers for transitition from Torque/PBS to Slurm
 ]
+$wrappers = []
 ####################################
 ### MUNGE authentication service ###
 ####################################
