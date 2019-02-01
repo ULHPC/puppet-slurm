@@ -207,7 +207,7 @@ ResumeTimeout=<%= scope['slurm::resumetimeout'] %>
 <% else -%>
 AccountingStorageEnforce=<%= scope['slurm::acct_storageenforce'].join(',') %>
 <% end -%>
-AccountingStorageHost=<%= scope['slurm::controlmachine'] %>
+AccountingStorageHost=<%= scope['slurm::accountingstoragehost'] %>
 AccountingStorageLoc=slurm
 #AccountingStoragePass=
 #AccountingStoragePort=

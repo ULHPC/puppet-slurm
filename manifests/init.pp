@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2019-01-29 08:29 svarrette>
+# Time-stamp: <Tue 2019-01-29 21:36 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -84,6 +84,7 @@
 #
 # @param accountingstorageTRES    [String]   Default: ''
 # @param acct_gatherenergytype    [String]   Default: 'none'
+# @param accountingstoragehost    [String]      Default: $:hostname
 #          Identifies the plugin to be used for energy consumption accounting
 #          Elligible values in [ 'none', 'ipmi', 'rapl' ]
 # @paraù acct_storageenforce      [Array]       Default: ['qos', 'limits', 'associations']
@@ -459,6 +460,7 @@ class slurm(
   String  $backupaddr                     = $slurm::params::backupaddr,
   String  $controlmachine                 = $slurm::params::controlmachine,
   String  $controladdr                    = $slurm::params::controladdr,
+  String  $accountingstoragehost          = $slurm::params::accountingstoragehost,
   #
   Integer $batchstarttimeout              = $slurm::params::batchstarttimeout,
   String  $checkpointtype                 = $slurm::params::checkpointtype,

@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2019-01-29 10:42 svarrette>
+# Time-stamp: <Tue 2019-01-29 21:37 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -131,6 +131,8 @@ class slurm::params {
   $controladdr             = ''
   $backupcontroller        = ''
   $backupaddr              = ''
+  # Accounting storage slurmdbd server
+  $accountingstoragehost   = $::hostname
 
   # Authentication method for communications between Slurm components.
   $authtype                = 'munge' # in [ 'none', 'munge' ]
