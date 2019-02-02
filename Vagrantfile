@@ -1,6 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-# Time-stamp: <Fri 2019-02-01 21:28 svarrette>
+# Time-stamp: <Sat 2019-02-02 00:46 svarrette>
 ###########################################################################################
 #              __     __                          _    __ _ _
 #              \ \   / /_ _  __ _ _ __ __ _ _ __ | |_ / _(_) | ___
@@ -211,10 +211,14 @@ slurm::clustername: '<%= slurm[:clustername] %>'
 slurm::controlmachine: '<%= slurm[:controlmachine] %>'
 slurm::controladdr: '<%= slurm[:controladdr] %>'
 slurm::accountingstoragehost: '<%= slurm[:accountingstoragehost] %>'
+
+############
 slurm::nodes:
   'node-[1-<%= num_nodes %>]':
     comment: 'COMPUTE NODES'
     content: 'CPUs=<%= nodes[:cpus] %>  Sockets=<%= nodes[:sockets] %> CoresPerSocket=<%= nodes[:cores_per_socket] %> ThreadsPerCore=<%= nodes[:thread_per_core] %>  RealMemory=<%= nodes[:realmemory] %> State=<%=  nodes[:state] %>'
+
+##################
 slurm::partitions:
 <% index=1 %>
 <% slurm[:partitions].each_with_index do |(name, v), i| %>
@@ -313,7 +317,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       c.vm.box      = settings[:boxes][os.to_sym]
       c.vm.hostname = "#{fqdn}"
       c.vm.network :private_network, :ip => ip
-      c.vm.provision :hosts, :sync_hosts => true
+      c.vm.provision :hosts, :sync_hosts => true, :add_localhost_hostnames => false
       c.vm.provider "virtualbox" do |v|
         v.customize [ 'modifyvm', :id, '--name', hostname, '--memory', ram.to_s ]
         v.customize [ 'modifyvm', :id, '--cpus', vcpus.to_s ] if vcpus.to_i > 1
