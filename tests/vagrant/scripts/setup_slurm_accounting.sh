@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: <Fri 2019-02-01 14:11 svarrette>
+# Time-stamp: <Sat 2019-02-02 00:38 svarrette>
 ################################################################################
 # setup_slurm_accounting.sh - Utility script to create sample cluster, account
 # and a set of users in the slurm accounting database
@@ -69,8 +69,6 @@ while [ $# -ge 1 ]; do
     esac
     shift
 done
-
-echo "SLURM_CLUSTERNAME=${SLURM_CLUSTERNAME}"
 
 vagrant_setup_slurm_accounting
 
