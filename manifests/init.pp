@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2019-01-29 21:36 svarrette>
+# Time-stamp: <Fri 2019-02-01 23:54 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -82,9 +82,9 @@
 # @param clustername              [String]      Default: 'cluster'
 #          The name by which this Slurm managed cluster is known in the accounting database
 #
-# @param accountingstorageTRES    [String]   Default: ''
-# @param acct_gatherenergytype    [String]   Default: 'none'
 # @param accountingstoragehost    [String]      Default: $:hostname
+# @param accountingstorageTRES    [String]      Default: ''
+# @param acct_gatherenergytype    [String]      Default: 'none'
 #          Identifies the plugin to be used for energy consumption accounting
 #          Elligible values in [ 'none', 'ipmi', 'rapl' ]
 # @paraù acct_storageenforce      [Array]       Default: ['qos', 'limits', 'associations']
@@ -238,8 +238,6 @@
 # @param taskpluginparams         [Array  ]     Default: ['cpusets']
 # @param taskprolog               [String ]     Default: ''
 # @param tmpfs                    [String ]     Default: '/tmp'
-# @param tresbillingweights       [String]      Default: ''
-#           Normally associated to your partition definitions (typically under the 'DEFAULT' partition settings)
 # @param waittime                 [Integer]     Default: 0
 #
 ############################                          ####################################
@@ -561,7 +559,6 @@ class slurm(
   # Trackable RESources (TRES)
   String  $accountingstorageTRES          = $slurm::params::accountingstorageTRES,
   String  $priorityweightTRES             = $slurm::params::priorityweightTRES,
-  String  $tresbillingweights             = $slurm::params::tresbillingweights,
 
   #
   # Which topology plugin to be used for determining the network topology and

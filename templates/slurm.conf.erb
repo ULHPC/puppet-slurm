@@ -317,10 +317,9 @@ PriorityWeightQOS=<%= scope['slurm::priorityweightqos'] %>
 ### Trackable RESources (TRES) policies ###
 ###########################################
 # See https://slurm.schedmd.com/tres.html
-# Define which TRES are to be tracked on the system
-<% if scope['slurm::accountingstorageTRES'].empty? -%>
-# AccountingStorageTRES   = cpu,mem,energy,node,billing
-<% else -%>
+# Define which TRES are to be tracked on the system in addition to the default
+# billing, cpu, energy, memory and node
+<% unless scope['slurm::accountingstorageTRES'].empty? -%>
 AccountingStorageTRES=<%= scope['slurm::accountingstorageTRES'] %>
 <% end -%>
 <% if scope['slurm::priorityweightTRES'].empty? -%>
@@ -328,13 +327,9 @@ AccountingStorageTRES=<%= scope['slurm::accountingstorageTRES'] %>
 <% else -%>
 PriorityWeightTRES=<%= scope['slurm::priorityweightTRES'] %>
 <% end -%>
-# For each partition this option is used to define the billing weights of each
-# TRES type that will be used in calculating the usage of a job.
-<% if scope['slurm::tresbillingweights'].empty? -%>
-# TRESBillingWeights =
-<% else -%>
-TRESBillingWeights=<%= scope['slurm::tresbillingweights'] %>
-<% end -%>
+# For each partition (or in the 'DEFAULT' setting), use the TRESBillingWeights
+# option to define the billing weights of each TRES type that will be used in
+# calculating the usage of a job.
 
 
 ###########################
@@ -492,6 +487,7 @@ NodeName=<%= name.ljust(12) %> <%= content %>
 <%       content << " AllowGroups=#{v['allowgroups'].is_a?(Array) ? v['allowgroups'].join(',') : v['allowgroups']}" if v['allowgroups'] -%>
 <%       content << " AllowQos=#{v['allowqos'].is_a?(Array) ? v['allowqos'].join(',') : v['allowqos']}"      if v['allowqos'] -%>
 <%       content << ' DisableRootJobs=YES'  if (!v['disablerootjobs'].nil?  and v['disablerootjobs']  and content !~ /DisableRootJobs=/) -%>
+<%       content << " TRESBillingWeights=#{v['TRESbillingweights'].is_a?(Array) ? v['TRESbillingweights'].join(',') : v['TRESbillingweights']}" if v['TRESbillingweights'] -%>
 <%    end -%>
 <%    unless (content.nil? or content.empty?) -%>
 PartitionName=<%= name.ljust(12)  %> <%= content %>
