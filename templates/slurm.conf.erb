@@ -402,7 +402,11 @@ MpiDefault=<%= scope['slurm::mpidefault'] %>
 MpiParams=<%= scope['slurm::mpiparams'] %>
 <% end -%>
 
+<% if scope['slurm::custom_content'] -%>
+### Custom content
+<%= scope['slurm::custom_content'] %>
 
+<% end -%>
 ###############################
 ### Network Characteristics ###
 ###############################

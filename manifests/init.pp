@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2019-02-01 23:54 svarrette>
+# Time-stamp: <Sat 2019-02-02 15:53 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -25,6 +25,11 @@
 #          mutually exclusive with source and target.
 #          See also
 #          https://docs.puppet.com/puppet/latest/types/file.html#file-attribute-content
+# @param custom_content [String]
+#          The desired *CUSTOM* content to *APPEND* at the end of the slurm.conf
+#         (before the planned nodes and partition definition) to allow for
+#         testing quickly parameters not yet managed with this class and the
+#         associated ERB.
 # @param source  [String]
 #          A source file, which will be copied into place on the local system.
 #          This attribute is mutually exclusive with content and target.
@@ -421,6 +426,7 @@
 class slurm(
   String  $ensure                         = $slurm::params::ensure,
   $content                                = undef,
+  $custom_content                         = undef,
   $source                                 = undef,
   $target                                 = undef,
   Boolean $manage_accounting              = $slurm::params::manage_accounting,
