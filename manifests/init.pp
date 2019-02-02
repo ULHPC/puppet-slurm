@@ -219,6 +219,8 @@
 # @param statesavelocation        [String]      Default: '/var/lib/slurmctld'
 #           Fully qualified pathname of a directory into which the Slurm
 #           controller, slurmctld, saves its state
+# @param schedulerparameters      [Array]       Default: []
+#           Just too many elligible values ;) See documentation.
 # @param schedulertype            [String ]     Default: 'backfill'
 #           Elligible values in ['backfill', 'builtin', 'hold']
 # @param selecttype               [String ]     Default: 'cons_res'
@@ -541,6 +543,7 @@ class slurm(
   Integer $returntoservice                = $slurm::params::returntoservice,
   String  $statesavelocation              = $slurm::params::statesavelocation,
   String  $schedulertype                  = $slurm::params::schedulertype,
+  Array   $schedulerparameters            = $slurm::params::schedulerparameters,
   String  $selecttype                     = $slurm::params::selecttype,
   Array   $selecttype_params              = $slurm::params::selecttype_params,
   # Log details

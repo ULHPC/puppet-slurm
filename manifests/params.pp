@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2019-01-29 21:37 svarrette>
+# Time-stamp: <Sat 2019-02-02 15:41 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -230,6 +230,7 @@ $resumetimeout           = 60
 $returntoservice         = 1  # in [0, 1, 2]
 $statesavelocation       = '/var/lib/slurmctld'
 $schedulertype           = 'backfill' # in ['backfill', 'builtin', 'hold']
+$schedulerparameters     = []
 $selecttype              = 'cons_res' # in ['bluegene','cons_res','cray','linear','serial' ]
 $selecttype_params       = [ 'CR_Core_Memory', 'CR_CORE_DEFAULT_DIST_BLOCK' ]
 # Log details

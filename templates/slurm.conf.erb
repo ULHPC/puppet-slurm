@@ -258,9 +258,13 @@ StateSaveLocation=<%= scope['slurm::statesavelocation'] %>
 # - job priority
 ###
 FastSchedule=<%= scope['slurm::fastschedule'] %>
-#MaxMemPerCPU=0
 #SchedulerTimeSlice=30
 SchedulerType=sched/<%= scope['slurm::schedulertype'] %>
+<% if scope['slurm::schedulerparameters'].empty? -%>
+#SchedulerParameters=
+<% else -%>
+SchedulerParameters=<%=  scope['slurm::schedulerparameters'].join(',') %>
+<% end -%>
 
 # Plugin used to identify which jobs can be preempted in order to start a pending job.
 PreemptType=preempt/<%= scope['slurm::preempttype'] %>
