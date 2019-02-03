@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Sun 2019-02-03 12:06 svarrette>
+# Time-stamp: <Sun 2019-02-03 14:51 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -66,6 +66,8 @@
 #             https://www.schedmd.com/downloads/archive/
 # @param src_checksum             [String]      Default: ''
 #           archive file checksum (match checksum_type)
+# @param src_checksum_type        [String]      Default: 'md5'
+#           type of archive file checksum (none|md5|sha1|sha2|sh256|sha384|sha512).
 # @param srcdir                   [String]      Default: '/usr/local/src'
 #          Target directory for the downloaded sources
 # @param builddir                 [String]      Default: '/root/rpmbuild' on redhat systems
@@ -448,6 +450,7 @@ class slurm(
   Boolean $do_package_install             = $slurm::params::do_package_install,
   Boolean $src_archived                   = $slurm::params::src_archived,
   String  $src_checksum                   = $slurm::params::src_checksum,
+  String  $src_checksum_type              = $slurm::params::src_checksum_type,
   String  $srcdir                         = $slurm::params::srcdir,
   String  $builddir                       = $slurm::params::builddir,
   Array   $build_with                     = $slurm::params::build_with,

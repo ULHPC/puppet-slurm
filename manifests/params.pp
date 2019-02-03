@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Sun 2019-02-03 12:06 svarrette>
+# Time-stamp: <Sun 2019-02-03 14:47 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -399,7 +399,8 @@ $version = '17.11.12'
 
 ### SLURM Sources
 # Checksum for the slurm source archive (empty means no check will be done)
-$src_checksum = '94fb13b509d23fcf9733018d6c961ca9'
+$src_checksum      = '94fb13b509d23fcf9733018d6c961ca9'
+$src_checksum_type = 'md5'
 # From where the Slurm sources can be downloaded
 $download_baseurl    = 'https://www.schedmd.com/downloads'
 $download_latestdir  = 'latest'
