@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 12:20 svarrette>
+# Time-stamp: <Sun 2019-02-03 14:43 svarrette>
 #
 # File::      <tt>download.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -79,6 +79,11 @@ define slurm::download(
   # Absolute path to the downloaded source file
   $path =  "${target}/${archive}"
 
+  $real_checksum_type = empty($checksum) ? {
+    true    => 'none',
+    default => $checksum_type
+  }
+
   # Download the sources using puppet-archive module
   archive { $archive:
     ensure          => $ensure,
@@ -86,7 +91,7 @@ define slurm::download(
     source          => $url,
     user            => $slurm::params::username,
     group           => $slurm::params::group,
-    checksum_type   => $checksum_type,
+    checksum_type   => $real_checksum_type,
     checksum_verify => ($checksum_verify or ! empty($checksum)),
     checksum        => $checksum,
     cleanup         => false,
