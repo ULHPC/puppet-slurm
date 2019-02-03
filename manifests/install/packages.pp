@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2019-02-01 15:33 svarrette>
+# Time-stamp: <Sun 2019-02-03 12:10 svarrette>
 #
 # File::      <tt>install/packages.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -79,11 +79,11 @@ define slurm::install::packages(
         true    => ($slurmd ? {
           true    => concat($common_rpms, $slurmdbd_rpms, $slurmctld_rpms, $slurmd_rpms, $wrappers), # slurmDB + slurmctld + slurmd
           default => concat($common_rpms, $slurmdbd_rpms, $slurmctld_rpms, $wrappers),               # slurmDB + slurmctld
-           }),
+        }),
         default => ($slurmd ? {
           true    => concat($common_rpms, $slurmdbd_rpms, $slurmd_rpms, $wrappers), # slurmDB + slurmd
           default => concat($common_rpms, $slurmdbd_rpms, $wrappers),               # slurmDB
-           }),
+        }),
         }),
       # NO Slurm DB
       default => ($slurmctld ? {
