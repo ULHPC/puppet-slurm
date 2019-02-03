@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Sat 2019-02-02 15:41 svarrette>
+# Time-stamp: <Sun 2019-02-03 12:06 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -140,7 +140,7 @@ class slurm::params {
   $cryptotype              = 'munge' # in [ 'munge', 'openssl']
 
   # What level of association-based enforcement to impose on job submissions
-  $accountingstorageTRES   = ''
+  $accountingstoragetres   = ''
   $acct_storageenforce     = ['qos', 'limits', 'associations']
   $acct_gatherenergytype   = 'none'
   $batchstarttimeout       = 10
@@ -208,7 +208,7 @@ $prioritydecayhalflife   = '5-0'         # aka 5 days
 $priorityfavorsmall      = false
 $priorityflags           = []            # in ['ACCRUE_ALWAYS','CALCULATE_RUNNING','DEPTH_OBLIVIOUS','FAIR_TREE','INCR_ONLY','MAX_TRES','SMALL_RELATIVE_TO_TIME']
 $prioritymaxage          = '7-0'
-$priorityweightTRES      = ''
+$priorityweighttres      = ''
 $prioritytype            = 'multifactor' # in ['basic', 'multifactor']
 $priorityusageresetperiod = 'NONE'       # in ['NONE','NOW','DAILY','WEEKLY','MONTHLY','QUARTERLY','YEARLY']
 $priorityweightage       = 0
