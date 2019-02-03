@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-10-05 18:49 svarrette>
+# Time-stamp: <Sun 2019-02-03 14:51 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -25,6 +25,11 @@
 #          mutually exclusive with source and target.
 #          See also
 #          https://docs.puppet.com/puppet/latest/types/file.html#file-attribute-content
+# @param custom_content [String]
+#          The desired *CUSTOM* content to *APPEND* at the end of the slurm.conf
+#         (before the planned nodes and partition definition) to allow for
+#         testing quickly parameters not yet managed with this class and the
+#         associated ERB.
 # @param source  [String]
 #          A source file, which will be copied into place on the local system.
 #          This attribute is mutually exclusive with content and target.
@@ -61,6 +66,8 @@
 #             https://www.schedmd.com/downloads/archive/
 # @param src_checksum             [String]      Default: ''
 #           archive file checksum (match checksum_type)
+# @param src_checksum_type        [String]      Default: 'md5'
+#           type of archive file checksum (none|md5|sha1|sha2|sh256|sha384|sha512).
 # @param srcdir                   [String]      Default: '/usr/local/src'
 #          Target directory for the downloaded sources
 # @param builddir                 [String]      Default: '/root/rpmbuild' on redhat systems
@@ -82,7 +89,9 @@
 # @param clustername              [String]      Default: 'cluster'
 #          The name by which this Slurm managed cluster is known in the accounting database
 #
-# @param acct_gatherenergytype    [String]   Default: 'none'
+# @param accountingstoragehost    [String]      Default: $:hostname
+# @param accountingstoragetres    [String]      Default: ''
+# @param acct_gatherenergytype    [String]      Default: 'none'
 #          Identifies the plugin to be used for energy consumption accounting
 #          Elligible values in [ 'none', 'ipmi', 'rapl' ]
 # @paraù acct_storageenforce      [Array]       Default: ['qos', 'limits', 'associations']
@@ -194,6 +203,7 @@
 # @param priorityweightjobsize    [Integer]     Default: 0
 # @param priorityweightpartition  [Integer]     Default: 0
 # @param priorityweightqos        [Integer]     Default: 0
+# @param $priorityweighttres      [String]      Default: ''
 # @param privatedata              [Array]       Default: []
 #           Elligible values in ['accounts','cloud','jobs','nodes','partitions','reservations','usage','users']
 # @param proctracktype            [String]      Default: 'cgroup'
@@ -211,6 +221,8 @@
 # @param statesavelocation        [String]      Default: '/var/lib/slurmctld'
 #           Fully qualified pathname of a directory into which the Slurm
 #           controller, slurmctld, saves its state
+# @param schedulerparameters      [Array]       Default: []
+#           Just too many elligible values ;) See documentation.
 # @param schedulertype            [String ]     Default: 'backfill'
 #           Elligible values in ['backfill', 'builtin', 'hold']
 # @param selecttype               [String ]     Default: 'cons_res'
@@ -418,6 +430,7 @@
 class slurm(
   String  $ensure                         = $slurm::params::ensure,
   $content                                = undef,
+  $custom_content                         = undef,
   $source                                 = undef,
   $target                                 = undef,
   Boolean $manage_accounting              = $slurm::params::manage_accounting,
@@ -437,6 +450,7 @@ class slurm(
   Boolean $do_package_install             = $slurm::params::do_package_install,
   Boolean $src_archived                   = $slurm::params::src_archived,
   String  $src_checksum                   = $slurm::params::src_checksum,
+  String  $src_checksum_type              = $slurm::params::src_checksum_type,
   String  $srcdir                         = $slurm::params::srcdir,
   String  $builddir                       = $slurm::params::builddir,
   Array   $build_with                     = $slurm::params::build_with,
@@ -455,6 +469,7 @@ class slurm(
   String  $backupaddr                     = $slurm::params::backupaddr,
   String  $controlmachine                 = $slurm::params::controlmachine,
   String  $controladdr                    = $slurm::params::controladdr,
+  String  $accountingstoragehost          = $slurm::params::accountingstoragehost,
   #
   Integer $batchstarttimeout              = $slurm::params::batchstarttimeout,
   String  $checkpointtype                 = $slurm::params::checkpointtype,
@@ -531,6 +546,7 @@ class slurm(
   Integer $returntoservice                = $slurm::params::returntoservice,
   String  $statesavelocation              = $slurm::params::statesavelocation,
   String  $schedulertype                  = $slurm::params::schedulertype,
+  Array   $schedulerparameters            = $slurm::params::schedulerparameters,
   String  $selecttype                     = $slurm::params::selecttype,
   Array   $selecttype_params              = $slurm::params::selecttype_params,
   # Log details
@@ -552,6 +568,10 @@ class slurm(
   String  $taskprolog                     = $slurm::params::taskprolog,
   String  $tmpfs                          = $slurm::params::tmpfs,
   Integer $waittime                       = $slurm::params::waittime,
+  # Trackable RESources (TRES)
+  String  $accountingstoragetres          = $slurm::params::accountingstoragetres,
+  String  $priorityweighttres             = $slurm::params::priorityweighttres,
+
   #
   # Which topology plugin to be used for determining the network topology and
   # optimizing job allocations to minimize network contention

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Time-stamp: <Sun 2017-08-20 19:08 svarrette>
+# Time-stamp: <Sat 2019-02-02 00:46 svarrette>
 ###########################################################################################
 # __     __                          _     ____              _       _
 # \ \   / /_ _  __ _ _ __ __ _ _ __ | |_  | __ )  ___   ___ | |_ ___| |_ _ __ __ _ _ __
@@ -7,7 +7,7 @@
 #   \ V / (_| | (_| | | | (_| | | | | |_  | |_) | (_) | (_) | |_\__ \ |_| | | (_| | |_) |
 #    \_/ \__,_|\__, |_|  \__,_|_| |_|\__| |____/ \___/ \___/ \__|___/\__|_|  \__,_| .__/
 #              |___/                                                              |_|
-#                  Copyright (c) 2017 UL HPC Team <hpc-sysadmins@uni.lu>
+#                  Copyright (c) 2017-2019 UL HPC Team <hpc-sysadmins@uni.lu>
 ###########################################################################################
 # ULHPC (prefered) way to see a Vagrant box configured.
 #
@@ -30,7 +30,7 @@ SUPPORT_MAIL='hpc-sysadmins@uni.lu'
 EXTRA_PACKAGES=
 
 # List of default packages to install
-COMMON_DEFAULT_PACKAGES="ruby wget figlet git screen bash-completion rsync vim"
+COMMON_DEFAULT_PACKAGES="ruby wget figlet git screen bash-completion rsync vim htop net-tools mailx stress"
 
 GEMS="librarian-puppet falkorlib"
 
@@ -64,6 +64,10 @@ EOF
 
 #######################  Per OS Bootstrapping function ##########################
 setup_redhat() {
+    info "fix screen title"
+    touch    /etc/sysconfig/bash-prompt-screen
+    chmod +x /etc/sysconfig/bash-prompt-screen
+
     info "Running yum update"
     yum update -y  >/dev/null
 
@@ -193,6 +197,7 @@ EOF
 }
 
 setup_gems() {
+    info "installing gems ${GEMS}"
     sudo gem install --no-ri --no-rdoc ${GEMS}
 }
 

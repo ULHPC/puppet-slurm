@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2019-02-01 15:01 svarrette>
+# Time-stamp: <Fri 2019-02-01 15:02 svarrette>
 #
 # File::      <tt>slurmd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -7,10 +7,10 @@
 # License::   Apache-2.0
 #
 # ------------------------------------------------------------------------------
-# == Class: slurm::slurmd
+# == Class: slurm::login
 #
 # The main helper class specializing the main slurm class for setting up a
-# Slurmd daemon
+# Login node
 #
 # === Warnings
 #
@@ -18,7 +18,7 @@
 #
 # [Remember: No empty lines between comments and class definition]
 #
-class slurm::slurmd inherits slurm
+class slurm::login inherits slurm
 {
   case $::osfamily {
     'Redhat': { }
@@ -29,39 +29,10 @@ class slurm::slurmd inherits slurm
   include ::slurm::config
   Class['slurm::install'] -> Class['slurm::config']
 
-  if $slurm::manage_firewall {
-    slurm::firewall { "${slurm::slurmdport}":
-      ensure => $slurm::ensure,
-    }
-    slurm::firewall { "${slurm::srunportrange}":
-      ensure => $slurm::ensure,
-    }
-  }
-
   if $slurm::ensure == 'present' {
     File <| tag == 'slurm::configfile' |> {
       require => File[$slurm::configdir],
     }
   }
 
-  if $slurm::service_manage == true {
-
-    File <| tag == 'slurm::configfile' |> {
-      notify  +> Service['slurmd'],
-    }
-
-    service { 'slurmd':
-      ensure     => ($slurm::ensure == 'present'),
-      enable     => ($slurm::ensure == 'present'),
-      name       => $slurm::params::servicename,
-      pattern    => $slurm::params::processname,
-      hasrestart => $slurm::params::hasrestart,
-      hasstatus  => $slurm::params::hasstatus,
-      require    => Class['::slurm::config'],
-    }
-
-    if ($slurm::with_slurmctld or defined(Class['slurm::slurmctld'])) {
-      Service['slurmctld'] -> Service['slurmd']
-    }
-  }
 }

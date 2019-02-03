@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-29 14:53 svarrette>
+# Time-stamp: <Sun 2019-02-03 14:48 svarrette>
 #
 # File::      <tt>install.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -20,10 +20,11 @@ class slurm::install {
   if $slurm::do_build {
     # Download the Slurm sources
     slurm::download { $slurm::version :
-      ensure   => $slurm::ensure,
-      target   => $slurm::srcdir,
-      archived => $slurm::src_archived,
-      checksum => $slurm::src_checksum,
+      ensure        => $slurm::ensure,
+      target        => $slurm::srcdir,
+      archived      => $slurm::src_archived,
+      checksum      => $slurm::src_checksum,
+      checksum_type => $slurm::src_checksum_type,
     }
 
     # Now build them

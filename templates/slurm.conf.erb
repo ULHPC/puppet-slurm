@@ -207,7 +207,7 @@ ResumeTimeout=<%= scope['slurm::resumetimeout'] %>
 <% else -%>
 AccountingStorageEnforce=<%= scope['slurm::acct_storageenforce'].join(',') %>
 <% end -%>
-AccountingStorageHost=<%= scope['slurm::controlmachine'] %>
+AccountingStorageHost=<%= scope['slurm::accountingstoragehost'] %>
 AccountingStorageLoc=slurm
 #AccountingStoragePass=
 #AccountingStoragePort=
@@ -258,9 +258,13 @@ StateSaveLocation=<%= scope['slurm::statesavelocation'] %>
 # - job priority
 ###
 FastSchedule=<%= scope['slurm::fastschedule'] %>
-#MaxMemPerCPU=0
 #SchedulerTimeSlice=30
 SchedulerType=sched/<%= scope['slurm::schedulertype'] %>
+<% if scope['slurm::schedulerparameters'].empty? -%>
+#SchedulerParameters=
+<% else -%>
+SchedulerParameters=<%=  scope['slurm::schedulerparameters'].join(',') %>
+<% end -%>
 
 # Plugin used to identify which jobs can be preempted in order to start a pending job.
 PreemptType=preempt/<%= scope['slurm::preempttype'] %>
@@ -312,6 +316,24 @@ PriorityWeightQOS=<%= scope['slurm::priorityweightqos'] %>
 <% else -%>
 #PriorityWeightQOS=
 <% end -%>
+
+###########################################
+### Trackable RESources (TRES) policies ###
+###########################################
+# See https://slurm.schedmd.com/tres.html
+# Define which TRES are to be tracked on the system in addition to the default
+# billing, cpu, energy, memory and node
+<% unless scope['slurm::accountingstoragetres'].empty? -%>
+AccountingStorageTRES=<%= scope['slurm::accountingstoragetres'] %>
+<% end -%>
+<% if scope['slurm::priorityweighttres'].empty? -%>
+# PriorityWeightTRES =
+<% else -%>
+PriorityWeightTRES=<%= scope['slurm::priorityweighttres'] %>
+<% end -%>
+# For each partition (or in the 'DEFAULT' partition setting), use the TRESBillingWeights
+# option to define the billing weights of each TRES type that will be used in
+# calculating the usage of a job.
 
 
 ###########################
@@ -384,7 +406,11 @@ MpiDefault=<%= scope['slurm::mpidefault'] %>
 MpiParams=<%= scope['slurm::mpiparams'] %>
 <% end -%>
 
+<% if scope['slurm::custom_content'] -%>
+### Custom content
+<%= scope['slurm::custom_content'] %>
 
+<% end -%>
 ###############################
 ### Network Characteristics ###
 ###############################
@@ -469,6 +495,7 @@ NodeName=<%= name.ljust(12) %> <%= content %>
 <%       content << " AllowGroups=#{v['allowgroups'].is_a?(Array) ? v['allowgroups'].join(',') : v['allowgroups']}" if v['allowgroups'] -%>
 <%       content << " AllowQos=#{v['allowqos'].is_a?(Array) ? v['allowqos'].join(',') : v['allowqos']}"      if v['allowqos'] -%>
 <%       content << ' DisableRootJobs=YES'  if (!v['disablerootjobs'].nil?  and v['disablerootjobs']  and content !~ /DisableRootJobs=/) -%>
+<%       content << " TRESBillingWeights=#{v['TRESbillingweights'].is_a?(Array) ? v['TRESbillingweights'].join(',') : v['TRESbillingweights']}" if v['TRESbillingweights'] -%>
 <%    end -%>
 <%    unless (content.nil? or content.empty?) -%>
 PartitionName=<%= name.ljust(12)  %> <%= content %>

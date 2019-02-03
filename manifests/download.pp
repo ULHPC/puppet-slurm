@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 12:20 svarrette>
+# Time-stamp: <Sun 2019-02-03 15:02 svarrette>
 #
 # File::      <tt>download.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -31,28 +31,22 @@
 # @param checksum [String] Default: ''
 #           archive file checksum (match checksum_type)
 #
-# @example Downloading version 17.06.7 (latest at the time of writing) of SLURM
+# @example Downloading version 17.11.12 of SLURM
 #
-#     slurm::download { '17.02.7':
-  #     ensure    => 'present',
-  #     checksum  => '64009c1ed120b9ce5d79424dca743a06',
-  #     target    => '/usr/local/src/',
-  #   }
-#
-# @example Downloading archived version 16.05.10 version of SLURM
-#
-#     slurm::download { 'slurm-16.05.10.tar.bz2':
-  #     ensure   => 'present',
-  #     archived => true,
-  #     target   => '/usr/local/src/',
-  #   }
+#     slurm::download { '17.11.12':
+#        ensure        => 'present',
+#        checksum      => '42f0a5dbe34210283f474328ac6e8d5267dc2386',
+#        checksum_type => 'sha1',
+#        archived      => true,
+#        target        => '/usr/local/src/',
+#   }
 #
 define slurm::download(
   String  $ensure          = $slurm::params::ensure,
   String  $target          = $slurm::params::srcdir,
   Boolean $archived        = $slurm::params::src_archived,
   String  $checksum        = '',
-  String  $checksum_type   = 'md5',
+  String  $checksum_type   = $slurm::params::src_checksum_type,
   Boolean $checksum_verify = false,
 )
 {
@@ -79,6 +73,13 @@ define slurm::download(
   # Absolute path to the downloaded source file
   $path =  "${target}/${archive}"
 
+  $real_checksum_type = empty($checksum) ? {
+    true    => 'none',
+    default => $checksum_type
+  }
+  # notice("checksum      = ${checksum}")
+  # notice("checksum_type = ${real_checksum_type}")
+
   # Download the sources using puppet-archive module
   archive { $archive:
     ensure          => $ensure,
@@ -86,7 +87,7 @@ define slurm::download(
     source          => $url,
     user            => $slurm::params::username,
     group           => $slurm::params::group,
-    checksum_type   => $checksum_type,
+    checksum_type   => $real_checksum_type,
     checksum_verify => ($checksum_verify or ! empty($checksum)),
     checksum        => $checksum,
     cleanup         => false,
