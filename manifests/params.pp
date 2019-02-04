@@ -567,6 +567,7 @@ $commitdelay         = 0 # How many seconds between commits on a connection from
 $dbdhost             = 'localhost'
 $dbdaddr             = 'localhost'
 $dbdbackuphost       = ''
+$dbdatadir           = undef
 $storagehost         = $::hostname
 $storagebackuphost   = ''
 $storageloc          = 'slurm'

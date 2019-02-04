@@ -113,6 +113,7 @@ class slurm::slurmdbd(
   Integer $commitdelay        = $slurm::params::commitdelay,
   String  $dbdhost            = $slurm::params::dbdhost,
   String  $dbdaddr            = $slurm::params::dbdaddr,
+  String  $dbdatadir          = $slurm::params::dbdatadir,
   String  $dbdbackuphost      = $slurm::params::dbdbackuphost,
   Integer $dbdport            = $slurm::params::slurmdbdport,
   String  $debuglevel         = $slurm::params::slurmdbddebug,
@@ -169,9 +170,12 @@ inherits slurm
     }
     class { '::mysql::server':
       override_options => {
-        'mysqld' => {
+        'mysqld' => merge({
           'bind-address' => $bind_setting,
-        },
+        }, $dbdatadir ? {
+          undef   => {},
+          default => { 'datadir' => $dbdatadir }
+        }),
       },
     }
 
