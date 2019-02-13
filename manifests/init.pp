@@ -230,7 +230,10 @@
 # @param selecttype_params        [Array  ]     Default: [ 'CR_Core_Memory', 'CR_CORE_DEFAULT_DIST_BLOCK' ]
 
 # @param slurmctlddebug           [String ]     Default: 'info'
+# @param slurmctlddebugsyslog     [String ]     Default: ''
 # @param slurmddebug              [String ]     Default: 'info'
+# @param slurmddebugsyslog        [String ]     Default: ''
+# @param slurmdbddebugsyslog      [String ]     Default: ''
 
 # @param slurmctldport            [Integer]     Default: 6817
 # @param slurmdport               [Integer]     Default: 6818
@@ -552,6 +555,9 @@ class slurm(
   # Log details
   String  $slurmctlddebug                 = $slurm::params::slurmctlddebug,
   String  $slurmddebug                    = $slurm::params::slurmddebug,
+  String  $slurmctlddebugsyslog           = $slurm::params::slurmctlddebugsyslog,
+  String  $slurmddebugsyslog              = $slurm::params::slurmddebugsyslog,
+  String  $slurmdbddebugsyslog            = $slurm::params::slurmdbddebugsyslog,
   # Ports
   Integer $slurmctldport                  = $slurm::params::slurmctldport,
   Integer $slurmdport                     = $slurm::params::slurmdport,
