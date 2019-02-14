@@ -226,6 +226,13 @@ $propagateresourcelimits = []
 $propagateresourcelimits_except = [ 'MEMLOCK'] # see https://slurm.schedmd.com/faq.html#memlock
 $resvoverrun             = 0
 $resumetimeout           = 60
+$resumeprogram           = ''
+$suspendprogram          = ''
+$suspendtimeout          = 0
+$suspendtime             = 0
+$suspendexcnodes         = ''
+$suspendexcparts         = ''
+$resumerate              = 300
 # Controls when a DOWN node will be returned to service
 $returntoservice         = 1  # in [0, 1, 2]
 $statesavelocation       = '/var/lib/slurmctld'

@@ -216,6 +216,13 @@
 # @param propagateresourcelimits_except [Array] Default: ['MEMLOCK']
 # @param resvoverrun              [Integer]     Default: 0
 # @param resumetimeout            [Integer]     Default: 60
+# @param resumeprogram            [String]      Default: ''
+# @param suspendprogram           [String]      Default: ''
+# @param suspendtimeout           [Integer]     Default: ''
+# @param suspendtime              [Integer]     Default: ''
+# @param suspendexcnodes          [String]      Default: ''
+# @param suspendexcparts          [String]      Default: ''
+# @param resumerate               [Integer]     Default: 300
 # @param returntoservice          [Integer]     Default: 1
 #           Elligible values in [0, 1, 2]
 # @param statesavelocation        [String]      Default: '/var/lib/slurmctld'
@@ -546,6 +553,13 @@ class slurm(
   Hash    $qos                            = $slurm::params::qos,
   Integer $resvoverrun                    = $slurm::params::resvoverrun,
   Integer $resumetimeout                  = $slurm::params::resumetimeout,
+  String  $resumeprogram                  = $slurm::params::resumeprogram,
+  String  $suspendprogram                 = $slurm::params::suspendprogram,
+  Integer $suspendtimeout                 = $slurm::params::suspendtimeout,
+  Integer $suspendtime                    = $slurm::params::suspendtime,
+  String  $suspendexcnodes                = $slurm::params::suspendexcnodes,
+  String  $suspendexcparts                = $slurm::params::suspendexcparts,
+  Integer $resumerate                     = $slurm::params::resumerate,
   Integer $returntoservice                = $slurm::params::returntoservice,
   String  $statesavelocation              = $slurm::params::statesavelocation,
   String  $schedulertype                  = $slurm::params::schedulertype,
