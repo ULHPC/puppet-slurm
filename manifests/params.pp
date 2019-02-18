@@ -265,6 +265,7 @@ $taskprolog              = ''
 $tmpfs                   = '/tmp'
 $tresbillingweights      = ''
 $waittime                = 0
+$unkillablesteptimeout   = 60
 ######
 ###### Hierarchical Network Topology description -- topology.conf
 ######

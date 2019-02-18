@@ -196,7 +196,11 @@ MinJobAge=300
 #OverTimeLimit=0
 SlurmctldTimeout=<%= scope['slurm::slurmctldtimeout'] %>
 SlurmdTimeout=<%= scope['slurm::slurmdtimeout'] %>
+<% if scope['slurm::unkillablesteptimeout'] == 60 -%>
 #UnkillableStepTimeout=60
+<% else -%>
+UnkillableStepTimeout=<%= scope['slurm::unkillablesteptimeout'] %>
+<% end -%>
 #VSizeFactor=0
 Waittime=<%= scope['slurm::waittime'] %>
 
