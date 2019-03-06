@@ -149,7 +149,7 @@ class { '::slurm':
 
 See also [`tests/slurmdbd.pp`](tests/slurmdbd.pp), the sample profile [`profiles::slurm::slurmdbd`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm/slurmdbd.pp).
 
-The `slurm::slurmdbd` accepts also so many parameters that they are not listed here -- see the [puppet strings `@param`] comments of [`manifests/slurmdbd.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/manifests/slurmddbd.pp) for more details.
+The `slurm::slurmdbd` accepts also so many parameters that they are not listed here -- see the [puppet strings `@param`] comments of [`manifests/slurmdbd.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/manifests/slurmdbd.pp) for more details.
 
 For a sample [Hiera](https://puppet.com/docs/puppet/5.4/hiera_intro.html), see [`hieradata/default.yaml`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/hieradata/defaults.yaml#L19-L25) (effectively used in the vagrant-based deployment).
 
