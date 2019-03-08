@@ -258,6 +258,7 @@
 # @param taskprolog               [String ]     Default: ''
 # @param tmpfs                    [String ]     Default: '/tmp'
 # @param waittime                 [Integer]     Default: 0
+# @param unkillablesteptimeout    [Integer]     Default: 60
 #
 ############################                          ####################################
 ############################ topology.conf attributes ####################################
@@ -588,6 +589,8 @@ class slurm(
   String  $taskprolog                     = $slurm::params::taskprolog,
   String  $tmpfs                          = $slurm::params::tmpfs,
   Integer $waittime                       = $slurm::params::waittime,
+  Integer $unkillablesteptimeout          = $slurm::params::unkillablesteptimeout,
+
   # Trackable RESources (TRES)
   String  $accountingstoragetres          = $slurm::params::accountingstoragetres,
   String  $priorityweighttres             = $slurm::params::priorityweighttres,
