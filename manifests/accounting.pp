@@ -44,12 +44,12 @@ inherits slurm::params
 
   ### QOS
   # Make the default qos out of the partitions definitions
-  $slurm::partitions.each |$partition, $h| {
-    if $partition != 'DEFAULT' {
+  $slurm::partitions.each |$name, $description| {
+    if $name != 'DEFAULT' and has_key($description, 'priority') {
       $qosname = "qos-${partition}"
       slurm::acct::qos{ $qosname:
         ensure   => $ensure,
-        priority => ($h['priority'] + 0),
+        priority => ($description['priority'] + 0),
       }
       # Eventually complete it with entries from the $slurm::qos hash
       unless empty($qos) {
