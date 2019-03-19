@@ -73,50 +73,40 @@ class slurm::config {
     default => 'link',
   }
 
-  # notice(defined(Class['slurm::slurmdbd']))
-  # notice(defined(Class['slurm::slurmctld']))
-  # notice(defined(Class['slurm::slurmd']))
-
-  if $slurm::with_slurmctld or $slurm::with_slurmd or defined(Class['slurm::slurmctld']) or defined(Class['slurm::slurmd']) or defined(Class['slurm::login']) {
-
-    # Bash completion
-    file { '/etc/bash_completion.d/slurm_completion.sh':
-      ensure => $slurm::ensure,
-      source => 'puppet:///modules/slurm/slurm_completion.sh',
-      mode   => '0644',
-    }
-
-    # Main slurm.conf
-    $filename = "${slurm::configdir}/${slurm::params::configfile}"
-    file { $slurm::params::configfile:
-      ensure  => $ensure,
-      path    => $filename,
-      owner   => $slurm::username,
-      group   => $slurm::group,
-      mode    => $slurm::params::configfile_mode,
-      content => $slurm_content,
-      source  => $slurm::source,
-      target  => $slurm::target,
-      tag     => 'slurm::configfile',
-    }
-
-    # Now add the other configuration files
-    include ::slurm::config::cgroup
-    include ::slurm::config::gres
-    include ::slurm::config::topology
-
-    # Eventually, add the [default] plugins
-    if member($slurm::build_with, 'lua') {
-      include ::slurm::plugins::lua
-    }
-
-    if $slurm::ensure == 'present' {
-      File <| tag == 'slurm::configfile' |> {
-        require  +> File[$slurm::configdir],
-      }
-    }
-
+  # Bash completion
+  file { '/etc/bash_completion.d/slurm_completion.sh':
+    ensure => $slurm::ensure,
+    source => 'puppet:///modules/slurm/slurm_completion.sh',
+    mode   => '0644',
   }
 
+  # Main slurm.conf
+  $filename = "${slurm::configdir}/${slurm::params::configfile}"
+  file { $slurm::params::configfile:
+    ensure  => $ensure,
+    path    => $filename,
+    owner   => $slurm::username,
+    group   => $slurm::group,
+    mode    => $slurm::params::configfile_mode,
+    content => $slurm_content,
+    source  => $slurm::source,
+    target  => $slurm::target,
+    tag     => 'slurm::configfile',
+  }
 
+  # Now add the other configuration files
+  include ::slurm::config::cgroup
+  include ::slurm::config::gres
+  include ::slurm::config::topology
+
+  # Eventually, add the [default] plugins
+  if member($slurm::build_with, 'lua') {
+    include ::slurm::plugins::lua
+  }
+
+  if $slurm::ensure == 'present' {
+    File <| tag == 'slurm::configfile' |> {
+      require  +> File[$slurm::configdir],
+    }
+  }
 }
