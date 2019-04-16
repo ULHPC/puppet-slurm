@@ -73,8 +73,11 @@ define slurm::build(
 
   case $::osfamily {
     'Redhat': {
-      include ::epel
-      include ::yum
+      if !defined(Yumrepo['epel']) {
+        include ::epel
+        include ::yum
+      }
+
       if !defined(Yum::Group[$slurm::params::groupinstall]) {
         yum::group { $slurm::params::groupinstall:
           ensure  => 'present',
