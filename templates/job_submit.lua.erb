@@ -175,7 +175,7 @@ end
 -----------------------------------------------------------------------------------
 function rule_default_partition(job_desc, part_list)
    if job_desc.partition == nil then
-      local new_partition = get_job_partition(job_desc, part_list)
+      local new_partition = tostring(get_job_partition(job_desc, part_list))
       log_rule_info('part', "job from uid %u(%s), setting default partition to '%s'",
                     job_desc.user_id, get_username(job_desc.user_id), new_partition)
       job_desc.partition = new_partition
