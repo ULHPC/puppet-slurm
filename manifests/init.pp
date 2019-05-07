@@ -58,12 +58,6 @@
 #          Do we perform the install of the Slurm packages or not?
 # @param wrappers                 [Array]       Default: [ 'slurm-openlava',  'slurm-torque' ]
 #          Extra wrappers/package to install (ex: openlava/LSF wrapper, Torque/PBS wrappers)
-# @param src_archived             [Boolean]     Default: false
-#          Whether the sources tar.bz2 has been archived or not.
-#          Thus by default, it is assumed that the provided version is the
-#          latest version (from https://www.schedmd.com/downloads/latest/).
-#          If set to true, the sources will be download from
-#             https://www.schedmd.com/downloads/archive/
 # @param src_checksum             [String]      Default: ''
 #           archive file checksum (match checksum_type)
 # @param src_checksum_type        [String]      Default: 'md5'
@@ -458,7 +452,6 @@ class slurm(
   # Slurm source building
   Boolean $do_build                       = $slurm::params::do_build,
   Boolean $do_package_install             = $slurm::params::do_package_install,
-  Boolean $src_archived                   = $slurm::params::src_archived,
   String  $src_checksum                   = $slurm::params::src_checksum,
   String  $src_checksum_type              = $slurm::params::src_checksum_type,
   String  $srcdir                         = $slurm::params::srcdir,

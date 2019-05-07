@@ -12,7 +12,6 @@ slurm::builddir: '/vagrant/tests/vagrant/rpmbuild'
 #slurm::version: '17.11.12'
 slurm::uid: 900
 slurm::gid: 900
-#slurm::src_archived: false
 #slurm::src_checksum: '94fb13b509d23fcf9733018d6c961ca9'
 slurm::service_manage: true
 

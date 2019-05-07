@@ -18,12 +18,6 @@
 #          Ensure the presence (or absence) of building
 # @param target [String] Default: '/usr/local/src'
 #          Target directory for the downloaded sources
-# @param archived [Boolean] Default: false
-#          Whether the sources tar.bz2 has been archived or not.
-#          Thus by default, it is assumed that the provided version is the
-#          latest version (from https://www.schedmd.com/downloads/latest/).
-#          If set to true, the sources will be download from
-#             https://www.schedmd.com/downloads/archive/
 # @param checksum_type [String] Default: 'md5'
 #          archive file checksum type (none|md5|sha1|sha2|sh256|sha384| sha512).
 # @param checksum_verify [Boolean] Default: false
@@ -37,14 +31,12 @@
 #        ensure        => 'present',
 #        checksum      => '42f0a5dbe34210283f474328ac6e8d5267dc2386',
 #        checksum_type => 'sha1',
-#        archived      => true,
 #        target        => '/usr/local/src/',
 #   }
 #
 define slurm::download(
   String  $ensure          = $slurm::params::ensure,
   String  $target          = $slurm::params::srcdir,
-  Boolean $archived        = $slurm::params::src_archived,
   String  $checksum        = '',
   String  $checksum_type   = $slurm::params::src_checksum_type,
   Boolean $checksum_verify = false,
@@ -65,11 +57,9 @@ define slurm::download(
     $archive = "slurm-${version}.tar.bz2"
   }
   else { fail("Wrong specification for ${module_name}") }
+
   # URL from where to download the sources
-  $url = $archived ? {
-    true    => "${slurm::params::download_baseurl}/${slurm::params::download_archivedir}/${archive}",
-    default => "${slurm::params::download_baseurl}/${slurm::params::download_latestdir}/${archive}"
-  }
+  $url = "${slurm::params::download_baseurl}/${archive}"
   # Absolute path to the downloaded source file
   $path =  "${target}/${archive}"
 

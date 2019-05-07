@@ -412,15 +412,10 @@ $version = '17.11.12'
 $src_checksum      = '94fb13b509d23fcf9733018d6c961ca9'
 $src_checksum_type = 'md5'
 # From where the Slurm sources can be downloaded
-$download_baseurl    = 'https://www.schedmd.com/downloads'
-$download_latestdir  = 'latest'
-$download_archivedir = 'archive'
-# Whether the remote source archive has been already archived  - this
-# unfortunately changes the URL to download from
+$download_baseurl    = 'https://download.schedmd.com/slurm/'
 
 $do_build            = true
 $do_package_install  = true
-$src_archived        = false
 # Where to place the sources
 $srcdir = $::operatingsystem ? {
   default => '/usr/local/src'
