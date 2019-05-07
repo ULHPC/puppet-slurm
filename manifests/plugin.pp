@@ -51,10 +51,7 @@ define slurm::plugin(
   # }
   # else { fail("Wrong specification for ${module_name}") }
   # # URL from where to download the sources
-  # $url = $archived ? {
-  #   true    => "${slurm::params::download_baseurl}/${slurm::params::download_archivedir}/${archive}",
-  #   default => "${slurm::params::download_baseurl}/${slurm::params::download_latestdir}/${archive}"
-  # }
+  # $url =  "${slurm::params::download_baseurl}/${archive}"
   # # Absolute path to the downloaded source file
   # $path =  "${target}/${archive}"
 

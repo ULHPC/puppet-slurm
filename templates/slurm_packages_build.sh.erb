@@ -130,8 +130,7 @@ service_restart() {
 # Download the sources
 ##
 download_slurm(){
-    download_url="${DOWNLOAD_BASEURL}/latest/${SLURM_ARCHIVE}"
-    download_url_archive="${DOWNLOAD_BASEURL}/archive/${SLURM_ARCHIVE}"
+    download_url="${DOWNLOAD_BASEURL}/${SLURM_ARCHIVE}"
     download_archive="${SRC_DIR}/${SLURM_ARCHIVE}"
 
     if [ ! -d "${SRC_DIR}" ]; then
@@ -141,7 +140,6 @@ download_slurm(){
     if [ ! -f "${download_archive}" ]; then
         curl -o ${SRC_DIR}/${SLURM_ARCHIVE} ${download_url}
     fi
-
 }
 
 ###
