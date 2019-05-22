@@ -136,6 +136,7 @@ SlurmctldDebug=<%= scope['slurm::slurmctlddebug'] %>
 SlurmctldLogFile=<%= scope['slurm::params::logdir'] %>/slurmctld.log
 SlurmdDebug=<%= scope['slurm::slurmddebug'] %>
 SlurmdLogFile=<%= scope['slurm::params::logdir'] %>/slurmd.log
+LogTimeFormat=<%= scope['slurm::logtimeformat'] %>
 
 <% if scope['slurm::slurmddebugsyslog'].empty? -%>
 #SlurmdSyslogDebug=
