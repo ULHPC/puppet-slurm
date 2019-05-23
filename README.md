@@ -259,9 +259,6 @@ This definition takes care of downloading the SLURM sources for a given version 
      - Ensure the presence (or absence) of building
 * `target` [String] Default: `/usr/local/src`
      - Target directory for the downloaded sources
-* `archived` [Boolean] Default: `false`
-     - Whether the sources tar.bz2 has been archived or not.Thus by default, it is assumed that the provided version is the latest version (from <https://www.schedmd.com/downloads/latest/>).
-     - If set to `true`, the sources will be download from <https://www.schedmd.com/downloads/archive/>
 * `checksum_type` [String] Default: `md5`
      - archive file checksum type (none|md5|sha1|sha2|sh256|sha384| sha512).
 * `checksum_verify` [Boolean] Default: false
@@ -269,7 +266,7 @@ This definition takes care of downloading the SLURM sources for a given version 
 * `checksum` [String] Default: ''
      -  archive file checksum (match checksum_type)
 
-_Example 1_: Downloading version 17.11.12 (latest at the time of writing) of SLURM
+_Example_: Downloading version 17.11.12 (latest at the time of writing) of SLURM
 
 ```ruby
 slurm::download { '17.11.12':
@@ -279,15 +276,6 @@ slurm::download { '17.11.12':
 }
 ```
 
-_Example 2_: Downloading archived version 16.05.10 version of SLURM
-
-```ruby
-slurm::download { 'slurm-16.05.10.tar.bz2':
-  ensure   => 'present',
-  archived => true,
-  target   => '/usr/local/src/',
-}
-```
 
 ### Definition `slurm::build`
 

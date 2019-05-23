@@ -22,7 +22,6 @@ class slurm::install {
     slurm::download { $slurm::version :
       ensure        => $slurm::ensure,
       target        => $slurm::srcdir,
-      archived      => $slurm::src_archived,
       checksum      => $slurm::src_checksum,
       checksum_type => $slurm::src_checksum_type,
     }
