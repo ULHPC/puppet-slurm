@@ -320,8 +320,9 @@ $qos        = {}
   # }
 $cgroup_configfile = 'cgroup.conf'
 $cgroup_automount  = true
-$cgroup_mountpoint = $::operatingsystem ? {
-  default          => '/sys/fs/cgroup'
+$cgroup_mountpoint = $::facts.dig('os', 'release', 'major') ? {
+  '6'     => '/cgroup',
+  default => '/sys/fs/cgroup',
 }
 ### task/cgroup plugin ###
 $cgroup_alloweddevices            = []    # if non-empty, cgroup_allowed_devices_file.conf
