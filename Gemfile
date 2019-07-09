@@ -20,6 +20,7 @@ group :test do
   gem 'rubocop',   '~> 0.51'
   gem 'simplecov', '>= 0.11.0'
   gem 'simplecov-console'
+  gem "yard", ">= 0.9.20"
 
   #gem 'puppet-lint',            '>= 0.3.2'
   gem "puppet-lint-absolute_classname-check"
