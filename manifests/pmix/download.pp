@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2019-10-07 16:53 svarrette>
+# Time-stamp: <Mon 2019-10-07 22:37 svarrette>
 #
 # File::      <tt>pmix/download.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -69,6 +69,8 @@ define slurm::pmix::download(
 
   # Absolute path to the downloaded source file
   $path =  "${target}/${archive}"
+  # $basename = basename($archive, '.tar.bz2')
+  # $extract_path = "${target}/${basename}/"
 
   $real_checksum_type = empty($checksum) ? {
     true    => 'none',
@@ -87,6 +89,8 @@ define slurm::pmix::download(
     checksum        => $checksum,
     cleanup         => false,
     extract         => false,
+    # extract         => true,
+    # extract_path    => $target,
     creates         => $path,
   }
   if $ensure == 'absent' {
@@ -95,8 +99,15 @@ define slurm::pmix::download(
       require => Archive[$archive],
     }
   }
-
-
+  # else {
+  #   file {$extract_path:
+  #     ensure => 'directory',
+  #     owner  => $slurm::params::username,
+  #     group  => $slurm::params::group,
+  #     mode   => '0755',
+  #     before => Archive[$archive]
+  #   }
+  # }
 
 
 }
