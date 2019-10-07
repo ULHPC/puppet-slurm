@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2019-10-07 16:41 svarrette>
+# Time-stamp: <Mon 2019-10-07 23:01 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -37,6 +37,7 @@ class slurm::params {
       'readline', 'readline-devel',
       'libX11-devel',
       'libssh2-devel',
+      'libevent-devel'
     ],
     default => []
   }
@@ -481,13 +482,17 @@ $wrappers = []
 
 ### PMIx
 # See https://pmix.org/code/getting-the-reference-implementation/
-$pmix_version='2.2.3'
+$pmix_version='3.1.4'
 # Checksum for the pmix source archive (empty means no check will be done)
-$pmix_src_checksum      = 'c4e41632fb923a6be377f589e674cf17a659ae83'
+$pmix_src_checksum      = '0f3f575e486d8492441c34276d1d56cbb48b4c37'
 $pmix_src_checksum_type = 'sha1'
 # From where the Slurm sources can be downloaded
 $pmix_download_baseurl  = 'https://github.com/openpmix/openpmix/releases/download'
 
+$pmix_rpms = [
+  'pmix',           # Main RPM basename
+  'pmix-libpmi',
+]
 
 ####################################
 ### MUNGE authentication service ###
