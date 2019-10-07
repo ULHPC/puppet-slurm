@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Sun 2019-02-03 14:47 svarrette>
+# Time-stamp: <Mon 2019-10-07 16:41 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -478,6 +478,17 @@ $extra_rpms_basename = [
   'slurm-torque',    # Torque/PBS wrappers for transitition from Torque/PBS to Slurm
 ]
 $wrappers = []
+
+### PMIx
+# See https://pmix.org/code/getting-the-reference-implementation/
+$pmix_version='2.2.3'
+# Checksum for the pmix source archive (empty means no check will be done)
+$pmix_src_checksum      = 'c4e41632fb923a6be377f589e674cf17a659ae83'
+$pmix_src_checksum_type = 'sha1'
+# From where the Slurm sources can be downloaded
+$pmix_download_baseurl  = 'https://github.com/openpmix/openpmix/releases/download'
+
+
 ####################################
 ### MUNGE authentication service ###
 ####################################
