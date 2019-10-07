@@ -398,6 +398,7 @@ GEM
 PLATFORMS
   ruby
   x86_64-darwin-16
+  x86_64-darwin-18
 
 DEPENDENCIES
   beaker
@@ -428,4 +429,4 @@ DEPENDENCIES
   yard (>= 0.9.20)
 
 BUNDLED WITH
-   1.16.2
+   1.17.3
