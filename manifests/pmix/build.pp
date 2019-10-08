@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2019-10-07 23:36 svarrette>
+# Time-stamp: <Tue 2019-10-08 10:13 svarrette>
 #
 # File::      <tt>pmix/build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -22,13 +22,22 @@
 #          Top directory of the sources builds (i.e. RPMs, debs...)
 #          For instance, built RPMs will be placed under
 #          <dir>/RPMS/${::architecture}
+# @param defines [Array]  Default: []
+#          Extra options that can be passed in via rpmbuild's --define option,
+#          knowing that the options '_topdir' and 'build_all_in_one_rpm' are
+#          already set by this definition.
+#          Note that --define takes *1* argument i.e. a multi-token string where
+#          the first token is the name of the variable to define, and all
+#          remaining tokens are the value. Pass each such string as elements of
+#          this array.
 #
 # @example Building version 3.1.4 (latest at the time of writing)  of PMIx
 #
 #     slurm::pmix::build { '3.1.4':
-#       ensure => 'present',
-#       srcdir => '/usr/local/src',
-#       dir    => '/root/rpmbuild',
+#       ensure  => 'present',
+#       srcdir  => '/usr/local/src',
+#       dir     => '/root/rpmbuild',
+#       defines => [ 'install_in_opt 1' ],
 #   }
 #
 # NOTE: on purpose, this definition will build separate RPMs in ${dir}/RPMS/${::architecture}:
@@ -46,6 +55,7 @@ define slurm::pmix::build(
   String  $ensure  = $slurm::params::ensure,
   String  $srcdir  = $slurm::params::srcdir,
   String  $dir     = $slurm::params::builddir,
+  Array   $defines = [],
 )
 {
   include ::slurm::params
@@ -85,6 +95,8 @@ define slurm::pmix::build(
 
       $rpmdir = "${dir}/RPMS/${::architecture}"
       $rpms = prefix(suffix($slurm::params::pmix_rpms, "-${version}*.rpm"), "${rpmdir}/")
+      $extra_define_opts = join(suffix(prefix($defines, "--prefix \""), "\""), ' ')
+
       # the below command should typically produce the following RPMs
       # pmix[-libpmi]-<version>-1.el7.x86_64.rpm
       case $ensure {
@@ -94,7 +106,7 @@ define slurm::pmix::build(
           $check_unless = undef
         }
         default: {
-          $cmd          = "rpmbuild -ta --define \"_topdir ${dir}\" --define \"install_in_opt 1\" --define \"build_all_in_one_rpm 0\" ${src}"
+          $cmd          = "rpmbuild -ta --define \"_topdir ${dir}\" --define \"build_all_in_one_rpm 0\" ${extra_define_opts} ${src}"
           $check_onlyif = undef
           $check_unless = suffix(prefix($rpms, 'test -n "$(ls '), ' 2>/dev/null)"')
           #"test -n \"$(ls ${main_rpm} 2>/dev/null)\""
