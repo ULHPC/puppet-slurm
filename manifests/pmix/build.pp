@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2019-10-08 10:13 svarrette>
+# Time-stamp: <Tue 2019-10-08 23:08 svarrette>
 #
 # File::      <tt>pmix/build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -7,7 +7,7 @@
 # License::   Apache-2.0
 #
 # ------------------------------------------------------------------------------
-# = Defines: slurm::build
+# = Defines: slurm::pmix::build
 #
 # This definition takes care of building PMIx sources into RPMs using 'rpmbuild'.
 # It expect to get as resource name the PMIx version to build

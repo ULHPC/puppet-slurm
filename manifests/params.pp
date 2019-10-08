@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2019-10-07 23:01 svarrette>
+# Time-stamp: <Tue 2019-10-08 13:05 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -480,7 +480,9 @@ $extra_rpms_basename = [
 ]
 $wrappers = []
 
-### PMIx
+############################
+### PMI Exascale (PMIx)  ###
+############################
 # See https://pmix.org/code/getting-the-reference-implementation/
 $pmix_version='3.1.4'
 # Checksum for the pmix source archive (empty means no check will be done)
@@ -491,7 +493,9 @@ $pmix_download_baseurl  = 'https://github.com/openpmix/openpmix/releases/downloa
 
 $pmix_rpms = [
   'pmix',           # Main RPM basename
-  'pmix-libpmi',
+  'pmix-libpmi',    # PMI-1 and PMI-2 compatibility libraries (i.e. libpmi and
+  #                   libpmi2 libraries)  - conflicts with slurm-libpmi so
+  #                   SHOULD NOT be installed
 ]
 
 ####################################
