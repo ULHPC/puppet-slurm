@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2019-10-09 18:04 svarrette>
+# Time-stamp: <Wed 2019-10-09 22:54 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -611,9 +611,12 @@ class slurm::params {
   $storagepass         = 'janIR4TvYoSEqNF94QM' # use 'openssl rand 14 -base64' for instance
   $trackslurmctlddown  = false
 
-
-
-
-
+  ##############################
+  ### MariaDB configuration  ###
+  ##############################
+  # Buffer Pool Size: 256MB + 256 * log2(RAM size in GB)
+  $innodb_buffer_pool_size  = '256M'
+  $innodb_log_file_size     = '24M'
+  $innodb_lock_wait_timeout = 500
 
 }
