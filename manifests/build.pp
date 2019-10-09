@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2019-10-09 16:50 svarrette>
+# Time-stamp: <Wed 2019-10-09 17:28 svarrette>
 #
 # File::      <tt>build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -29,9 +29,9 @@
 #          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
 #          List of --without build options to pass to rpmbuild
 #
-# @example Building version 19.05.3 of SLURM
+# @example Building version 19.05.3-2 of SLURM
 #
-#     slurm::build { '19.05.3':
+#     slurm::build { '19.05.3-2':
 #     ensure => 'present',
 #     srcdir => '/usr/local/src',
 #     dir    => '/root/rpmbuild',

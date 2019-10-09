@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2019-10-09 16:17 svarrette>
+# Time-stamp: <Wed 2019-10-09 17:26 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -37,7 +37,7 @@ class slurm::params {
       'readline', 'readline-devel',
       'libX11-devel',
       'libssh2-devel',
-      'libevent-devel'
+      'libevent-devel',
     ],
     default => []
   }
@@ -411,7 +411,7 @@ $groupinstall = $::osfamily ? {
   default  => undef
 }
 # Which version of Slurm to grab and build
-$version = '19.05.3'
+$version = '19.05.3-2'
 
 ### SLURM Sources
 # Checksum for the slurm source archive (empty means no check will be done)
@@ -436,7 +436,7 @@ $builddir = $::osfamily ? {
 $build_with = [
   #'cray',         # build for a Native-Slurm Cray system
   #'cray_network', # build for a non-Cray system with a Cray network
-  'hdf5',		       # require hdf5 support
+  'hdf5',          # require hdf5 support
   'hwloc',         # require hwloc support
   'lua',           # build Slurm LUA bindings
   'mysql',         # require mysql/mariadb support
