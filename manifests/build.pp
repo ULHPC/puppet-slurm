@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2019-10-09 16:20 svarrette>
+# Time-stamp: <Wed 2019-10-09 16:50 svarrette>
 #
 # File::      <tt>build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -63,7 +63,8 @@ define slurm::build(
   }
   # NOT YET IMPLEMENTED:
   # if ('pmix' in $with)
-  #    find a way to set --with pmix=${slurm::params::pmix_install_path}
+  #    find a way to set --with pmix=${slurm[::params]::pmix_install_path}
+  #    (by default, installed under /usr so all good...)
 
   $without_options = empty($without) ? {
     true    =>  '',
