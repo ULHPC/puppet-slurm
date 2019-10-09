@@ -275,10 +275,25 @@ JobAcctGatherParams=<%= scope['slurm::jobacctgatherparams'] %>
 Licenses=<%= scope['slurm::licenses'] %>
 <% end -%>
 
+<% if scope['slurm::acctgatherprofiletype'].empty? -%>
+#AcctGatherProfileType=
+<% else -%>
+AcctGatherProfileType=<%= scope['slurm::acctgatherprofiletype'] %>
+<% end -%>
 
 
-#MaxJobCount=5000
+
 #MaxStepCount=40000
+<% if scope['slurm::maxarraysize'].nil? -%>
+# MaxArraySize=
+<% else -%>
+MaxArraySize=<%= scope['slurm::maxarraysize'] %>
+<% end -%>
+<% if scope['slurm::maxjobcount'].nil? -%>
+# MaxJobCount=
+<% else -%>
+MaxJobCount=<%= scope['slurm::maxjobcount'] %>
+<% end -%>
 MaxTasksPerNode=<%= scope['slurm::maxtaskspernode'] %>
 #PluginDir=
 #PlugStackConfig=

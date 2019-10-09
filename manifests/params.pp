@@ -184,6 +184,8 @@ class slurm::params {
   $licenses                = ''          # Specification of licenses
   $maildomain              = $::domain
   $mailprog                = '/bin/mail'
+  $maxarraysize            = undef
+  $maxjobcount             = undef
   $maxtaskspernode         = 512
 
   # Default type of MPI to be used. Srun may override this configuration parameter in any case.
@@ -234,6 +236,7 @@ $suspendtime             = 0
 $suspendexcnodes         = ''
 $suspendexcparts         = ''
 $resumerate              = 300
+$acctgatherprofiletype   = 'acct_gather_profile/none'
 # Controls when a DOWN node will be returned to service
 $returntoservice         = 1  # in [0, 1, 2]
 $statesavelocation       = '/var/lib/slurmctld'
