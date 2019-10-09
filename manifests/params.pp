@@ -183,6 +183,8 @@ class slurm::params {
   $licenses                = ''          # Specification of licenses
   $maildomain              = $::domain
   $mailprog                = '/bin/mail'
+  $maxarraysize            = undef
+  $maxjobcount             = undef
   $maxtaskspernode         = 512
 
   # Default type of MPI to be used. Srun may override this configuration parameter in any case.
