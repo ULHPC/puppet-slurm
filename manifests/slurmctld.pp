@@ -67,6 +67,7 @@ class slurm::slurmctld inherits slurm
       pattern    => $slurm::params::controller_processname,
       hasrestart => $slurm::params::hasrestart,
       hasstatus  => $slurm::params::hasstatus,
+      require    => Class['::slurm::config'],
     }
 
     # if $slurm::ensure == 'present' {

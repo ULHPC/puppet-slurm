@@ -118,6 +118,7 @@ define slurm::acct::mgr(
       command => $cmd,
       onlyif  => $check_onlyif,
       unless  => $check_unless,
+      require => Class['::slurm::config'],
     }
   }
   else {
