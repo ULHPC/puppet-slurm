@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2019-10-08 23:03 svarrette>
+# Time-stamp: <Wed 2019-10-09 11:02 svarrette>
 #
 # File::      <tt>pmix.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -32,15 +32,15 @@
 #     slurm::pmix { '3.1.4':
 #        ensure => 'present',
 #        builddir => "/root/rpmbuild/",
-
-
+#
+#
 class slurm::pmix(
-  String  $ensure        = $slurm::params::ensure,
-  String  $version       = $slurm::params::pmix_version,
-  String  $srcdir        = $slurm::params::srcdir,
-  String  $checksum      = $slurm::params::pmix_src_checksum,
-  String  $checksum_type = $slurm::params::pmix_src_checksum_type,
-  String  $builddir      = $slurm::params::builddir,
+  String  $ensure            = $slurm::params::ensure,
+  String  $version           = $slurm::params::pmix_version,
+  String  $srcdir            = $slurm::params::srcdir,
+  String  $src_checksum      = $slurm::params::pmix_src_checksum,
+  String  $src_checksum_type = $slurm::params::pmix_src_checksum_type,
+  String  $builddir          = $slurm::params::builddir,
 ) {
   include ::slurm::params
 
@@ -48,8 +48,8 @@ class slurm::pmix(
   slurm::pmix::download { $version :
     ensure        => $ensure,
     target        => $srcdir,
-    checksum      => $checksum,
-    checksum_type => $checksum_type,
+    checksum      => $src_checksum,
+    checksum_type => $src_checksum_type,
   }
 
   # Now build them

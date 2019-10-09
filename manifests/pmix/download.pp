@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2019-10-07 22:37 svarrette>
+# Time-stamp: <Wed 2019-10-09 10:44 svarrette>
 #
 # File::      <tt>pmix/download.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -28,11 +28,12 @@
 #           archive file checksum (match checksum_type)
 #
 #
-# @example install version 2.2.3 (latest at the time of writing)
+# @example install version 3.1.4 (see
+# https://github.com/openpmix/openpmix/releases/tag/v3.1.4):
 #
-#     slurm::pmix::download { '2.2.3':
+#     slurm::pmix::download { '3.1.4':
 #        ensure        => 'present',
-#        checksum      => 'c4e41632fb923a6be377f589e674cf17a659ae83',
+#        checksum      => '0f3f575e486d8492441c34276d1d56cbb48b4c37',
 #        checksum_type => 'sha1',
 #        target        => '/usr/local/src/',
 #     }
