@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2019-10-08 13:05 svarrette>
+# Time-stamp: <Wed 2019-10-09 16:17 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -408,12 +408,12 @@ $groupinstall = $::osfamily ? {
   default  => undef
 }
 # Which version of Slurm to grab and build
-$version = '17.11.12'
+$version = '19.05.3'
 
 ### SLURM Sources
 # Checksum for the slurm source archive (empty means no check will be done)
-$src_checksum      = '94fb13b509d23fcf9733018d6c961ca9'
-$src_checksum_type = 'md5'
+$src_checksum      = '6fe2c6196f089f6210d5ba79e99b0656f5a527b4'
+$src_checksum_type = 'sha1'
 # From where the Slurm sources can be downloaded
 $download_baseurl    = 'https://download.schedmd.com/slurm/'
 
@@ -431,24 +431,22 @@ $builddir = $::osfamily ? {
 }
 # Build options -- see https://github.com/SchedMD/slurm/blob/master/slurm.spec
 $build_with = [
-  #'auth_none',    # build auth-none RPM
-  #'blcr',         # require blcr support
-  #'bluegene',     # build bluegene RPM
-  #'cray',         # build for a Cray system without ALPS
-  #'cray_alps',    # build for a Cray system with ALPS
+  #'cray',         # build for a Native-Slurm Cray system
   #'cray_network', # build for a non-Cray system with a Cray network
-  'lua',           # build Slurm lua bindings (proctrack only for now)
+  'hdf5',		       # require hdf5 support
+  'hwloc',         # require hwloc support
+  'lua',           # build Slurm LUA bindings
   'mysql',         # require mysql/mariadb support
-  'openssl',       # require openssl RPM to be installed
-  #'percs',        # build IBM PERCS RPM
-  #'sgijob',       # build proctrack-sgi-job RPM
+  'numa',          # require NUMA support
+  #'slurmsmwd',    # build slurmsmwd
+  #'ucx',          # require ucx support
+  'pmix',         # require pmix support
 ]
 $build_without = [
   #'debug',        # don't compile with debugging symbols
-  #'munge',        # don't build auth-munge RPM
-  #'netloc',       # require netloc support
+  #'munge',        # DEPRECATED - don't build auth-munge RPM
   #'pam',          # don't require pam-devel RPM to be installed
-  #'readline',     # don't require readline-devel RPM to be installed
+  #'x11',          # disable internal X11 support
 ]
 # Generated RPMs basenames, without versions and os specific suffixes.
 # Exact filename will be on the form
@@ -458,11 +456,14 @@ $common_rpms_basename = [
   'slurm',           # Main RPM basename covering slurmd and slurmctld
   'slurm-contribs',  # Perl tool to print Slurm job state information
   'slurm-devel',     # Development package for Slurm
-  #'slurm-lua',       # Slurm lua bindings
-  #'slurm-munge',     # Slurm authentication and crypto implementation using Munge
+  # 'slurm-example-configs', # Example config files for Slurm (/etc/slurm/*.example)
+  'slurm-libpmi',    # Slurm libpmi[2].so - PMI-1 and PMI-2 compatibility libraries
+  #                    You probably want to ensure 'pmix' is also installed
+  #                    Beware that PMIx also feature PMI-1 and PMI-2
+  #                    compatibility libraries  that unfortunately conflicts
+  #                    with these ones
   'slurm-pam_slurm', # PAM module for restricting access to compute nodes via Slurm
   'slurm-perlapi',   # Perl API to Slurm
-  #'slurm-plugins',   # Slurm plugins (loadable shared objects)
 ]
 $slurmdbd_rpms_basename = [
   'slurm-slurmdbd',  # Slurm database daemon
@@ -484,19 +485,23 @@ $wrappers = []
 ### PMI Exascale (PMIx)  ###
 ############################
 # See https://pmix.org/code/getting-the-reference-implementation/
-$pmix_version='3.1.4'
+$with_pmix              = false # Whether or not using PMIx
+$pmix_version           = '3.1.4'
 # Checksum for the pmix source archive (empty means no check will be done)
 $pmix_src_checksum      = '0f3f575e486d8492441c34276d1d56cbb48b4c37'
 $pmix_src_checksum_type = 'sha1'
 # From where the Slurm sources can be downloaded
 $pmix_download_baseurl  = 'https://github.com/openpmix/openpmix/releases/download'
-
 $pmix_rpms = [
   'pmix',           # Main RPM basename
   'pmix-libpmi',    # PMI-1 and PMI-2 compatibility libraries (i.e. libpmi and
   #                   libpmi2 libraries)  - conflicts with slurm-libpmi so
   #                   SHOULD NOT be installed
 ]
+$pmix_install_path = '/usr'   # if install in opt (for instance with
+#                    slurm::pmix::build::defines set to [ 'install_in_opt 1' ],
+#                    you will need to set this path to /opt/pmix/${pmix_version}
+#                    -- NOT YET IMPLEMENTED
 
 ####################################
 ### MUNGE authentication service ###

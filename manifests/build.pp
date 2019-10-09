@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2019-01-31 20:03 svarrette>
+# Time-stamp: <Wed 2019-10-09 16:20 svarrette>
 #
 # File::      <tt>build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -29,14 +29,14 @@
 #          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
 #          List of --without build options to pass to rpmbuild
 #
-# @example Building version 17.06.7 (latest at the time of writing)  of SLURM
+# @example Building version 19.05.3 of SLURM
 #
-#     slurm::build { '17.02.7':
-  #     ensure => 'present',
-  #     srcdir => '/usr/local/src',
-  #     dir    => '/root/rpmbuild',
-  #     with   => [ 'lua', 'mysql', 'openssl' ]
-  #   }
+#     slurm::build { '19.05.3':
+#     ensure => 'present',
+#     srcdir => '/usr/local/src',
+#     dir    => '/root/rpmbuild',
+#     with   => [ 'hdf5', 'hwloc', lua', 'mysql', 'numa', 'pmix' ]
+#   }
 #
 define slurm::build(
   String  $ensure  = $slurm::params::ensure,
@@ -61,15 +61,29 @@ define slurm::build(
     true    =>  '',
     default => join(prefix($with, '--with '), ' ')
   }
+  # NOT YET IMPLEMENTED:
+  # if ('pmix' in $with)
+  #    find a way to set --with pmix=${slurm::params::pmix_install_path}
+
   $without_options = empty($without) ? {
     true    =>  '',
     default => join(prefix($without, '--without '), ' ')
   }
+
   # Label for the exec
   $buildname = $ensure ? {
     'absent'  => "uninstall-slurm-${version}",
     default   => "build-slurm-${version}",
+  }
+
+  # Management of PMIx
+  if ($slurm::with_pmix or ('pmix' in $with)) {
+    if !defined(Class['::slurm::pmix']) {
+      include ::slurm::pmix
+      Class['::slurm::pmix'] -> Exec[$buildname]
+      # Slurm::Pmix::Install[$slurm::pmix::version] -> Exec[$buildname]
     }
+  }
 
   case $::osfamily {
     'Redhat': {
@@ -107,7 +121,7 @@ define slurm::build(
     }
   }
 
-  #notice($cmd)
+  # notice($cmd)
   exec { $buildname:
     path    => '/sbin:/usr/bin:/usr/sbin:/bin',
     command => $cmd,

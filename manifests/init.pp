@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Sun 2019-02-03 14:51 svarrette>
+# Time-stamp: <Wed 2019-10-09 11:04 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -254,9 +254,9 @@
 # @param waittime                 [Integer]     Default: 0
 # @param unkillablesteptimeout    [Integer]     Default: 60
 #
-############################                          ####################################
-############################ topology.conf attributes ####################################
-############################                          ####################################
+############################                          ################################
+############################ topology.conf attributes ################################
+############################                          ################################
 #
 # @param topology                 [String ]     Default:  = none
 #           Which topology plugin to be used for determining the network topology and
@@ -298,9 +298,9 @@
 #           # GUID: XXXXXX - switch 0
 #           SwitchName=s3 Switches=s[0-2] LinkSpeed=100Mb/s
 #
-############################                        ####################################
-############################ cgroup.conf attributes ####################################
-############################                        ####################################
+############################                        #################################
+############################ cgroup.conf attributes #################################
+############################                        #################################
 #
 # @param cgroup_content           [String]      Default: undef
 #           The desired contents of a cgroup file, as a string. This attribute is
@@ -387,6 +387,20 @@
 #                  puppet:///modules/<MODULE NAME>/<FILE PATH>
 # @param munge_uid                 [Integer]      Default: 992
 #          UID of the munge user
+#
+############################               ####################################
+############################ PMIx Settings ####################################
+############################               ####################################
+# @param with_pmix                [Boolean]     Default: false
+#           Whether or not using PMIx (in addition to the PMI-1 and PMI-2
+#           compatibility libraries set by slurm) - this will install PMIx
+#           independently (and prior) to Slurm.
+# @param pmix_version             [String]      Default: 3.1.4'
+#          PMIx version to install
+# @param pmix_checksum_type       [String]      Default: 'sha1'
+#          archive file checksum type (none|md5|sha1|sha2|sh256|sha384| sha512).
+# @param pmix_checksum            [String]      Default: see params.pp
+#           archive file checksum (match checksum_type)
 #
 ############################              ####################################
 ############################ PAM Settings ####################################
@@ -644,6 +658,13 @@ class slurm(
   String  $munge_key_filename             = $slurm::params::munge_key,
   Integer $munge_uid                      = $slurm::params::munge_uid,
   Integer $munge_gid                      = $slurm::params::munge_gid,
+  #
+  # PMIx settings
+  #
+  Boolean $with_pmix                      = $slurm::params::with_pmix,
+  String  $pmix_version                   = $slurm::params::pmix_version,
+  String  $pmix_checksum_type             = $slurm::params::pmix_src_checksum_type,
+  String  $pmix_checksum                  = $slurm::params::pmix_src_checksum,
   #
   # PAM settings
   #
