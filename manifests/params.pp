@@ -247,6 +247,7 @@ $slurmctlddebug          = 'info'
 $slurmctlddebugsyslog    = ''
 $slurmddebug             = 'info'
 $slurmddebugsyslog       = ''
+$logtimeformat           = 'iso8601_ms'
 # Ports
 $slurmctldport           = 6817
 $slurmdport              = 6818
