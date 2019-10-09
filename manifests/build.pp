@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2019-10-09 17:28 svarrette>
+# Time-stamp: <Wed 2019-10-09 17:42 svarrette>
 #
 # File::      <tt>build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -84,6 +84,9 @@ define slurm::build(
       Class['::slurm::pmix'] -> Exec[$buildname]
       # Slurm::Pmix::Install[$slurm::pmix::version] -> Exec[$buildname]
     }
+    $define_pmix = "--define \"_with_pmix --with-pmix=${slurm::params::pmix_install_path}\""
+  } else {
+    $define_pmix = ''
   }
 
   case $::osfamily {
@@ -110,7 +113,7 @@ define slurm::build(
           $check_unless = undef
         }
         default: {
-          $cmd          = "rpmbuild -ta ${with_options} ${without_options} --define \"_topdir ${dir}\" ${src}"
+          $cmd          = "rpmbuild -ta ${with_options} ${without_options} --define \"_topdir ${dir}\" ${define_pmix} ${src}"
           $check_onlyif = undef
           $check_unless = suffix(prefix($rpms, 'test -n "$(ls '), ' 2>/dev/null)"')
           #"test -n \"$(ls ${main_rpm} 2>/dev/null)\""
