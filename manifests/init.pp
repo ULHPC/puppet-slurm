@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2019-10-09 11:04 svarrette>
+# Time-stamp: <Thu 2019-10-10 14:56 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -398,12 +398,8 @@
 #           Whether or not using PMIx (in addition to the PMI-1 and PMI-2
 #           compatibility libraries set by slurm) - this will install PMIx
 #           independently (and prior) to Slurm.
-# @param pmix_version             [String]      Default: 3.1.4'
-#          PMIx version to install
-# @param pmix_checksum_type       [String]      Default: 'sha1'
-#          archive file checksum type (none|md5|sha1|sha2|sh256|sha384| sha512).
-# @param pmix_checksum            [String]      Default: see params.pp
-#           archive file checksum (match checksum_type)
+#           If true, the class slurm::pmix will be included.
+#           Use Hiera to set appropriately the slurm::pmix::* variables
 #
 ############################              ####################################
 ############################ PAM Settings ####################################
@@ -665,12 +661,12 @@ class slurm(
   Integer $munge_uid                      = $slurm::params::munge_uid,
   Integer $munge_gid                      = $slurm::params::munge_gid,
   #
-  # PMIx settings
+  # PMIx settings -- see slurm::pmix class
   #
   Boolean $with_pmix                      = $slurm::params::with_pmix,
-  String  $pmix_version                   = $slurm::params::pmix_version,
-  String  $pmix_checksum_type             = $slurm::params::pmix_src_checksum_type,
-  String  $pmix_checksum                  = $slurm::params::pmix_src_checksum,
+  # String  $pmix_version                   = $slurm::params::pmix_version,
+  # String  $pmix_checksum_type             = $slurm::params::pmix_src_checksum_type,
+  # String  $pmix_checksum                  = $slurm::params::pmix_src_checksum,
   #
   # PAM settings
   #

@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2019-10-09 13:14 svarrette>
+# Time-stamp: <Thu 2019-10-10 14:58 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -59,14 +59,15 @@ class slurm::common {
   }
 
   if ($slurm::with_pmix or ('pmix' in $slurm::build_with)) {
-    class { '::slurm::pmix':
-      ensure            => $slurm::ensure,
-      version           => $slurm::pmix_version,
-      src_checksum      => $slurm::pmix_src_checksum,
-      src_checksum_type => $slurm::pmix_src_checksum_type,
-      srcdir            => $slurm::srcdir,
-      builddir          => $slurm::builddir,
-    }
+    include ::slurm::pmix
+    # class { '::slurm::pmix':
+    #   ensure            => $slurm::ensure,
+    #   version           => $slurm::pmix_version,
+    #   src_checksum      => $slurm::pmix_src_checksum,
+    #   src_checksum_type => $slurm::pmix_src_checksum_type,
+    #   srcdir            => $slurm::srcdir,
+    #   builddir          => $slurm::builddir,
+    # }
   }
 
   if ($slurm::manage_munge and $slurm::authtype =~ /munge/) {
