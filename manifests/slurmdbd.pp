@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2019-10-10 20:51 svarrette>
+# Time-stamp: <Thu 2019-10-10 21:07 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -229,6 +229,19 @@ inherits slurm
       grant    => ['ALL'],
       before   => File[$slurm::params::dbd_configfile],
     }
+
+    # Job completion logging mechanism type
+    if ($slurm::jobcomptype and $slurm::jobcomptype == 'mysql' and $slurm::jobcomploc and (!empty($slurm::jobcomploc))) {
+      mysql::db { $slurm::jobcomploc :
+        user     => $storageuser,
+        password => $storagepass,
+        host     => $dbdhost,
+        grant    => ['ALL'],
+        before   => File[$slurm::params::dbd_configfile],
+      }
+    }
+
+
     # Eventually create the 'slurm'@'*' user with all rights
     unique([ $storagehost, $::hostname, $::fqdn]).each |String $host| {
       mysql_user { "${storageuser}@${host}":
