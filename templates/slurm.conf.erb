@@ -477,6 +477,10 @@ MpiDefault=<%= scope['slurm::mpidefault'] %>
 <% else -%>
 MpiParams=<%= scope['slurm::mpiparams'] %>
 <% end -%>
+<% unless scope['slurm::x11parameters'].empty? -%>
+### Slurm's built-in X11
+X11Parameters=<%= scope['slurm::x11parameters'] %>
+<% end -%>
 
 <% if scope['slurm::custom_content'] -%>
 ### Custom content

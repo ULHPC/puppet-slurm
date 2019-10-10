@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2019-10-11 00:13 svarrette>
+# Time-stamp: <Fri 2019-10-11 00:24 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -286,6 +286,9 @@
 # @param tmpfs                    [String ]     Default: '/tmp'
 # @param waittime                 [Integer]     Default: 0
 # @param unkillablesteptimeout    [Integer]     Default: 60
+# @param x11parameters            [String]      Default: ''
+#           For use with Slurm's built-in X11 forwarding implementation.
+#           Elligible values in [ 'home_xauthority' ]
 #
 ############################                          ################################
 ############################ topology.conf attributes ################################
@@ -636,6 +639,7 @@ class slurm(
   String  $tmpfs                          = $slurm::params::tmpfs,
   Integer $waittime                       = $slurm::params::waittime,
   Integer $unkillablesteptimeout          = $slurm::params::unkillablesteptimeout,
+  String  $x11parameters                  = $slurm::params::x11parameters,
 
   # Trackable RESources (TRES)
   String  $accountingstoragetres          = $slurm::params::accountingstoragetres,

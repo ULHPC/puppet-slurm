@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2019-10-11 00:09 svarrette>
+# Time-stamp: <Fri 2019-10-11 00:23 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -279,6 +279,8 @@ class slurm::params {
   $tresbillingweights      = ''
   $waittime                = 0
   $unkillablesteptimeout   = 60
+  $x11parameters           = ''
+
   ######
   ###### Hierarchical Network Topology description -- topology.conf
   ######
