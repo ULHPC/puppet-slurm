@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2019-10-10 23:55 svarrette>
+# Time-stamp: <Fri 2019-10-11 00:09 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -187,6 +187,7 @@ class slurm::params {
   $jobrequeue              = true
   $jobsubmitplugins        = [ 'lua' ]   #
   $killwait                = 30          # sec. interval given to a job's processes between the SIGTERM and SIGKILL
+  $launchparameters        = ''
   $launchtype              = 'slurm'
   $licenses                = ''          # Specification of licenses
   $maildomain              = $::domain

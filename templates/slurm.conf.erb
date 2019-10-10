@@ -417,7 +417,9 @@ PriorityWeightTRES=<%= scope['slurm::priorityweighttres'] %>
 ###
 # Mechanism to be used to launch application tasks.
 #LaunchType=launch/<%= scope['slurm::launchtype'] %>
-
+<% unless scope['slurm::launchparameters'].empty? -%>
+LaunchParameters=<%= scope['slurm::launchparameters'] %>
+<% end -%>
 SelectType=select/<%= scope['slurm::selecttype'] %>
 SelectTypeParameters=<%= scope['slurm::selecttype_params'].join(',') %>
 <% if scope['slurm::taskepilog'].empty? -%>

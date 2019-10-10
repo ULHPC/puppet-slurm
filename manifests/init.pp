@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2019-10-10 23:55 svarrette>
+# Time-stamp: <Fri 2019-10-11 00:13 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -163,6 +163,12 @@
 # @param jobsubmitplugins         [Array]       Default: [ 'lua' ]
 # @param killwait                 [Integer]     Default: 30
 #           interval (in seconds) given to a jobs processes between the SIGTERM and SIGKILL
+# @param launchparameters         [String]      Default: ''
+#           Options to the job launch plugin.
+#           Elligible values in ['batch_step_set_cpu_freq', 'cray_net_exclusive',
+#                'enable_nss_slurm', 'lustre_no_flush', 'mem_sort',
+#                'disable_send_gids', 'slurmstepd_memlock',
+#                'slurmstepd_memlock_all', 'test_exec' ]
 # @param launchtype               [String]      Default: 'slurm'
 # @param licenses                 [String]      Default: ''
 #           Specification of licenses
@@ -551,6 +557,7 @@ class slurm(
   Array   $jobsubmitplugins               = $slurm::params::jobsubmitplugins,
   Integer $killwait                       = $slurm::params::killwait,
   String  $launchtype                     = $slurm::params::launchtype,
+  String  $launchparameters               = $slurm::params::launchparameters,
   String  $licenses                       = $slurm::params::licenses,
   String  $maildomain                     = $slurm::params::maildomain,
   String  $mailprog                       = $slurm::params::mailprog,
