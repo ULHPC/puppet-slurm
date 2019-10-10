@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2019-10-10 22:12 svarrette>
+# Time-stamp: <Thu 2019-10-10 23:00 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -142,12 +142,15 @@ class slurm::params {
   # Authentication method for communications between Slurm components.
   $authtype                = 'munge' # in [ 'none', 'munge' ]
   $authinfo                = ''
-  $credtype              = 'munge'   # used to be Cryptotype
+  $credtype                = 'munge'   # used to be Cryptotype
 
   # What level of association-based enforcement to impose on job submissions
-  $accountingstoragetres   = ''
-  $acct_storageenforce     = ['qos', 'limits', 'associations']
-  $acct_gatherenergytype   = 'none'
+  $accountingstorageenforce = ['qos', 'limits', 'associations']
+  $accountingstoragetres    = ''
+  $acctgatherenergytype     = 'none'
+  $acctgatherfilesystemtype = 'none'
+  $acctgatherinfinibandtype = 'none'
+  $acctgatherprofiletype    = 'none'
   $batchstarttimeout       = 10
   $getenvtimeout           = 2
   $checkpointtype          = 'none'  # in ['none', 'ompi']
@@ -240,7 +243,6 @@ class slurm::params {
   $suspendexcnodes         = ''
   $suspendexcparts         = ''
   $resumerate              = 300
-  $acctgatherprofiletype   = 'none'
   # Controls when a DOWN node will be returned to service
   $returntoservice         = 1  # in [0, 1, 2]
   $statesavelocation       = '/var/lib/slurmctld'

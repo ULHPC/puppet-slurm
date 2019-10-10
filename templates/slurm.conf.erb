@@ -254,10 +254,10 @@ SuspendTime=<%= scope['slurm::suspendtime'] %>
 ##################
 ### Accounting ###
 ##################
-<% if scope['slurm::acct_storageenforce'].empty? -%>
+<% if scope['slurm::accountingstorageenforce'].empty? -%>
 # AccountingStorageEnforce=qos,limits,associations
 <% else -%>
-AccountingStorageEnforce=<%= scope['slurm::acct_storageenforce'].join(',') %>
+AccountingStorageEnforce=<%= scope['slurm::accountingstorageenforce'].join(',') %>
 <% end -%>
 AccountingStorageHost=<%= scope['slurm::accountingstoragehost'] %>
 AccountingStorageLoc=slurm
@@ -266,7 +266,12 @@ AccountingStorageLoc=slurm
 AccountingStorageType=accounting_storage/slurmdbd
 #AccountingStorageUser=
 AccountingStoreJobComment=YES
-AcctGatherEnergyType=acct_gather_energy/<%= scope['slurm::acct_gatherenergytype']%>
+
+AcctGatherEnergyType=acct_gather_energy/<%=         scope['slurm::acctgatherenergytype'] %>
+AcctGatherFilesystemType=acct_gather_filesystem/<%= scope['slurm::acctgatherfilesystemtype'] %>
+AcctGatherInfinibandType=acct_gather_infiniband/<%= scope['slurm::acctgatherinfinibandtype'] %>
+AcctGatherProfileType=acct_gather_profile/<%=       scope['slurm::acctgatherprofiletype'] %>
+
 JobAcctGatherFrequency=<%= scope['slurm::jobacctgatherfrequency'] %>
 JobAcctGatherType=jobacct_gather/<%= scope['slurm::jobacctgathertype'] %>
 <% unless scope['slurm::jobacctgatherparams'].empty? -%>
@@ -276,11 +281,6 @@ JobAcctGatherParams=<%= scope['slurm::jobacctgatherparams'] %>
 #Licenses=foo*4,bar
 <% else -%>
 Licenses=<%= scope['slurm::licenses'] %>
-<% end -%>
-<% if scope['slurm::acctgatherprofiletype'] == 'none' -%>
-#AcctGatherProfileType=
-<% else -%>
-AcctGatherProfileType=acct_gather_profile/<%= scope['slurm::acctgatherprofiletype'] %>
 <% end -%>
 
 #MaxStepCount=40000

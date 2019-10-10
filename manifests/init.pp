@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2019-10-10 22:05 svarrette>
+# Time-stamp: <Thu 2019-10-10 23:04 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -83,13 +83,25 @@
 # @param clustername              [String]      Default: 'cluster'
 #          The name by which this Slurm managed cluster is known in the accounting database
 #
+# @param accountingstorageenforce [Array]       Default: ['qos', 'limits', 'associations']
+#          What level of association-based enforcement to impose on job submissions.
 # @param accountingstoragehost    [String]      Default: $:hostname
 # @param accountingstoragetres    [String]      Default: ''
-# @param acct_gatherenergytype    [String]      Default: 'none'
+#
+# @param acctgatherenergytype    [String]      Default: 'none'
 #          Identifies the plugin to be used for energy consumption accounting
 #          Elligible values in [ 'none', 'ipmi', 'rapl' ]
-# @paraù acct_storageenforce      [Array]       Default: ['qos', 'limits', 'associations']
-#          What level of association-based enforcement to impose on job submissions.
+# @param acctgatherfilesystemtype [String]      Default: 'none'
+#          plugin to be used for filesystem traffic accounting.
+#          Elligible values in [ 'none', 'lustre' ]
+# @param acctgatherinfinibandtype      [String]       Default: 'none'
+#          Identifies the plugin to be used for infiniband network traffic
+#          accounting.
+#          Elligible values in [ 'none', 'ofed' ]
+# @param acctgatherprofiletype    [String]      Default: 'none'
+#          Plugin to be used for detailed job profiling.
+#          Require to define acct_gather.conf for non-none values
+#          Elligible values in [ 'none', 'hdf5', 'influxdb' ]
 # @param authtype                 [String]      Default: 'munge'
 #          Elligible values in [ 'none', 'munge' ]
 # @param authinfo                 [String]      Default: ''
@@ -222,7 +234,6 @@
 # @param suspendexcnodes          [String]      Default: ''
 # @param suspendexcparts          [String]      Default: ''
 # @param resumerate               [Integer]     Default: 300
-# @param acctgatherprofiletype    [String]      Default: 'acct_gather_profile/none'
 # @param returntoservice          [Integer]     Default: 1
 #           Elligible values in [0, 1, 2]
 # @param statesavelocation        [String]      Default: '/var/lib/slurmctld'
@@ -481,8 +492,11 @@ class slurm(
   #
   # Main configuration paramaters
   #
-  Array   $acct_storageenforce            = $slurm::params::acct_storageenforce,
-  String  $acct_gatherenergytype          = $slurm::params::acct_gatherenergytype,
+  Array   $accountingstorageenforce       = $slurm::params::accountingstorageenforce,
+  String  $acctgatherenergytype           = $slurm::params::acctgatherenergytype,
+  String  $acctgatherfilesystemtype       = $slurm::params::acctgatherfilesystemtype,
+  String  $acctgatherinfinibandtype       = $slurm::params::acctgatherinfinibandtype,
+  String  $acctgatherprofiletype          = $slurm::params::acctgatherprofiletype,
   String  $configdir                      = $slurm::params::configdir,
   String  $clustername                    = $slurm::params::clustername,
   String  $authtype                       = $slurm::params::authtype,
@@ -575,7 +589,6 @@ class slurm(
   String  $suspendexcnodes                = $slurm::params::suspendexcnodes,
   String  $suspendexcparts                = $slurm::params::suspendexcparts,
   Integer $resumerate                     = $slurm::params::resumerate,
-  String  $acctgatherprofiletype          = $slurm::params::acctgatherprofiletype,
   Integer $returntoservice                = $slurm::params::returntoservice,
   String  $statesavelocation              = $slurm::params::statesavelocation,
   String  $schedulertype                  = $slurm::params::schedulertype,
