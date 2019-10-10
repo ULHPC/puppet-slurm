@@ -269,7 +269,7 @@ Licenses=<%= scope['slurm::licenses'] %>
 <% if scope['slurm::acctgatherprofiletype'] == 'none' -%>
 #AcctGatherProfileType=
 <% else -%>
-AcctGatherProfileType=<%= scope['slurm::acctgatherprofiletype'] %>
+AcctGatherProfileType=acct_gather_profile/<%= scope['slurm::acctgatherprofiletype'] %>
 <% end -%>
 
 #MaxStepCount=40000
