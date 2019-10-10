@@ -136,19 +136,16 @@ SlurmctldDebug=<%= scope['slurm::slurmctlddebug'] %>
 SlurmctldLogFile=<%= scope['slurm::params::logdir'] %>/slurmctld.log
 SlurmdDebug=<%= scope['slurm::slurmddebug'] %>
 SlurmdLogFile=<%= scope['slurm::params::logdir'] %>/slurmd.log
-
 <% if scope['slurm::slurmddebugsyslog'].empty? -%>
 #SlurmdSyslogDebug=
 <% else -%>
 SlurmdSyslogDebug=<%= scope['slurm::slurmddebugsyslog']%>
 <% end -%>
-
 <% if scope['slurm::slurmctlddebugsyslog'].empty? -%>
 #SlurmctldSyslogDebug=
 <% else -%>
 SlurmctldSyslogDebug=<%= scope['slurm::slurmctlddebugsyslog']%>
 <% end -%>
-
 #SlurmSchedLogFile=
 #SlurmSchedLogLevel=
 
@@ -210,37 +207,31 @@ Waittime=<%= scope['slurm::waittime'] %>
 <% else -%>
 SuspendProgram=<%= scope['slurm::suspendprogram'] %>
 <% end -%>
-
 <% if scope['slurm::resumeprogram'].empty? -%>
 #ResumeProgram=
 <% else -%>
 ResumeProgram=<%= scope['slurm::resumeprogram'] %>
 <% end -%>
-
 <% if scope['slurm::suspendtimeout'] > 0 -%>
 SuspendTimeout=<%= scope['slurm::suspendtimeout'] %>
 <% else -%>
 #SuspendTimeout=
 <% end -%>
-
 <% if scope['slurm::resumetimeout'] > 0 -%>
 ResumeTimeout=<%= scope['slurm::resumetimeout'] %>
 <% else -%>
 #ResumeTimeout=
 <% end -%>
-
 <% if scope['slurm::resumerate'] > 0 -%>
 ResumeRate=<%= scope['slurm::resumerate'] %>
 <% else -%>
 #ResumeRate=
 <% end -%>
-
 <% if scope['slurm::suspendexcnodes'].empty? -%>
 #SuspendExcNodes=
 <% else -%>
 SuspendExcNodes=<%= scope['slurm::suspendexcnodes'] %>
 <% end -%>
-
 #SuspendExcParts=
 #SuspendRate=
 <% if scope['slurm::suspendtime'] > 0 -%>
@@ -248,6 +239,7 @@ SuspendTime=<%= scope['slurm::suspendtime'] %>
 <% else -%>
 #SuspendTime=
 <% end -%>
+
 ##################
 ### Accounting ###
 ##################
@@ -274,14 +266,11 @@ JobAcctGatherParams=<%= scope['slurm::jobacctgatherparams'] %>
 <% else -%>
 Licenses=<%= scope['slurm::licenses'] %>
 <% end -%>
-
-<% if scope['slurm::acctgatherprofiletype'].empty? -%>
+<% if scope['slurm::acctgatherprofiletype'] == 'none' -%>
 #AcctGatherProfileType=
 <% else -%>
 AcctGatherProfileType=<%= scope['slurm::acctgatherprofiletype'] %>
 <% end -%>
-
-
 
 #MaxStepCount=40000
 <% if scope['slurm::maxarraysize'].nil? -%>
