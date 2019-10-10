@@ -235,7 +235,10 @@
 # @param selecttype               [String ]     Default: 'cons_res'
 #           Elligible values in ['bluegene','cons_res','cray','linear','serial' ]
 # @param selecttype_params        [Array  ]     Default: [ 'CR_Core_Memory', 'CR_CORE_DEFAULT_DIST_BLOCK' ]
-
+#
+# @param slurmctldhost            [String or Array]   Default: $:hostname
+# @param slurmctldaddr            [String]      Default: ''
+#
 # @param slurmctlddebug           [String ]     Default: 'info'
 # @param slurmctlddebugsyslog     [String ]     Default: ''
 # @param slurmddebug              [String ]     Default: 'info'
@@ -485,10 +488,10 @@ class slurm(
   String  $authtype                       = $slurm::params::authtype,
   String  $authinfo                       = $slurm::params::authinfo,
   String  $credtype                       = $slurm::params::credtype,
-  String  $backupcontroller               = $slurm::params::backupcontroller,
-  String  $backupaddr                     = $slurm::params::backupaddr,
-  String  $controlmachine                 = $slurm::params::controlmachine,
-  String  $controladdr                    = $slurm::params::controladdr,
+  # String  $backupcontroller               = $slurm::params::backupcontroller,
+  # String  $backupaddr                     = $slurm::params::backupaddr,
+  # String  $controlmachine                 = $slurm::params::controlmachine,
+  # String  $controladdr                    = $slurm::params::controladdr,
   String  $accountingstoragehost          = $slurm::params::accountingstoragehost,
   #
   Integer $batchstarttimeout              = $slurm::params::batchstarttimeout,
@@ -579,6 +582,8 @@ class slurm(
   Array   $schedulerparameters            = $slurm::params::schedulerparameters,
   String  $selecttype                     = $slurm::params::selecttype,
   Array   $selecttype_params              = $slurm::params::selecttype_params,
+  $slurmctldhost                          = $slurm::params::slurmctldhost,
+  String  $slurmctldaddr                  = $slurm::params::slurmctldaddr,
   # Log details
   String  $slurmctlddebug                 = $slurm::params::slurmctlddebug,
   String  $slurmddebug                    = $slurm::params::slurmddebug,

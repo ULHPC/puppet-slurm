@@ -9,10 +9,9 @@ slurm::builddir: '/vagrant/tests/vagrant/rpmbuild'
 
 
 # SLURM general settings
-#slurm::version: '17.11.12'
+#slurm::version: '19.05.3-2'
 slurm::uid: 900
 slurm::gid: 900
-#slurm::src_checksum: '94fb13b509d23fcf9733018d6c961ca9'
 slurm::service_manage: true
 
 ## SlurmDBD settings

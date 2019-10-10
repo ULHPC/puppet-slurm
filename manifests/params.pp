@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2019-10-10 20:48 svarrette>
+# Time-stamp: <Thu 2019-10-10 22:12 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -128,10 +128,14 @@ class slurm::params {
   # The name by which this Slurm managed cluster is known in the accounting database
   $clustername             = 'cluster'
   # Main / backup Slurm controllers
+  $slurmctldhost           = $::hostname
+  $slurmctldaddr           = ''
+  # OLD Deprecated
   $controlmachine          = $::hostname
   $controladdr             = ''
   $backupcontroller        = ''
   $backupaddr              = ''
+
   # Accounting storage slurmdbd server
   $accountingstoragehost   = $::hostname
 

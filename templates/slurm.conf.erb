@@ -27,24 +27,35 @@ ClusterName=<%= scope['slurm::clustername'] %>
 # - Timers
 # - Power saving on idle nodes
 ###
-
-ControlMachine=<%= scope['slurm::controlmachine'] %>
-<% if scope['slurm::controladdr'].empty? -%>
-#ControlAddr=
+<% if scope['slurm::slurmctldhost'].empty? -%>
+#SlurmctldHost=
 <% else -%>
+<%    if scope['slurm::slurmctldhost'].is_a?(Array) -%>
+<%         scope['slurm::slurmctldhost'].each do |ctld| -%>
+SlurmctldHost=<%= ctld %>
+<%         end -%>
+<%    else -%>
+SlurmctldHost=<%= scope['slurm::slurmctldhost'] %>
+<%    end -%>
+<% end -%>
+<% if scope['slurm::slurmctldaddr'].empty? -%>
+#SlurmctldAddr=
+<% else -%>
+SlurmctldAddr=<%= scope['slurm::slurmctldaddr'] %>
+<% end -%>
+
+<% if (! scope['slurm::controlmachine'].empty?) and scope['slurm::slurmctldhost'].empty? -%>
+ControlMachine=<%= scope['slurm::controlmachine'] %>
+<% end -%>
+<% unless scope['slurm::controladdr'].empty? -%>
 ControlAddr=<%= scope['slurm::controladdr'] %>
 <% end -%>
-<% if scope['slurm::backupcontroller'].empty? -%>
-#BackupController=
-<% else -%>
+<% unless scope['slurm::backupcontroller'].empty? -%>
 BackupController=<%= scope['slurm::backupcontroller'] %>
 <% end -%>
-<% if scope['slurm::backupaddr'].empty? -%>
-#BackupAddr=
-<% else -%>
+<% unless scope['slurm::backupaddr'].empty? -%>
 BackupAddr=<%= scope['slurm::backupaddr'] %>
 <% end -%>
-
 
 #
 AuthType=auth/<%= scope['slurm::authtype'] %>
