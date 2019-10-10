@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2019-10-09 22:54 svarrette>
+# Time-stamp: <Thu 2019-10-10 20:48 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -138,7 +138,7 @@ class slurm::params {
   # Authentication method for communications between Slurm components.
   $authtype                = 'munge' # in [ 'none', 'munge' ]
   $authinfo                = ''
-  $cryptotype              = 'munge' # in [ 'munge', 'openssl']
+  $credtype              = 'munge'   # used to be Cryptotype
 
   # What level of association-based enforcement to impose on job submissions
   $accountingstoragetres   = ''

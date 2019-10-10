@@ -51,7 +51,7 @@ AuthType=auth/<%= scope['slurm::authtype'] %>
 <% unless scope['slurm::authinfo'].empty? -%>
 AuthInfo=auth/<%= scope['slurm::authinfo'] %>
 <% end -%>
-CryptoType=crypto/<%= scope['slurm::cryptotype'] %>
+CredType=cred/<%= scope['slurm::credtype'] %>
 
 <% if scope['slurm::checkpointtype'] == 'none' -%>
 #CheckpointType=checkpoint/none

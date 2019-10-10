@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2019-10-10 14:56 svarrette>
+# Time-stamp: <Thu 2019-10-10 20:50 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -93,8 +93,9 @@
 # @param authtype                 [String]      Default: 'munge'
 #          Elligible values in [ 'none', 'munge' ]
 # @param authinfo                 [String]      Default: ''
-# @param cryptotype               [String]      Default: 'munge'
-#          Elligible values in [ 'munge', 'openssl']
+# @param credtype                 [String]      Default: 'munge'
+#          cryptographic signature tool to be used in the creation of job step
+#          credentials. Used to be CryptoType
 # @param backupcontroller         [String]      Default: ''
 # @param backupaddr               [String]      Default: ''
 # @param controlmachine           [String]      Default: $:hostname
@@ -481,7 +482,7 @@ class slurm(
   String  $clustername                    = $slurm::params::clustername,
   String  $authtype                       = $slurm::params::authtype,
   String  $authinfo                       = $slurm::params::authinfo,
-  String  $cryptotype                     = $slurm::params::cryptotype,
+  String  $credtype                       = $slurm::params::credtype,
   String  $backupcontroller               = $slurm::params::backupcontroller,
   String  $backupaddr                     = $slurm::params::backupaddr,
   String  $controlmachine                 = $slurm::params::controlmachine,
