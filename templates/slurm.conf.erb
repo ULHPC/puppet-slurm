@@ -229,6 +229,9 @@ SuspendProgram=<%= scope['slurm::suspendprogram'] %>
 <% else -%>
 ResumeProgram=<%= scope['slurm::resumeprogram'] %>
 <% end -%>
+<% unless scope['slurm::resumefailprogram'].empty? -%>
+ResumeFailProgram=<%= scope['slurm::resumefailprogram'] %>
+<% end -%>
 <% if scope['slurm::suspendtimeout'] > 0 -%>
 SuspendTimeout=<%= scope['slurm::suspendtimeout'] %>
 <% else -%>

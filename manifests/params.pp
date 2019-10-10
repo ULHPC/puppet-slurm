@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2019-10-11 00:23 svarrette>
+# Time-stamp: <Fri 2019-10-11 00:33 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -238,14 +238,15 @@ class slurm::params {
   $resvoverrun             = 0
   $resumetimeout           = 60
   $resumeprogram           = ''
+  $resumefailprogram       = ''
+  $resumerate              = 300
+  # Controls when a DOWN node will be returned to service
+  $returntoservice         = 1  # in [0, 1, 2]
   $suspendprogram          = ''
   $suspendtimeout          = 0
   $suspendtime             = 0
   $suspendexcnodes         = ''
   $suspendexcparts         = ''
-  $resumerate              = 300
-  # Controls when a DOWN node will be returned to service
-  $returntoservice         = 1  # in [0, 1, 2]
   $statesavelocation       = '/var/lib/slurmctld'
   $schedulertype           = 'backfill' # in ['backfill', 'builtin', 'hold']
   $schedulerparameters     = []

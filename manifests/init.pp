@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2019-10-11 00:24 svarrette>
+# Time-stamp: <Fri 2019-10-11 00:32 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -232,16 +232,17 @@
 # @param propagateresourcelimits  [Array]       Default: []
 # @param propagateresourcelimits_except [Array] Default: ['MEMLOCK']
 # @param resvoverrun              [Integer]     Default: 0
-# @param resumetimeout            [Integer]     Default: 60
+# @param resumefailprogram        [String]      Default: ''
 # @param resumeprogram            [String]      Default: ''
+# @param resumerate               [Integer]     Default: 300
+# @param returntoservice          [Integer]     Default: 1
+#           Elligible values in [0, 1, 2]
+# @param resumetimeout            [Integer]     Default: 60
 # @param suspendprogram           [String]      Default: ''
 # @param suspendtimeout           [Integer]     Default: ''
 # @param suspendtime              [Integer]     Default: ''
 # @param suspendexcnodes          [String]      Default: ''
 # @param suspendexcparts          [String]      Default: ''
-# @param resumerate               [Integer]     Default: 300
-# @param returntoservice          [Integer]     Default: 1
-#           Elligible values in [0, 1, 2]
 # @param statesavelocation        [String]      Default: '/var/lib/slurmctld'
 #           Fully qualified pathname of a directory into which the Slurm
 #           controller, slurmctld, saves its state
@@ -598,15 +599,16 @@ class slurm(
   Array   $propagateresourcelimits_except = $slurm::params::propagateresourcelimits_except,
   Hash    $qos                            = $slurm::params::qos,
   Integer $resvoverrun                    = $slurm::params::resvoverrun,
-  Integer $resumetimeout                  = $slurm::params::resumetimeout,
+  String  $resumefailprogram              = $slurm::params::resumefailprogram,
   String  $resumeprogram                  = $slurm::params::resumeprogram,
+  Integer $resumerate                     = $slurm::params::resumerate,
+  Integer $resumetimeout                  = $slurm::params::resumetimeout,
+  Integer $returntoservice                = $slurm::params::returntoservice,
   String  $suspendprogram                 = $slurm::params::suspendprogram,
   Integer $suspendtimeout                 = $slurm::params::suspendtimeout,
   Integer $suspendtime                    = $slurm::params::suspendtime,
   String  $suspendexcnodes                = $slurm::params::suspendexcnodes,
   String  $suspendexcparts                = $slurm::params::suspendexcparts,
-  Integer $resumerate                     = $slurm::params::resumerate,
-  Integer $returntoservice                = $slurm::params::returntoservice,
   String  $statesavelocation              = $slurm::params::statesavelocation,
   String  $schedulertype                  = $slurm::params::schedulertype,
   Array   $schedulerparameters            = $slurm::params::schedulerparameters,
