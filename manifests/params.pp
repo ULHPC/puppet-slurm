@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2019-10-10 23:00 svarrette>
+# Time-stamp: <Thu 2019-10-10 23:55 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -254,9 +254,9 @@ class slurm::params {
   $slurmdbddebug           = 'info'
   $slurmdbddebugsyslog     = ''
   $slurmctlddebug          = 'info'
-  $slurmctlddebugsyslog    = ''
+  $slurmctldsyslogdebug    = ''
   $slurmddebug             = 'info'
-  $slurmddebugsyslog       = ''
+  $slurmdsyslogdebug       = ''
   # Ports
   $slurmctldport           = 6817
   $slurmdport              = 6818
@@ -264,6 +264,8 @@ class slurm::params {
   # Timeout
   $slurmctldtimeout        = 120
   $slurmdtimeout           = 300
+  $slurmctldparameters     = []
+  $slurmdparameters        = []
   $srunportrange           = '50000-53000'
   $srunepilog              = ''
   $srunprolog              = ''

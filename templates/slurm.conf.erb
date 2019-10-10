@@ -107,6 +107,12 @@ ReturnToService=<%= scope['slurm::returntoservice'] %>
 #SallocDefaultCommand=
 SlurmctldPidFile=/var/run/slurmctld.pid
 SlurmctldPort=<%= scope['slurm::slurmctldport'] %>
+<% unless scope['slurm::slurmdparameters'].empty? -%>
+SlurmctldParameters=<%=  scope['slurm::slurmctldparameters'].join(',') %>
+<% end -%>
+<% unless scope['slurm::slurmdparameters'].empty? -%>
+SlurmdParameters=<%=  scope['slurm::slurmdparameters'].join(',')  %>
+<% end -%>
 SlurmdPidFile=/var/run/slurmd.pid
 SlurmdPort=<%= scope['slurm::slurmdport'] %>
 SlurmdSpoolDir=/var/lib/slurmd
@@ -147,15 +153,15 @@ SlurmctldDebug=<%= scope['slurm::slurmctlddebug'] %>
 SlurmctldLogFile=<%= scope['slurm::params::logdir'] %>/slurmctld.log
 SlurmdDebug=<%= scope['slurm::slurmddebug'] %>
 SlurmdLogFile=<%= scope['slurm::params::logdir'] %>/slurmd.log
-<% if scope['slurm::slurmddebugsyslog'].empty? -%>
+<% if scope['slurm::slurmdsyslogdebug'].empty? -%>
 #SlurmdSyslogDebug=
 <% else -%>
-SlurmdSyslogDebug=<%= scope['slurm::slurmddebugsyslog']%>
+SlurmdSyslogDebug=<%= scope['slurm::slurmdsyslogdebug']%>
 <% end -%>
-<% if scope['slurm::slurmctlddebugsyslog'].empty? -%>
+<% if scope['slurm::slurmctldsyslogdebug'].empty? -%>
 #SlurmctldSyslogDebug=
 <% else -%>
-SlurmctldSyslogDebug=<%= scope['slurm::slurmctlddebugsyslog']%>
+SlurmctldSyslogDebug=<%= scope['slurm::slurmctldsyslogdebug']%>
 <% end -%>
 #SlurmSchedLogFile=
 #SlurmSchedLogLevel=

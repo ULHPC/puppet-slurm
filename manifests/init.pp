@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2019-10-10 23:04 svarrette>
+# Time-stamp: <Thu 2019-10-10 23:55 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -251,11 +251,18 @@
 # @param slurmctldaddr            [String]      Default: ''
 #
 # @param slurmctlddebug           [String ]     Default: 'info'
-# @param slurmctlddebugsyslog     [String ]     Default: ''
-# @param slurmddebug              [String ]     Default: 'info'
-# @param slurmddebugsyslog        [String ]     Default: ''
+# @param slurmctldsyslogdebug     [String ]     Default: ''
 # @param slurmdbddebugsyslog      [String ]     Default: ''
+# @param slurmddebug              [String ]     Default: 'info'
+# @param slurmdsyslogdebug        [String ]     Default: ''
 
+# @param slurmctldparameters         [Array] Default: []
+#           Parameters specific to the Slurmctld.
+#           Elligible values in ['allow_user_triggers', 'cloud_dns', 'idle_on_node_suspend',
+#                                'preempt_send_user_signal', 'reboot_from_controller']
+# @param slurmdparameters         [Array] Default: []
+#           Parameters specific to the Slurmd.
+#           Elligible values in ['config_overrides', 'shutdown_on_reboot']
 # @param slurmctldport            [Integer]     Default: 6817
 # @param slurmdport               [Integer]     Default: 6818
 # @param slurmctldtimeout         [Integer]     Default: 120
@@ -599,9 +606,9 @@ class slurm(
   String  $slurmctldaddr                  = $slurm::params::slurmctldaddr,
   # Log details
   String  $slurmctlddebug                 = $slurm::params::slurmctlddebug,
+  String  $slurmctldsyslogdebug           = $slurm::params::slurmctldsyslogdebug,
   String  $slurmddebug                    = $slurm::params::slurmddebug,
-  String  $slurmctlddebugsyslog           = $slurm::params::slurmctlddebugsyslog,
-  String  $slurmddebugsyslog              = $slurm::params::slurmddebugsyslog,
+  String  $slurmdsyslogdebug              = $slurm::params::slurmdsyslogdebug,
   String  $slurmdbddebugsyslog            = $slurm::params::slurmdbddebugsyslog,
   # Ports
   Integer $slurmctldport                  = $slurm::params::slurmctldport,
@@ -609,6 +616,8 @@ class slurm(
   # Timeout
   Integer $slurmctldtimeout               = $slurm::params::slurmctldtimeout,
   Integer $slurmdtimeout                  = $slurm::params::slurmdtimeout,
+  Array   $slurmctldparameters            = $slurm::params::slurmctldparameters,
+  Array   $slurmdparameters               = $slurm::params::slurmdparameters,
   String  $srunportrange                  = $slurm::params::srunportrange,
   String  $srunepilog                     = $slurm::params::srunepilog,
   String  $srunprolog                     = $slurm::params::srunprolog,
