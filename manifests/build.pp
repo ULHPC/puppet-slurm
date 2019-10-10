@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2019-10-10 14:36 svarrette>
+# Time-stamp: <Thu 2019-10-10 22:17 svarrette>
 #
 # File::      <tt>build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -125,7 +125,7 @@ define slurm::build(
     }
   }
 
-  notice($cmd)
+  # notice($cmd)
   exec { $buildname:
     path    => '/sbin:/usr/bin:/usr/sbin:/bin',
     command => $cmd,
