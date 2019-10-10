@@ -60,7 +60,6 @@ PrivateData=<%= scope['slurm::slurmdbd::privatedata'].join(',')  %>
 <% end -%>
 
 #TrackWCKey=yes
-
 # If set the slurmdbd will mark all idle resources on the cluster as down when a
 # slurmctld disconnects or is no longer reachable.
 <% if scope['slurm::slurmdbd::trackslurmctlddown'] -%>

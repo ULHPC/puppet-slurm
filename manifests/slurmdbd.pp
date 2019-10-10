@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2019-10-09 22:54 svarrette>
+# Time-stamp: <Thu 2019-10-10 20:51 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -214,7 +214,7 @@ inherits slurm
           'bind-address' => $bind_setting,
           # Buffer Pool Size: 256MB + 256 * log2(RAM size in GB)
           'innodb_buffer_pool_size'  => $innodb_buffer_pool_size,
-          # 'innodb_log_file_size'     => $innodb_log_file_size,
+          'innodb_log_file_size'     => $innodb_log_file_size,
           'innodb_lock_wait_timeout' => $innodb_lock_wait_timeout,
         },
       },
