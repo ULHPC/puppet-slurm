@@ -146,7 +146,7 @@ class slurm::params {
   $acct_gatherenergytype   = 'none'
   $batchstarttimeout       = 10
   $getenvtimeout           = 2
-  $checkpointtype          = 'none'  # in ['blcr', 'none', 'ompi', 'poe']
+  $checkpointtype          = 'none'  # in ['none', 'ompi']
   $completewait            = 0
   $corespecplugin          = 'none'
   $cpufreqdef              = undef   # or in ['Conservative', 'OnDemand', 'Performance', 'PowerSave']

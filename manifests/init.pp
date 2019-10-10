@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2019-10-10 20:50 svarrette>
+# Time-stamp: <Thu 2019-10-10 22:05 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -96,13 +96,15 @@
 # @param credtype                 [String]      Default: 'munge'
 #          cryptographic signature tool to be used in the creation of job step
 #          credentials. Used to be CryptoType
+#
 # @param backupcontroller         [String]      Default: ''
 # @param backupaddr               [String]      Default: ''
 # @param controlmachine           [String]      Default: $:hostname
 # @param controladdr              [String]      Default: ''
 # @param batchstarttimeout        [Integer]     Default: 10
 # @param checkpointtype           [String]      Default: 'none'
-#          Elligible values in ['blcr', 'none', 'ompi', 'poe']
+#          The system-initiated checkpoint method to be used for user jobs.
+#          Elligible values in [ 'none', 'ompi']
 # @param completewait             [Integer]     Default: 0
 # @param corespecplugin           [String]      Default: 'none'
 # @param cpufreqdef               [String]      Default: undef
