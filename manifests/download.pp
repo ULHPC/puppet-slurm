@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Sun 2019-02-03 15:02 svarrette>
+# Time-stamp: <Fri 2019-10-11 10:00 svarrette>
 #
 # File::      <tt>download.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -18,18 +18,18 @@
 #          Ensure the presence (or absence) of building
 # @param target [String] Default: '/usr/local/src'
 #          Target directory for the downloaded sources
-# @param checksum_type [String] Default: 'md5'
+# @param checksum [String] Default: ''
+#           archive file checksum (match checksum_type)
+## @param checksum_type [String] Default: 'sha1'
 #          archive file checksum type (none|md5|sha1|sha2|sh256|sha384| sha512).
 # @param checksum_verify [Boolean] Default: false
 #          whether checksum will be verified (true|false).
-# @param checksum [String] Default: ''
-#           archive file checksum (match checksum_type)
+
+# @example Downloading version 19.05.3-2 of SLURM
 #
-# @example Downloading version 17.11.12 of SLURM
-#
-#     slurm::download { '17.11.12':
+#     slurm::download { '19.05.3-2':
 #        ensure        => 'present',
-#        checksum      => '42f0a5dbe34210283f474328ac6e8d5267dc2386',
+#        checksum      => '6fe2c6196f089f6210d5ba79e99b0656f5a527b4',
 #        checksum_type => 'sha1',
 #        target        => '/usr/local/src/',
 #   }

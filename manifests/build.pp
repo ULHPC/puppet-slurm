@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2019-10-10 22:17 svarrette>
+# Time-stamp: <Fri 2019-10-11 10:05 svarrette>
 #
 # File::      <tt>build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -32,11 +32,32 @@
 # @example Building version 19.05.3-2 of SLURM
 #
 #     slurm::build { '19.05.3-2':
-#     ensure => 'present',
-#     srcdir => '/usr/local/src',
-#     dir    => '/root/rpmbuild',
-#     with   => [ 'hdf5', 'hwloc', lua', 'mysql', 'numa', 'pmix' ]
-#   }
+#        ensure => 'present',
+#        srcdir => '/usr/local/src',
+#        dir    => '/root/rpmbuild',
+#        with   => [ 'hdf5', 'hwloc', lua', 'mysql', 'numa', 'pmix' ]
+#     }
+#
+# This will typically run the following rpmbuild command:
+#
+#     rpmbuild -ta --with hdf5 --with hwloc --with lua --with mysql --with numa --with pmix \
+#              --define "_topdir /root/rpmbuild" --define "_with_pmix --with-pmix=/usr" \
+#              /usr/local/src/slurm-19.05.3-2.tar.bz2
+#
+# and thus produce the following RPMs under /root/rpmbuild/RPMS/x86_64/:
+#
+#      slurm-19.05.3-2.el7.x86_64.rpm
+#      slurm-contribs-19.05.3-2.el7.x86_64.rpm
+#      slurm-devel-19.05.3-2.el7.x86_64.rpm
+#      slurm-example-configs-19.05.3-2.el7.x86_64.rpm
+#      slurm-libpmi-19.05.3-2.el7.x86_64.rpm
+#      slurm-openlava-19.05.3-2.el7.x86_64.rpm
+#      slurm-pam_slurm-19.05.3-2.el7.x86_64.rpm
+#      slurm-perlapi-19.05.3-2.el7.x86_64.rpm
+#      slurm-slurmctld-19.05.3-2.el7.x86_64.rpm
+#      slurm-slurmd-19.05.3-2.el7.x86_64.rpm
+#      slurm-slurmdbd-19.05.3-2.el7.x86_64.rpm
+#      slurm-torque-19.05.3-2.el7.x86_64.rpm
 #
 define slurm::build(
   String  $ensure  = $slurm::params::ensure,

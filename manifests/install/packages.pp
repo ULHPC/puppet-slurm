@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2019-10-09 17:26 svarrette>
+# Time-stamp: <Fri 2019-10-11 10:09 svarrette>
 #
 # File::      <tt>install/packages.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -28,14 +28,28 @@
 #          Exhaustive list of the packages (RPM basenames - without versions and
 #          os specific suffixes.) to install
 #
-# @example install version 19.05.3 of SLURMd
+# @example install version 19.05.3-2 for a head (controller) node running also the SlurmDBD:
 #
-#     slurm::install::packages { '19.05.3':
-#        ensure => 'present',
-#        pkgdir => "/root/rpmbuild/',
-#        slurmd => true
+#     slurm::install::packages { '19.05.3-2':
+#        ensure    => 'present',
+#        pkgdir    => "/root/rpmbuild/',
+#        slurmctld => true,
+#        slurmd    => true,
 #     }
 #
+# @example install version 19.05.3-2 for a compute node (aimed at running SLURMd)
+#
+#     slurm::install::packages { '19.05.3-2':
+#        ensure => 'present',
+#        pkgdir => "/root/rpmbuild/',
+#        slurmd => true,
+#     }
+#
+# @example install version 19.05.3 for a login node:
+#     slurm::install::packages { '19.05.3-2':
+#        ensure => 'present',
+#        pkgdir => "/root/rpmbuild/',
+#     }
 #
 define slurm::install::packages(
   String  $ensure           = $slurm::params::ensure,

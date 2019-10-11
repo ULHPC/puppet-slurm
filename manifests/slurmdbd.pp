@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2019-10-10 21:07 svarrette>
+# Time-stamp: <Fri 2019-10-11 10:19 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -211,7 +211,7 @@ inherits slurm
     class { '::mysql::server':
       override_options => {
         'mysqld' => {
-          'bind-address' => $bind_setting,
+          'bind-address'             => $bind_setting,
           # Buffer Pool Size: 256MB + 256 * log2(RAM size in GB)
           'innodb_buffer_pool_size'  => $innodb_buffer_pool_size,
           'innodb_log_file_size'     => $innodb_log_file_size,
