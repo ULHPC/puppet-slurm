@@ -54,7 +54,7 @@ CommitDelay=<%= scope['slurm::slurmdbpausd::commitdelay'] %>
 <% end -%>
 #MessageTimeout=300
 <% if scope['slurm::slurmdbd::privatedata'].empty?  -%>
-#PrivateData=accounts,users,usage,jobs
+#PrivateData=accounts,users,usage
 <% else -%>
 PrivateData=<%= scope['slurm::slurmdbd::privatedata'].join(',')  %>
 <% end -%>
