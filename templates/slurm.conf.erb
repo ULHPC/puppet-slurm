@@ -306,7 +306,11 @@ MaxJobCount=<%= scope['slurm::maxjobcount'] %>
 MaxTasksPerNode=<%= scope['slurm::maxtaskspernode'] %>
 #PluginDir=
 #PlugStackConfig=
-#PrivateData=jobs
+<% if scope['slurm::privatedata'].empty?  -%>
+#PrivateData=accounts,users,usage,jobs
+<% else -%>
+PrivateData=<%= scope['slurm::privatedata'].join(',')  %>
+<% end -%>
 ProctrackType=proctrack/<%= scope['slurm::proctracktype'] %>
 #PropagatePrioProcess=0
 <% if scope['slurm::propagateresourcelimits'].empty? -%>
