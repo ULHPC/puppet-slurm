@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2019-02-01 08:51 svarrette>
+# Time-stamp: <Mon 2019-10-14 12:00 svarrette>
 #
 # File::      <tt>config.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -27,7 +27,7 @@ class slurm::config {
     $slurm::configdir,
     $slurm::params::logdir,
     #$slurm::params::piddir,  # NO support for specialized piddir as per service definitions
-    $pluginsdir,
+    # $pluginsdir,
   ]
   if $slurm::ensure == 'present' {
     file { $slurmdirs:
@@ -36,21 +36,37 @@ class slurm::config {
       group  => $slurm::params::group,
       mode   => $slurm::params::configdir_mode,
     }
+    # Plugins directory plugstack.conf.d
     File[$slurm::configdir] -> File[$pluginsdir]
-    if ((!empty($slurm::plugins)) and ($slurm::pluginsdir_target != undef)) {
-      $slurm::plugins.each |String $plugin| {
-        file { "${pluginsdir}/${plugin}.conf":
-          ensure  => 'link',
-          target  => "${slurm::pluginsdir_target}/${plugin}.conf",
-          owner   => $slurm::params::username,
-          group   => $slurm::params::group,
-          require => File[$pluginsdir],
-        }
+    if ($slurm::pluginsdir_target != undef) {
+      File[$pluginsdir] {
+        ensure => 'link',
+      }
+    } else {
+      File[$pluginsdir] {
+        ensure => 'directory',
       }
     }
+    file { $pluginsdir:
+      target => "${slurm::pluginsdir_target}",
+      owner  => $slurm::params::username,
+      group  => $slurm::params::group,
+    }
+
+    # if ((!empty($slurm::plugins)) and ($slurm::pluginsdir_target != undef)) {
+    #   $slurm::plugins.each |String $plugin| {
+    #     file { "${pluginsdir}/${plugin}.conf":
+    #       ensure  => 'link',
+    #       target  => "${slurm::pluginsdir_target}/${plugin}.conf",
+    #       owner   => $slurm::params::username,
+    #       group   => $slurm::params::group,
+    #       require => File[$pluginsdir],
+    #     }
+    #   }
+    # }
   }
   else {
-    file { $slurmdirs:
+    file { flatten([ $slurmdirs, $pluginsdir ]):
       ensure => $slurm::ensure,
       force  => true,
     }
