@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2019-10-14 12:00 svarrette>
+# Time-stamp: <Mon 2019-10-14 12:59 svarrette>
 #
 # File::      <tt>config.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -52,18 +52,16 @@ class slurm::config {
       owner  => $slurm::params::username,
       group  => $slurm::params::group,
     }
-
-    # if ((!empty($slurm::plugins)) and ($slurm::pluginsdir_target != undef)) {
-    #   $slurm::plugins.each |String $plugin| {
-    #     file { "${pluginsdir}/${plugin}.conf":
-    #       ensure  => 'link',
-    #       target  => "${slurm::pluginsdir_target}/${plugin}.conf",
-    #       owner   => $slurm::params::username,
-    #       group   => $slurm::params::group,
-    #       require => File[$pluginsdir],
-    #     }
-    #   }
-    # }
+    if (!empty($slurm::plugins)) {
+      $slurm::plugins.each |String $plugin| {
+        file { "${pluginsdir}/${plugin}.conf":
+          ensure  =>  $slurm::ensure,
+          owner   => $slurm::params::username,
+          group   => $slurm::params::group,
+          require => File[$pluginsdir],
+        }
+      }
+    }
   }
   else {
     file { flatten([ $slurmdirs, $pluginsdir ]):
