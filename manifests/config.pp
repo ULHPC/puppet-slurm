@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2019-10-14 13:29 svarrette>
+# Time-stamp: <Mon 2019-10-14 14:18 svarrette>
 #
 # File::      <tt>config.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -60,7 +60,7 @@ class slurm::config {
           group   => $slurm::params::group,
           require => File[$pluginsdir],
         }
-        if ($osfamily == 'RedHat') {
+        if ($::osfamily == 'RedHat') {
           File["${pluginsdir}/${plugin}.conf"] {
             seltype => 'etc_t',
           }
@@ -116,6 +116,7 @@ class slurm::config {
   # Now add the other configuration files
   include ::slurm::config::cgroup
   include ::slurm::config::gres
+  include ::slurm::config::plugstack
   include ::slurm::config::topology
 
   # Eventually, add the [default] plugins

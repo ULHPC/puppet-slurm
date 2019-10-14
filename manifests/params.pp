@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2019-10-11 00:33 svarrette>
+# Time-stamp: <Mon 2019-10-14 13:52 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -73,7 +73,6 @@ class slurm::params {
   $slurmctld_libdir = $::operatingsystem ? {
     default => '/var/lib/slurmctld',
   }
-  $pluginsdir = 'plugstack.conf.d'
 
   $configdir_mode = '0755'
 
@@ -368,7 +367,11 @@ class slurm::params {
   # SPANK - Slurm Plug-in Architecture for Node and job (K)control
   # See <https://slurm.schedmd.com/spank.html>
   #
-  $pluginsdir_target = undef
+  $plugstack_configfile = 'plugstack.conf'
+  $pluginsdir           = 'plugstack.conf.d'
+  $pluginsdir_target    = undef
+
+
 
   #####################
   ### SLURM Daemons ###

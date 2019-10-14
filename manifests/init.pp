@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2019-10-11 00:32 svarrette>
+# Time-stamp: <Mon 2019-10-14 13:59 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -693,6 +693,12 @@ class slurm(
   $gres_source                            = undef,
   $gres_target                            = undef,
   Hash    $gres                           = {},
+  #
+  # plugstack.conf
+  #
+  $plugstack_content                      = undef,
+  $plugstack_source                       = undef,
+  $plugstack_target                       = undef,
   #
   # Munge authentication service
   #
