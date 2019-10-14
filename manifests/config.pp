@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2019-10-14 13:24 svarrette>
+# Time-stamp: <Mon 2019-10-14 13:29 svarrette>
 #
 # File::      <tt>config.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -60,10 +60,10 @@ class slurm::config {
           group   => $slurm::params::group,
           require => File[$pluginsdir],
         }
-      }
-      if ($osfamily == 'RedHat') {
-        File["${pluginsdir}/${plugin}.conf"] {
-          seltype => 'etc_t',
+        if ($osfamily == 'RedHat') {
+          File["${pluginsdir}/${plugin}.conf"] {
+            seltype => 'etc_t',
+          }
         }
       }
     }
