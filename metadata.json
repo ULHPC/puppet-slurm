@@ -76,6 +76,7 @@
   "tags": [
     "slurm",
     "munge",
+    "pmix",
     "slurmd",
     "slurmctld",
     "slurmdbd"
