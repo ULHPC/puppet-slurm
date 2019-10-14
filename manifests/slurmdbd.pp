@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2019-10-11 10:19 svarrette>
+# Time-stamp: <Mon 2019-10-14 14:52 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -193,6 +193,8 @@ inherits slurm
       ensure => $slurm::ensure,
     }
   }
+
+  notice($privatedata)
 
   # [Eventually] bootstrap the MySQL DB
   if $storagetype == 'mysql' {
