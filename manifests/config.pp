@@ -45,6 +45,7 @@ class slurm::config {
     } else {
       File[$pluginsdir] {
         ensure => 'directory',
+        target => 'notlink',
       }
     }
     file { $pluginsdir:
