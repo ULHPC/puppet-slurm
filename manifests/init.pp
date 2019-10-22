@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2019-10-14 13:59 svarrette>
+# Time-stamp: <Mon 2019-10-14 15:34 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -393,12 +393,38 @@
 #          Hash defining the generic resource management entries
 #          Format
 #          '<nodename>' => {
-  #              [comment => 'This will become a comment above the line',]
-  #              name => '<name>',
-  #              file => '<file>'
-  #              [...]
-  #        }
+#              [comment => 'This will become a comment above the line',]
+#              name => '<name>',
+#              file => '<file>'
+#              [...]
+#        }
 #
+#######################                               ###############################
+####################### plugstack.conf[.d] attributes ###############################
+#######################                               ###############################
+##########  SPANK - Slurm Plug-in Architecture for Node and job (K)control ##########
+##########            See <https://slurm.schedmd.com/spank.html>           ##########
+#
+# @param plugstack_content         [String]      Default: undef
+#           The desired contents of a plugstack configuration file plugstack.conf, as
+#           a string.
+#           This attribute is  mutually exclusive with plugstack_{content,target}.
+# @param plugstack_source          [String]      Default: undef
+#          A source file for plugstack.conf, which will be copied into place on the
+#          local system.
+#          This attribute is mutually exclusive with plugstack_{content,target}.
+# @param plugstack_target          [String]      Default: undef
+#          Target link path for plugstack.conf
+##########
+# @param pluginsdir_target          [String] Default: undef,
+#          If defined, symlink target for the plugstack plugin directory
+#          <configdir>/plugstack.conf.d
+# @param plugins                    [Array] Default: []
+#          List of plugins to check under <configdir>/plugstack.conf.d/
+#          This puppet module witll simply enforce the correct ownership/group/seltype
+#          Content won't be set -- you probably want to set pluginsdir_target variable
+#          toward the appropriate place under your local copy of the slurm control
+#          repository (see slurm::repo)
 ############################                      ####################################
 ############################ MUNGE Authentication ####################################
 ############################                      ####################################
@@ -440,16 +466,6 @@
 ############################              ####################################
 # @param use_pam                  [Boolean]       Default: true
 #
-###
-### SPANK - Slurm Plug-in Architecture for Node and job (K)control
-### See <https://slurm.schedmd.com/spank.html>
-###
-# @param pluginsdir_target          [String] Default: undef,
-#          If definied, symlink target base directory for all plugins
-#          <plugin>.conf _i.e._ <configdir>/plugstack.conf.d/<plugin>.conf
-#          points to <pluginsdir_target>/<plugin>.conf
-# @param plugins                    [Array] Default: []
-#          List of plugins to see in <configdir>/plugstack.conf.d/
 
 #
 # @example Default instance
