@@ -283,14 +283,15 @@ This definition takes care of downloading the SLURM sources for a given version 
 * `checksum` [String] Default: ''
      -  archive file checksum (match checksum_type)
 
-_Example_: Downloading version 17.11.12 (latest at the time of writing) of SLURM
+_Example_: Downloading version 19.05.3-2 (latest at the time of writing) of SLURM
 
 ```ruby
-slurm::download { '17.11.12':
-  ensure    => 'present',
-  checksum  => '94fb13b509d23fcf9733018d6c961ca9',
-  target    => '/usr/local/src/',
-}
+ slurm::download { '19.05.3-2':
+    ensure        => 'present',
+    checksum      => '6fe2c6196f089f6210d5ba79e99b0656f5a527b4',
+    checksum_type => 'sha1',
+    target        => '/usr/local/src/',
+ }
 ```
 
 
