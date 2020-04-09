@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Sun 2019-02-03 14:48 svarrette>
+# Time-stamp: <Tue 2019-10-22 13:37 svarrette>
 #
 # File::      <tt>install.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -42,9 +42,9 @@ class slurm::install {
     slurm::install::packages { $slurm::version :
       ensure    => $slurm::ensure,
       pkgdir    => $slurm::builddir,
-      slurmd    => ($slurm::with_slurmd    or defined(Class['slurm::slurmd'])),
-      slurmctld => ($slurm::with_slurmctld or defined(Class['slurm::slurmctld'])),
-      slurmdbd  => ($slurm::with_slurmdbd  or defined(Class['slurm::slurmdbd'])),
+      slurmd    => ($slurm::with_slurmd    or defined(Class['::slurm::slurmd'])),
+      slurmctld => ($slurm::with_slurmctld or defined(Class['::slurm::slurmctld'])),
+      slurmdbd  => ($slurm::with_slurmdbd  or defined(Class['::slurm::slurmdbd'])),
       wrappers  => $slurm::wrappers,
       require   => Slurm::Build[$slurm::version],
     }

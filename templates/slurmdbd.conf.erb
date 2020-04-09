@@ -48,14 +48,18 @@ AuthInfo=auth/<%= scope['slurm::authinfo'] %>
 # up inserts into the database dramatically.
 # /!\ There is a [very] small probability of data loss
 <% if scope['slurm::slurmdbd::commitdelay'] > 0  -%>
-CommitDelay=<%= scope['slurm::slurmdbd::commitdelay'] %>
+CommitDelay=<%= scope['slurm::slurmdbpausd::commitdelay'] %>
 <% else -%>
 #CommitDelay=<%= scope['slurm::slurmdbd::commitdelay'] %>
 <% end -%>
 #MessageTimeout=300
+<% if scope['slurm::slurmdbd::privatedata'].empty?  -%>
 #PrivateData=accounts,users,usage,jobs
-#TrackWCKey=yes
+<% else -%>
+PrivateData=<%= scope['slurm::slurmdbd::privatedata'].join(',')  %>
+<% end -%>
 
+#TrackWCKey=yes
 # If set the slurmdbd will mark all idle resources on the cluster as down when a
 # slurmctld disconnects or is no longer reachable.
 <% if scope['slurm::slurmdbd::trackslurmctlddown'] -%>
@@ -114,6 +118,29 @@ DbdAddr=<%= scope['slurm::slurmdbd::dbdaddr'] %>
 #DbdBackupHost=
 <% else -%>
 DbdBackupHost=<%= scope['slurm::slurmdbd::dbdbackuphost'] %>
+<% end -%>
+<% unless scope['slurm::slurmdbd::purgeeventafter'].nil? -%>
+# Events happening on the cluster over this age are purged from the database
+PurgeEventAfter=<%= scope['slurm::slurmdbd::purgeeventafter'] %>
+<% end -%>
+<% unless scope['slurm::slurmdbd::purgejobafter'].nil? -%>
+# Individual job records over this age are purged from the database.
+PurgeJobAfter=<%= scope['slurm::slurmdbd::purgejobafter'] %>
+<% end -%>
+<% unless scope['slurm::slurmdbd::purgeresvafter'].nil? -%>
+PurgeResvAfter=<%= scope['slurm::slurmdbd::purgeresvafter'] %>
+<% end -%>
+<% unless scope['slurm::slurmdbd::purgestepafter'].nil? -%>
+PurgeStepAfter=<%= scope['slurm::slurmdbd::purgestepafter'] %>
+<% end -%>
+<% unless scope['slurm::slurmdbd::purgesuspendafter'].nil? -%>
+PurgeSuspendAfter=<%= scope['slurm::slurmdbd::purgesuspendafter'] %>
+<% end -%>
+<% unless scope['slurm::slurmdbd::purgetxnafter'].nil? -%>
+PurgeTXNAfter=<%= scope['slurm::slurmdbd::purgetxnafter'] %>
+<% end -%>
+<% unless scope['slurm::slurmdbd::purgeusageafter'].nil? -%>
+PurgeUsageAfter=<%= scope['slurm::slurmdbd::purgeusageafter'] %>
 <% end -%>
 
 #####################

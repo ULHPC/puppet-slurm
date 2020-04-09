@@ -37,24 +37,33 @@ In particular, this module implements the following elements:
 | `slurm::login`     | Specialized class to configure a Login node (i.e. without any of the slurm daemons)                                  |
 | `slurm::munge`     | Manages [MUNGE]( https://github.com/dun/munge), an authentication service for creating and validating credentials.   |
 | `slurm::pam`       | Handle PAM aspects  for SLURM (Memlock for MPI etc.)                                                                 |
+| `slurm::params`    | Defaults parameters for all the module classes/definition                                                            |
+| `slurm::plugins`   | Handles all default Slurm plugins -- NOT YET IMPLEMENTED                                                             |
+| `slurm::pmix`      | Handle PMIx aspects (download, build and installation) to make SLURM build compliant with PMIx, PMI1 and PMI2        |
 | `slurm::repo`      | Takes care of the control repository hosting the slurm configuration of the cluster                                  |
 
-| Puppet Defines                            | Description                                                                                                    |
-|-------------------------------------------|----------------------------------------------------------------------------------------------------------------|
-| `slurm::download`                         | takes care of downloading the SLURM sources for a given version  passed as resource name                       |
-| `slurm::build`                            | building Slurm sources into packages (_i.e. RPMs for the moment) for a given version  passed as resource name  |
-| `slurm::install::packages`                | installs the Slurm packages, typically built from `slurm::build`, for a given version passed as resource name. |
-| `slurm::acct:mgr`                         | Generic wrapper for all sacctmgr commands                                                                      |
-| `slurm::acct::{account,cluster,qos,user}` | adding (or removing) a {account,cluster,qos,user} to the slurm accounting database                             |
-| `slurm::firewall`                         | takes care of firewall aspects for SLURM                                                                       |
+| Puppet Defines                            | Description                                                                                                                     |
+|-------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| `slurm::acct:mgr`                         | Generic wrapper for all sacctmgr commands                                                                                       |
+| `slurm::acct::{account,cluster,qos,user}` | adding (or removing) a {account,cluster,qos,user} to the slurm accounting database                                              |
+| `slurm::build`                            | building Slurm sources into packages (i.e. RPMs for the moment) for a given version  passed as resource name                    |
+| `slurm::download`                         | takes care of downloading the SLURM sources for a given version  passed as resource name                                        |
+| `slurm::firewall`                         | takes care of firewall aspects for SLURM                                                                                        |
+| `slurm::install::packages`                | installs the Slurm packages, typically built from `slurm::build`, for a given version passed as resource name.                  |
+| `slurm::pmix::{download,build,install}`   | download, build and install [PMIx](https://slurm.schedmd.com/mpi_guide.html#pmix)                                               |
+| `slurm::repo::syncto`                     | synchronizes the content of the slurm control repository (see `slurm::repo`) toward a directory (typically a shared mountpoint) |
 
 In addition, this puppet module implements several **private** classes:
 
-* `slurm::common[::redhat]`: handles common tasks to all daemon
-* `slurm::install`: install the Slurm packages, eventually built from downloaded sources
-* `slurm::config[::{cgroup,gres,topology}]`: handles the various aspects of the configuration of SLURM daemons -- see <https://slurm.schedmd.com/slurm.conf.html#lbAN>
-* `slurm::plugins::lua`: takes care of the Job Submit plugin 'lua' i.e. of the file [`job_submit.lua`](https://github.com/SchedMD/slurm/blob/master/contribs/lua/job_submit.lua).
 * `slurm::accounting`: Setup the accounting structure
+* `slurm::common[::redhat]`: handles common tasks to all daemon
+* `slurm::config[::{cgroup,gres,topology}]`: handles the various aspects of the configuration of SLURM daemons -- see <https://slurm.schedmd.com/slurm.conf.html#lbAN>, i.e.
+    - [`slurm.conf`](https://slurm.schedmd.com/slurm.conf.html)
+    - [`slurmdbd.conf`](https://slurm.schedmd.com/slurmdbd.conf.html)
+    - [`topology.conf`](https://slurm.schedmd.com/topology.conf.html)
+    - [`cgroup.conf`](https://slurm.schedmd.com/cgroup.conf.html)
+* `slurm::install`: wrapper to download, build and install the Slurm packages
+* `slurm::plugins::lua`: takes care of the Job Submit plugin 'lua' i.e. of the file [`job_submit.lua`](https://github.com/SchedMD/slurm/blob/master/contribs/lua/job_submit.lua).
 
 Also, a couple of extra definition in used in our infrastructure:
 
@@ -69,8 +78,8 @@ See `docs/contributing.md` for more details on the steps you shall follow to hav
 
 ### Setup Requirements
 
-This module currently only works completely on Redhat / CentOS 7 over Puppet 4.x.
-Over operating systems and support for Puppet 5.x will eventually be added.
+This module currently only works completely on Redhat / CentOS 7 over Puppet >= 4.x.
+Over operating systems and support for Puppet 5.x and above seems to work but is not guaranteed.
 Yet feel free to contribute to this module to help us extending the usage of this module.
 
 By default, some key configuration decisions are configured, namely:
@@ -79,7 +88,15 @@ By default, some key configuration decisions are configured, namely:
      - the shared key is generated by default, but you probably want to provide it to puppet via a URI.
 * None of the daemons are configured by default.
      - You have to set the boolean parameter(s) `with_{slurmdbd,slurmctl,slurmd}` to `true` and/or include explicitly the `slurm::{slurmdbd,slurmctld,slurmd}` classes
+* On a **production** system, you probably wants to follow the following tips:
+     - set globally `service_manage` to false - you probably want to control when the daemons are restarted (typically to ensure the slurm config is really in sync across the cluster)
+     - set global   `do_package_install` to false
+     - maintain a single source of authority for the shared slurm configuration as a Git repository (called here the "_slurm control repository_")
+         * your **slurm controller(s) servers** would then rely on the `slurm::repo*` classes/definitions to maintain the consistency between the local config (in `/etc/slurm`, as generated by this module upon puppet runs and its extensive hiera configuration capabilities) and this repository.
+         * your **login and compute nodes**
+     not correlate the local `/etc/slurm` directory with
 
+     - you are advised to set the `service_manage` to false
 
 ## Forge Module Dependencies
 
@@ -266,14 +283,15 @@ This definition takes care of downloading the SLURM sources for a given version 
 * `checksum` [String] Default: ''
      -  archive file checksum (match checksum_type)
 
-_Example_: Downloading version 17.11.12 (latest at the time of writing) of SLURM
+_Example_: Downloading version 19.05.3-2 (latest at the time of writing) of SLURM
 
 ```ruby
-slurm::download { '17.11.12':
-  ensure    => 'present',
-  checksum  => '94fb13b509d23fcf9733018d6c961ca9',
-  target    => '/usr/local/src/',
-}
+ slurm::download { '19.05.3-2':
+    ensure        => 'present',
+    checksum      => '6fe2c6196f089f6210d5ba79e99b0656f5a527b4',
+    checksum_type => 'sha1',
+    target        => '/usr/local/src/',
+ }
 ```
 
 

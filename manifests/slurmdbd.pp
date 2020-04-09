@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-10-06 00:41 svarrette>
+# Time-stamp: <Mon 2019-10-14 14:52 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -41,8 +41,6 @@
 # @param authtype           [String]      Default: 'munge'
 #          Elligible values in [ 'none', 'munge' ]
 # @param authinfo           [String]      Default: ''
-# @param privatedata        [Array]       Default: []
-#           Elligible values in ['accounts','jobs','reservations','usage','users']
 # @param archiveevents      [Boolean]     Default: false
 #           When purging events also archive them?
 # @param archivejobs        [Boolean]     Default: false
@@ -70,14 +68,51 @@
 #           The level of detail to provide the Slurm Database Daemon's logs.
 # @param debugflags         [String ]     Default: []
 #           in ['DB_ARCHIVE','DB_ASSOC','DB_EVENT','DB_JOB','DB_QOS','DB_QUERY','DB_RESERVATION','DB_RESOURCE','DB_STEP','DB_USAGE','DB_WCKEY']
+# @param privatedata        [Array]       Default: []
+#           Elligible values in ['accounts','jobs','reservations','usage','users']
+# @param purgeeventafter    Default: undef
+#           Events happening on the cluster over this age are purged from the database.
+# @param purgejobafter      Default: undef
+#           Individual job records over this age are purged from the database.
+# @param purgeresvafter     Default: undef
+#           Individual reservation records over this age are purged from the
+#           database
+# @param purgestepafter     Default: undef
+#           Individual job step records over this age are purged from the
+#           database.
+# @param purgesuspendafter  Default: undef
+#           Records of individual suspend times for jobs over this age are
+#           purged from the database
+# @param purgetxnafter      Default: undef
+#           Records of individual transaction times for transactions over this
+#           age are purged from the database
+# @param purgeusageafter    Default: undef
+#           Usage Records (Cluster, Association and WCKey) over this age are
+#           purged from the database
 # @param storagehost        [String]      Default: $::hostname
+#           Define the name of the host the database is running where we are
+#           going to store the data
 # @param storagebackuphost  [String]      Default: ''
 # @param storageloc         [String]      Default: 'slurm'
+#           Specify the name of the database as the location where accounting
+#           records are written
 # @param storageport        [Integer]     Default: 3306
 # @param storagetype        [String]      Default: 'mysql'
 # @param storageuser        [String]      Default: 'slurm'
 # @param trackslurmctlddown [Boolean]     Default: false
+#           Boolean yes or no. If set the slurmdbd will mark all idle resources
+#           on the cluster as down when a slurmctld disconnects or is no longer
+#           reachable.
 #
+########################                  ##############################
+######################## MariaDB settings ##############################
+########################                  ##############################
+#
+# @param  innodb_buffer_pool_size   [String]  Default: '256M'
+# @param  innodb_log_file_size      [String]  Default: '64M'
+# @param  innodb_lock_wait_timeout  [Integer] Default: 500
+
+
 # === Authors
 #
 # The UL HPC Team <hpc-sysadmins@uni.lu> of the University of Luxembourg, in
@@ -117,6 +152,7 @@ class slurm::slurmdbd(
   Integer $dbdport            = $slurm::params::slurmdbdport,
   String  $debuglevel         = $slurm::params::slurmdbddebug,
   Array   $debugflags         = $slurm::params::debugflags,
+  Array   $privatedata        = $slurm::params::privatedata,
   $purgeeventafter            = undef,
   $purgejobafter              = undef,
   $purgeresvafter             = undef,
@@ -132,6 +168,12 @@ class slurm::slurmdbd(
   String  $storagetype        = $slurm::params::storagetype,
   String  $storageuser        = $slurm::params::storageuser,
   Boolean $trackslurmctlddown = $slurm::params::trackslurmctlddown,
+  #
+  # MySQL settings
+  #
+  String  $innodb_buffer_pool_size  = $slurm::params::innodb_buffer_pool_size,
+  String  $innodb_log_file_size     = $slurm::params::innodb_log_file_size,
+  Integer $innodb_lock_wait_timeout = $slurm::params::innodb_lock_wait_timeout,
 )
 inherits slurm
 {
@@ -152,6 +194,7 @@ inherits slurm
     }
   }
 
+  notice($privatedata)
 
   # [Eventually] bootstrap the MySQL DB
   if $storagetype == 'mysql' {
@@ -170,7 +213,11 @@ inherits slurm
     class { '::mysql::server':
       override_options => {
         'mysqld' => {
-          'bind-address' => $bind_setting,
+          'bind-address'             => $bind_setting,
+          # Buffer Pool Size: 256MB + 256 * log2(RAM size in GB)
+          'innodb_buffer_pool_size'  => $innodb_buffer_pool_size,
+          'innodb_log_file_size'     => $innodb_log_file_size,
+          'innodb_lock_wait_timeout' => $innodb_lock_wait_timeout,
         },
       },
     }
@@ -184,6 +231,19 @@ inherits slurm
       grant    => ['ALL'],
       before   => File[$slurm::params::dbd_configfile],
     }
+
+    # Job completion logging mechanism type
+    if ($slurm::jobcomptype and $slurm::jobcomptype == 'mysql' and $slurm::jobcomploc and (!empty($slurm::jobcomploc))) {
+      mysql::db { $slurm::jobcomploc :
+        user     => $storageuser,
+        password => $storagepass,
+        host     => $dbdhost,
+        grant    => ['ALL'],
+        before   => File[$slurm::params::dbd_configfile],
+      }
+    }
+
+
     # Eventually create the 'slurm'@'*' user with all rights
     unique([ $storagehost, $::hostname, $::fqdn]).each |String $host| {
       mysql_user { "${storageuser}@${host}":
