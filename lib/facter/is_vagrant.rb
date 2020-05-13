@@ -1,5 +1,6 @@
 Facter.add(:is_vagrant) do
+  confine :is_virtual => true
   setcode do
-    Facter[:is_virtual].value && File.directory?('/vagrant')
+    File.directory?('/vagrant')
   end
 end
