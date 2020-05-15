@@ -107,7 +107,7 @@ See [`metadata.json`](https://github.com/ULHPC/puppet-slurm/blob/devel/metadata.
 * [puppetlabs/inifile](https://forge.puppetlabs.com/puppetlabs/inifile)
 * [puppet/archive](https://forge.puppetlabs.com/puppet/archive)
 * [puppet/yum](https://forge.puppetlabs.com/puppet/yum)
-* [stahnma/epel](https://forge.puppetlabs.com/stahnma/epel)
+* [puppet/epel](https://forge.puppet.com/puppet/epel)
 * [bodgit/rngd](https://forge.puppetlabs.com/bodgit/rngd)
 * [ghoneycutt/pam](https://forge.puppetlabs.com/ghoneycutt/pam)
 
