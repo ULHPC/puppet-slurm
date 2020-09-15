@@ -103,6 +103,7 @@
 #           Boolean yes or no. If set the slurmdbd will mark all idle resources
 #           on the cluster as down when a slurmctld disconnects or is no longer
 #           reachable.
+# @param bootstrap_mysql    [Boolean]     Default: true
 #
 ########################                  ##############################
 ######################## MariaDB settings ##############################
@@ -174,6 +175,7 @@ class slurm::slurmdbd(
   String  $innodb_buffer_pool_size  = $slurm::params::innodb_buffer_pool_size,
   String  $innodb_log_file_size     = $slurm::params::innodb_log_file_size,
   Integer $innodb_lock_wait_timeout = $slurm::params::innodb_lock_wait_timeout,
+  Boolean $bootstrap_mysql    = $slurm::params::bootstrap_mysql,
 )
 inherits slurm
 {
@@ -197,7 +199,7 @@ inherits slurm
   notice($privatedata)
 
   # [Eventually] bootstrap the MySQL DB
-  if $storagetype == 'mysql' {
+  if $bootstrap_mysql {
     # you now need to  allow remote access from a different host rather than
     # localhost within /etc/my.cnf.d/server.cnf i.e. $mysql::server::config_file
     # i.e. comment the line

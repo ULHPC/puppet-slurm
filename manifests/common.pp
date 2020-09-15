@@ -17,15 +17,23 @@ class slurm::common {
   # Load the variables used in this module. Check the params.pp file
   require ::slurm::params
 
-  # Install preliminary packages
+  # Packages required for building SLURM
+  $build_required_pkgs = if $slurm::do_build {
+    concat($slurm::params::build_pre_requisite_packages, $slurm::params::munge_build_extra_packages)
+  } else {
+    []
+  }
+
+  # Other packages for use with SLURM
   $required_pkgs = concat($slurm::params::pre_requisite_packages, $slurm::params::extra_packages, $slurm::params::munge_extra_packages)
-  $required_pkgs.each |String $pkg| {
+
+  $all_packages = $required_pkgs + $build_required_pkgs.filter |String $pkg_name| {
     # Safeguard to avoid incompatibility with other puppet modules
-    if (!defined(Package[$pkg])) {
-      package { $pkg:
-        ensure  => 'present',
-      }
-    }
+    !(Package[$pkg_name].defined)
+  }
+
+  package { $all_packages:
+    ensure => 'present',
   }
 
   # Prepare the user and group

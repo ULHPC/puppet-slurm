@@ -26,21 +26,26 @@ class slurm::params {
   #### MODULE INTERNAL VARIABLES  #########
   # (Modify to adapt to unsupported OSes)
   #########################################
-  $pre_requisite_packages = $::osfamily ? {
-    'Redhat' => [
-      'hwloc', 'hwloc-devel', 'hwloc-plugins', 'numactl', 'numactl-devel',
-      'lua', 'lua-devel',
-      'mysql-devel',
-      'openssl', 'openssl-devel',
-      'pam-devel',
-      'perl-devel', 'perl-CPAN',
-      'readline', 'readline-devel',
-      'libX11-devel',
-      'libssh2-devel',
-      'libevent-devel',
-    ],
-    default => []
+  $pre_requisite_packages = if $slurm::do_build {
+    $pre_requisite_packages = $::osfamily ? {
+      'Redhat' => [
+        'hwloc', 'hwloc-devel', 'hwloc-plugins', 'numactl', 'numactl-devel',
+        'lua', 'lua-devel',
+        'mysql-devel',
+        'openssl', 'openssl-devel',
+        'pam-devel',
+        'perl-devel', 'perl-CPAN',
+        'readline', 'readline-devel',
+        'libX11-devel',
+        'libssh2-devel',
+        'libevent-devel',
+      ],
+      default => []
+    }
+  } else {
+    []
   }
+
   # Probably out of scope here, but useful
   $extra_packages = $::osfamily ? {
     'Redhat' => [
@@ -545,11 +550,16 @@ class slurm::params {
   $munge_package = $::operatingsystem ? {
     default => 'munge'
   }
-  $munge_extra_packages = $::operatingsystem ? {
-    /(?i-mx:ubuntu|debian)/        => [ 'libmunge-dev' ],
-    /(?i-mx:centos|fedora|redhat)/ => [ 'munge-devel', 'munge-libs' ],
-    default => [ ]
+  $munge_extra_packages = if $slurm::do_build {
+    $::operatingsystem ? {
+      /(?i-mx:ubuntu|debian)/        => [ 'libmunge-dev' ],
+      /(?i-mx:centos|fedora|redhat)/ => [ 'munge-devel', 'munge-libs' ],
+      default => [],
+    }
+  } else {
+    []
   }
+
   $munge_configdir = $::operatingsystem ? {
     default => '/etc/munge',
   }
@@ -625,6 +635,7 @@ class slurm::params {
   $storageuser         = $username
   $storagepass         = 'janIR4TvYoSEqNF94QM' # use 'openssl rand 14 -base64' for instance
   $trackslurmctlddown  = false
+  $bootstrap_mysql     = true
 
   ##############################
   ### MariaDB configuration  ###
