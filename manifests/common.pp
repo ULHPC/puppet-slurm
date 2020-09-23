@@ -19,15 +19,15 @@ class slurm::common {
 
   # Packages required for building SLURM
   $build_required_pkgs = if $slurm::do_build {
-    concat($slurm::params::build_pre_requisite_packages, $slurm::params::munge_build_extra_packages)
+    concat($slurm::params::pre_requisite_packages, $slurm::params::munge_extra_packages)
   } else {
     []
   }
 
   # Other packages for use with SLURM
-  $required_pkgs = concat($slurm::params::pre_requisite_packages, $slurm::params::extra_packages, $slurm::params::munge_extra_packages)
+  $required_pkgs = concat($build_required_pkgs, $slurm::params::extra_packages)
 
-  $all_packages = $required_pkgs + $build_required_pkgs.filter |String $pkg_name| {
+  $all_packages = $required_pkgs.filter |String $pkg_name| {
     # Safeguard to avoid incompatibility with other puppet modules
     !(Package[$pkg_name].defined)
   }
