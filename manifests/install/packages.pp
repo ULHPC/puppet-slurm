@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2019-10-11 10:09 svarrette>
+# Time-stamp: <Wed 2020-09-23 20:42 svarrette>
 #
 # File::      <tt>install/packages.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -70,7 +70,11 @@ define slurm::install::packages(
 
   if !($slurmd or $slurmctld or $slurmdbd or defined(Class['slurm::login']) or !empty($packages))
   {
-    fail("Module ${module_name} expects a non-empty list of [built] packages to install OR specification of which daemon to install (i.e slurm{d,ctld,dbd}) or invocation of 'slurm::login' class for Login nodes")
+    fail(
+      "Module ${module_name} expects a non-empty list of [built] packages to install " +
+      'OR specification of which daemon to install (i.e slurm{d,ctld,dbd}) or ' +
+      "invocation of 'slurm::login' class for Login nodes"
+    )
   }
 
   # notice("Package installation for slurmd    = ${slurmd}")
@@ -194,37 +198,4 @@ define slurm::install::packages(
       user    => 'root',
     }
   }
-
-  # case $ensure {
-    #   'absent': {
-      #     $execname = "yum-remove-slurm*${version}*.rpm"
-      #     $cmd ="yum -y remove slurm*-${version}*"
-      #     $check_onlyif = "test -n \"$(rpm -qa | grep slurm*${version})\""
-      #     $check_unless = "test -z \"$(rpm -qa | grep slurm*${version})\""
-      #   }
-    #   default: {
-      #     $execname  = "yum-localinstall-slurm*${version}*.rpm"
-      #     $cmd          = "yum -y --nogpgcheck localinstall ${join($rpms, ' ')}"
-      #     $check_onlyif = "test -n \"$(ls ${cwddir}/${rpms[0]} 2>/dev/null)\""
-      #     $check_unless = suffix(prefix($pkglist, "yum list installed | grep ${version} |& grep -E '^"), ".${::architecture}' > /dev/null")
-      #   }
-    # }
-  # Ensure individual RPMs are really installed
-  # package { $pkgs:
-    #   ensure => $ensure,
-    #   provider => 'rpm',
-    #   source =>
-    # }
-  # notice($cmd)
-  # notice($check_onlyif)
-  # notice($check_unless)
-  # exec { $execname:
-    #   path    => '/sbin:/usr/bin:/usr/sbin:/bin',
-    #   command => $cmd,
-    #   cwd     => $cwddir,
-    #   onlyif  => $check_onlyif,
-    #   unless  => $check_unless,
-    #   user    => 'root',
-    # }
-
 }

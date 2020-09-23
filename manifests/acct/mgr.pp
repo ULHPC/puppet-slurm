@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-10-04 16:15 svarrette>
+# Time-stamp: <Wed 2020-09-23 20:46 svarrette>
 #
 # File::      <tt>acct/mgr.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -107,7 +107,7 @@ define slurm::acct::mgr(
     default: {
       $label        = "add-${entity}-${real_name}"
       $cmd          = "sacctmgr -i add ${entity} ${real_name} ${opts}"
-      $check_onlyif = 'test -z "$(sacctmgr --noheader -p list ${entity})"'
+      $check_onlyif = "test -z \"$(sacctmgr --noheader -p list ${entity})\""
       $check_unless = "test -n \"$(sacctmgr --noheader -p list ${entity} | grep ${real_name})\""
     }
   }

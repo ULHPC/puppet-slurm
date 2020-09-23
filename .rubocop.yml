@@ -1,35 +1,51 @@
 ---
-#require: rubocop-rspec
+require:
+- rubocop-rspec
+- rubocop-i18n
 AllCops:
+  DisplayCopNames: true
   TargetRubyVersion: '2.2'
   Include:
   - "./**/*.rb"
   Exclude:
   - bin/*
   - ".vendor/**/*"
-  - Gemfile
-  - Vagrantfile
-  - Rakefile
+  - "**/Gemfile"
+  - "**/Rakefile"
   - pkg/**/*
   - spec/fixtures/**/*
   - vendor/**/*
+  - "**/Puppetfile"
+  - "**/Vagrantfile"
+  - "**/Guardfile"
 Metrics/LineLength:
   Description: People have wide screens, use them.
   Max: 200
-# RSpec/BeforeAfterAll:
-#   Description: Beware of using after(:all) as it may cause state to leak between tests.
-#     A necessary evil in acceptance testing.
-#   Exclude:
-#   - spec/acceptance/**/*.rb
-# RSpec/HookArgument:
-#   Description: Prefer explicit :each argument, matching existing module's style
-#   EnforcedStyle: each
+GetText:
+  Enabled: false
+GetText/DecorateString:
+  Description: We don't want to decorate test output.
+  Exclude:
+  - spec/**/*
+  Enabled: false
+RSpec/BeforeAfterAll:
+  Description: Beware of using after(:all) as it may cause state to leak between tests.
+    A necessary evil in acceptance testing.
+  Exclude:
+  - spec/acceptance/**/*.rb
+RSpec/HookArgument:
+  Description: Prefer explicit :each argument, matching existing module's style
+  EnforcedStyle: each
 Style/BlockDelimiters:
   Description: Prefer braces for chaining. Mostly an aesthetical choice. Better to
     be consistent then.
   EnforcedStyle: braces_for_chaining
+Style/BracesAroundHashParameters:
+  Description: Braces are required by Ruby 2.7. Cop removed from RuboCop v0.80.0.
+    See https://github.com/rubocop-hq/rubocop/pull/7643
+  Enabled: true
 Style/ClassAndModuleChildren:
-  Description: Compact style reduces the required amount ofindentation.
+  Description: Compact style reduces the required amount of indentation.
   EnforcedStyle: compact
 Style/EmptyElse:
   Description: Enforce against empty else clauses, but allow `nil` for clarity.
@@ -46,7 +62,7 @@ Style/Lambda:
   EnforcedStyle: literal
 Style/RegexpLiteral:
   Description: Community preference. See https://github.com/voxpupuli/modulesync_config/issues/168
-  EnforcedStyle: slashes
+  EnforcedStyle: percent_r
 Style/TernaryParentheses:
   Description: Checks for use of parentheses around ternary conditions. Enforce parentheses
     on complex expressions for better readability, but seriously consider breaking
@@ -56,12 +72,22 @@ Style/TrailingCommaInArguments:
   Description: Prefer always trailing comma on multiline argument lists. This makes
     diffs, and re-ordering nicer.
   EnforcedStyleForMultiline: comma
-TrailingCommaInArrayLiteral:
+Style/TrailingCommaInLiteral:
   Description: Prefer always trailing comma on multiline literals. This makes diffs,
     and re-ordering nicer.
   EnforcedStyleForMultiline: comma
 Style/SymbolArray:
   Description: Using percent style obscures symbolic intent of array's contents.
+  EnforcedStyle: brackets
+RSpec/MessageSpies:
+  EnforcedStyle: receive
+Style/Documentation:
+  Exclude:
+  - lib/puppet/parser/functions/**/*
+  - spec/**/*
+Style/HashSyntax:
+  Enabled: false
+Style/WordArray:
   EnforcedStyle: brackets
 Style/CollectionMethods:
   Enabled: true
@@ -69,6 +95,16 @@ Style/MethodCalledOnDoEndBlock:
   Enabled: true
 Style/StringMethods:
   Enabled: true
+GetText/DecorateFunctionMessage:
+  Enabled: false
+GetText/DecorateStringFormattingUsingInterpolation:
+  Enabled: false
+GetText/DecorateStringFormattingUsingPercent:
+  Enabled: false
+Layout/EndOfLine:
+  Enabled: false
+Layout/IndentHeredoc:
+  Enabled: false
 Metrics/AbcSize:
   Enabled: false
 Metrics/BlockLength:
@@ -85,19 +121,19 @@ Metrics/ParameterLists:
   Enabled: false
 Metrics/PerceivedComplexity:
   Enabled: false
-# RSpec/DescribeClass:
-#   Enabled: false
-# RSpec/ExampleLength:
-#   Enabled: false
-# RSpec/MessageExpectation:
-#   Enabled: false
-# RSpec/MultipleExpectations:
-#   Enabled: false
-# RSpec/NestedGroups:
-#   Enabled: false
-# Style/AsciiComments:
-#   Enabled: false
-# Style/IfUnlessModifier:
-#   Enabled: false
-# Style/SymbolProc:
-#   Enabled: false
+RSpec/DescribeClass:
+  Enabled: false
+RSpec/ExampleLength:
+  Enabled: false
+RSpec/MessageExpectation:
+  Enabled: false
+RSpec/MultipleExpectations:
+  Enabled: false
+RSpec/NestedGroups:
+  Enabled: false
+Style/AsciiComments:
+  Enabled: false
+Style/IfUnlessModifier:
+  Enabled: false
+Style/SymbolProc:
+  Enabled: false

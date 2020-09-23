@@ -7,10 +7,10 @@ node default {
   include ::slurm::params
 
   class { '::slurm':
-    clustername => 'thor',
+    clustername     => 'thor',
     service_manage  => false,
     manage_firewall => true,
-    #wrappers => $slurm::params::extra_rpms_basename
+    #wrappers       => $slurm::params::extra_rpms_basename
   }
   include ::slurm::slurmctld
 }
