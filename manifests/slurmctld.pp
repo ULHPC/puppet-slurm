@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-10-04 15:17 svarrette>
+# Time-stamp: <Wed 2020-09-23 20:43 svarrette>
 #
 # File::      <tt>slurmctld.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -43,7 +43,7 @@ class slurm::slurmctld inherits slurm
   Class['slurm::install'] -> Class['slurm::config']
 
   if $slurm::manage_firewall {
-    slurm::firewall { "${slurm::slurmctldport}":
+    slurm::firewall { $slurm::slurmctldport:
       ensure => $slurm::ensure,
     }
   }
@@ -67,6 +67,7 @@ class slurm::slurmctld inherits slurm
       pattern    => $slurm::params::controller_processname,
       hasrestart => $slurm::params::hasrestart,
       hasstatus  => $slurm::params::hasstatus,
+      require    => Class['::slurm::config'],
     }
 
     # if $slurm::ensure == 'present' {

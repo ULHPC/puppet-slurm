@@ -16,6 +16,10 @@
 #  invocation
 ###################################################################################
 #
+# /!\ UPDATE Slurm > 18.08: cgroup_allowed_devices_file.conf is no longer required.
+# By default all devices are allowed and GRES, that are associated with a
+# device file, that are not requested are restricted.
+
 <% scope['slurm::cgroup_alloweddevices'].each do |dev| -%>
 <%= dev %>
 <% end -%>

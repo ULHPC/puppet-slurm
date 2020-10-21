@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-10-06 00:22 svarrette>
+# Time-stamp: <Fri 2019-10-11 10:10 svarrette>
 #
 # File::      <tt>common.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -17,15 +17,23 @@ class slurm::common {
   # Load the variables used in this module. Check the params.pp file
   require ::slurm::params
 
-  # Install preliminary packages
-  $required_pkgs = concat($slurm::params::pre_requisite_packages, $slurm::params::extra_packages, $slurm::params::munge_extra_packages)
-  $required_pkgs.each |String $pkg| {
+  # Packages required for building SLURM
+  $build_required_pkgs = if $slurm::do_build {
+    concat($slurm::params::pre_requisite_packages, $slurm::params::munge_extra_packages)
+  } else {
+    []
+  }
+
+  # Other packages for use with SLURM
+  $required_pkgs = concat($build_required_pkgs, $slurm::params::extra_packages)
+
+  $all_packages = $required_pkgs.filter |String $pkg_name| {
     # Safeguard to avoid incompatibility with other puppet modules
-    if (!defined(Package[$pkg])) {
-      package { $pkg:
-        ensure  => 'present',
-      }
-    }
+    !(Package[$pkg_name].defined)
+  }
+
+  package { $all_packages:
+    ensure => 'present',
   }
 
   # Prepare the user and group
@@ -58,7 +66,20 @@ class slurm::common {
     include ::slurm::pam
   }
 
+  if ($slurm::with_pmix or ('pmix' in $slurm::build_with)) {
+    include ::slurm::pmix
+    # class { '::slurm::pmix':
+    #   ensure            => $slurm::ensure,
+    #   version           => $slurm::pmix_version,
+    #   src_checksum      => $slurm::pmix_src_checksum,
+    #   src_checksum_type => $slurm::pmix_src_checksum_type,
+    #   srcdir            => $slurm::srcdir,
+    #   builddir          => $slurm::builddir,
+    # }
+  }
+
   if ($slurm::manage_munge and $slurm::authtype =~ /munge/) {
+    # include ::slurm::munge
     class { '::slurm::munge':
       ensure       => $slurm::ensure,
       create_key   => $slurm::munge_create_key,

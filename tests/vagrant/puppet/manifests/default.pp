@@ -1,7 +1,7 @@
 # File::      <tt>default.pp</tt>
 # Author::    Sebastien Varrette (<Sebastien.Varrette@uni.lu>)
 # Copyright:: Copyright (c) 2018 Sebastien Varrette
-# License::   GPLv3
+# License::   Apache-2.0
 #
 # ------------------------------------------------------------------------------
 node default {

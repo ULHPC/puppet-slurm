@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Sun 2019-02-03 14:51 svarrette>
+# Time-stamp: <Mon 2019-10-14 15:34 svarrette>
 #
 # File::      <tt>init.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -58,12 +58,6 @@
 #          Do we perform the install of the Slurm packages or not?
 # @param wrappers                 [Array]       Default: [ 'slurm-openlava',  'slurm-torque' ]
 #          Extra wrappers/package to install (ex: openlava/LSF wrapper, Torque/PBS wrappers)
-# @param src_archived             [Boolean]     Default: false
-#          Whether the sources tar.bz2 has been archived or not.
-#          Thus by default, it is assumed that the provided version is the
-#          latest version (from https://www.schedmd.com/downloads/latest/).
-#          If set to true, the sources will be download from
-#             https://www.schedmd.com/downloads/archive/
 # @param src_checksum             [String]      Default: ''
 #           archive file checksum (match checksum_type)
 # @param src_checksum_type        [String]      Default: 'md5'
@@ -89,25 +83,40 @@
 # @param clustername              [String]      Default: 'cluster'
 #          The name by which this Slurm managed cluster is known in the accounting database
 #
+# @param accountingstorageenforce [Array]       Default: ['qos', 'limits', 'associations']
+#          What level of association-based enforcement to impose on job submissions.
 # @param accountingstoragehost    [String]      Default: $:hostname
 # @param accountingstoragetres    [String]      Default: ''
-# @param acct_gatherenergytype    [String]      Default: 'none'
+#
+# @param acctgatherenergytype    [String]      Default: 'none'
 #          Identifies the plugin to be used for energy consumption accounting
 #          Elligible values in [ 'none', 'ipmi', 'rapl' ]
-# @paraù acct_storageenforce      [Array]       Default: ['qos', 'limits', 'associations']
-#          What level of association-based enforcement to impose on job submissions.
+# @param acctgatherfilesystemtype [String]      Default: 'none'
+#          plugin to be used for filesystem traffic accounting.
+#          Elligible values in [ 'none', 'lustre' ]
+# @param acctgatherinfinibandtype      [String]       Default: 'none'
+#          Identifies the plugin to be used for infiniband network traffic
+#          accounting.
+#          Elligible values in [ 'none', 'ofed' ]
+# @param acctgatherprofiletype    [String]      Default: 'none'
+#          Plugin to be used for detailed job profiling.
+#          Require to define acct_gather.conf for non-none values
+#          Elligible values in [ 'none', 'hdf5', 'influxdb' ]
 # @param authtype                 [String]      Default: 'munge'
 #          Elligible values in [ 'none', 'munge' ]
 # @param authinfo                 [String]      Default: ''
-# @param cryptotype               [String]      Default: 'munge'
-#          Elligible values in [ 'munge', 'openssl']
+# @param credtype                 [String]      Default: 'munge'
+#          cryptographic signature tool to be used in the creation of job step
+#          credentials. Used to be CryptoType
+#
 # @param backupcontroller         [String]      Default: ''
 # @param backupaddr               [String]      Default: ''
 # @param controlmachine           [String]      Default: $:hostname
 # @param controladdr              [String]      Default: ''
 # @param batchstarttimeout        [Integer]     Default: 10
 # @param checkpointtype           [String]      Default: 'none'
-#          Elligible values in ['blcr', 'none', 'ompi', 'poe']
+#          The system-initiated checkpoint method to be used for user jobs.
+#          Elligible values in [ 'none', 'ompi']
 # @param completewait             [Integer]     Default: 0
 # @param corespecplugin           [String]      Default: 'none'
 # @param cpufreqdef               [String]      Default: undef
@@ -138,7 +147,7 @@
 #           0 = unlimited
 # @param jobacctgathertype        [String]      Default: 'cgroup'
 #           Elligible values in [ "linux", "cgroup", "none"]
-# @param jobacctgatherfrequency   [Integer]     Default: 30
+# @param jobacctgatherfrequency   Variant[String,Integer] Default: 30
 # @param jobacctgatherparams      [String]      Default: ''
 #           Elligible values in [ 'NoShared', 'UsePss', 'NoOverMemoryKill']
 # @param jobcheckpointdir         [String]      Default: ''
@@ -154,11 +163,19 @@
 # @param jobsubmitplugins         [Array]       Default: [ 'lua' ]
 # @param killwait                 [Integer]     Default: 30
 #           interval (in seconds) given to a jobs processes between the SIGTERM and SIGKILL
+# @param launchparameters         [String]      Default: ''
+#           Options to the job launch plugin.
+#           Elligible values in ['batch_step_set_cpu_freq', 'cray_net_exclusive',
+#                'enable_nss_slurm', 'lustre_no_flush', 'mem_sort',
+#                'disable_send_gids', 'slurmstepd_memlock',
+#                'slurmstepd_memlock_all', 'test_exec' ]
 # @param launchtype               [String]      Default: 'slurm'
 # @param licenses                 [String]      Default: ''
 #           Specification of licenses
 # @param maildomain               [String]      Default: $::domain
 # @param mailprog                 [String]      Default: '/bin/mail'
+# @param maxarraysize             [Integer]     Default: undef
+# @param maxjobcount              [Integer]     Default: undef
 # @param maxtaskspernode          [Integer]     Default: 512
 # @param mpidefault               [String]      Default: 'none'
 #           Default type of MPI to be used. Srun may override this configuration parameter in any case.
@@ -215,9 +232,17 @@
 # @param propagateresourcelimits  [Array]       Default: []
 # @param propagateresourcelimits_except [Array] Default: ['MEMLOCK']
 # @param resvoverrun              [Integer]     Default: 0
-# @param resumetimeout            [Integer]     Default: 60
+# @param resumefailprogram        [String]      Default: ''
+# @param resumeprogram            [String]      Default: ''
+# @param resumerate               [Integer]     Default: 300
 # @param returntoservice          [Integer]     Default: 1
 #           Elligible values in [0, 1, 2]
+# @param resumetimeout            [Integer]     Default: 60
+# @param suspendprogram           [String]      Default: ''
+# @param suspendtimeout           [Integer]     Default: ''
+# @param suspendtime              [Integer]     Default: ''
+# @param suspendexcnodes          [String]      Default: ''
+# @param suspendexcparts          [String]      Default: ''
 # @param statesavelocation        [String]      Default: '/var/lib/slurmctld'
 #           Fully qualified pathname of a directory into which the Slurm
 #           controller, slurmctld, saves its state
@@ -228,10 +253,23 @@
 # @param selecttype               [String ]     Default: 'cons_res'
 #           Elligible values in ['bluegene','cons_res','cray','linear','serial' ]
 # @param selecttype_params        [Array  ]     Default: [ 'CR_Core_Memory', 'CR_CORE_DEFAULT_DIST_BLOCK' ]
-
+#
+# @param slurmctldhost            [String or Array]   Default: $:hostname
+# @param slurmctldaddr            [String]      Default: ''
+#
 # @param slurmctlddebug           [String ]     Default: 'info'
+# @param slurmctldsyslogdebug     [String ]     Default: ''
+# @param slurmdbddebugsyslog      [String ]     Default: ''
 # @param slurmddebug              [String ]     Default: 'info'
+# @param slurmdsyslogdebug        [String ]     Default: ''
 
+# @param slurmctldparameters         [Array] Default: []
+#           Parameters specific to the Slurmctld.
+#           Elligible values in ['allow_user_triggers', 'cloud_dns', 'idle_on_node_suspend',
+#                                'preempt_send_user_signal', 'reboot_from_controller']
+# @param slurmdparameters         [Array] Default: []
+#           Parameters specific to the Slurmd.
+#           Elligible values in ['config_overrides', 'shutdown_on_reboot']
 # @param slurmctldport            [Integer]     Default: 6817
 # @param slurmdport               [Integer]     Default: 6818
 # @param slurmctldtimeout         [Integer]     Default: 120
@@ -248,10 +286,14 @@
 # @param taskprolog               [String ]     Default: ''
 # @param tmpfs                    [String ]     Default: '/tmp'
 # @param waittime                 [Integer]     Default: 0
+# @param unkillablesteptimeout    [Integer]     Default: 60
+# @param x11parameters            [String]      Default: ''
+#           For use with Slurm's built-in X11 forwarding implementation.
+#           Elligible values in [ 'home_xauthority' ]
 #
-############################                          ####################################
-############################ topology.conf attributes ####################################
-############################                          ####################################
+############################                          ################################
+############################ topology.conf attributes ################################
+############################                          ################################
 #
 # @param topology                 [String ]     Default:  = none
 #           Which topology plugin to be used for determining the network topology and
@@ -293,9 +335,9 @@
 #           # GUID: XXXXXX - switch 0
 #           SwitchName=s3 Switches=s[0-2] LinkSpeed=100Mb/s
 #
-############################                        ####################################
-############################ cgroup.conf attributes ####################################
-############################                        ####################################
+############################                        #################################
+############################ cgroup.conf attributes #################################
+############################                        #################################
 #
 # @param cgroup_content           [String]      Default: undef
 #           The desired contents of a cgroup file, as a string. This attribute is
@@ -351,12 +393,38 @@
 #          Hash defining the generic resource management entries
 #          Format
 #          '<nodename>' => {
-  #              [comment => 'This will become a comment above the line',]
-  #              name => '<name>',
-  #              file => '<file>'
-  #              [...]
-  #        }
+#              [comment => 'This will become a comment above the line',]
+#              name => '<name>',
+#              file => '<file>'
+#              [...]
+#        }
 #
+#######################                               ###############################
+####################### plugstack.conf[.d] attributes ###############################
+#######################                               ###############################
+##########  SPANK - Slurm Plug-in Architecture for Node and job (K)control ##########
+##########            See <https://slurm.schedmd.com/spank.html>           ##########
+#
+# @param plugstack_content         [String]      Default: undef
+#           The desired contents of a plugstack configuration file plugstack.conf, as
+#           a string.
+#           This attribute is  mutually exclusive with plugstack_{content,target}.
+# @param plugstack_source          [String]      Default: undef
+#          A source file for plugstack.conf, which will be copied into place on the
+#          local system.
+#          This attribute is mutually exclusive with plugstack_{content,target}.
+# @param plugstack_target          [String]      Default: undef
+#          Target link path for plugstack.conf
+##########
+# @param pluginsdir_target          [String] Default: undef,
+#          If defined, symlink target for the plugstack plugin directory
+#          <configdir>/plugstack.conf.d
+# @param plugins                    [Array] Default: []
+#          List of plugins to check under <configdir>/plugstack.conf.d/
+#          This puppet module witll simply enforce the correct ownership/group/seltype
+#          Content won't be set -- you probably want to set pluginsdir_target variable
+#          toward the appropriate place under your local copy of the slurm control
+#          repository (see slurm::repo)
 ############################                      ####################################
 ############################ MUNGE Authentication ####################################
 ############################                      ####################################
@@ -383,21 +451,21 @@
 # @param munge_uid                 [Integer]      Default: 992
 #          UID of the munge user
 #
+############################               ####################################
+############################ PMIx Settings ####################################
+############################               ####################################
+# @param with_pmix                [Boolean]     Default: false
+#           Whether or not using PMIx (in addition to the PMI-1 and PMI-2
+#           compatibility libraries set by slurm) - this will install PMIx
+#           independently (and prior) to Slurm.
+#           If true, the class slurm::pmix will be included.
+#           Use Hiera to set appropriately the slurm::pmix::* variables
+#
 ############################              ####################################
 ############################ PAM Settings ####################################
 ############################              ####################################
 # @param use_pam                  [Boolean]       Default: true
 #
-###
-### SPANK - Slurm Plug-in Architecture for Node and job (K)control
-### See <https://slurm.schedmd.com/spank.html>
-###
-# @param pluginsdir_target          [String] Default: undef,
-#          If definied, symlink target base directory for all plugins
-#          <plugin>.conf _i.e._ <configdir>/plugstack.conf.d/<plugin>.conf
-#          points to <pluginsdir_target>/<plugin>.conf
-# @param plugins                    [Array] Default: []
-#          List of plugins to see in <configdir>/plugstack.conf.d/
 
 #
 # @example Default instance
@@ -448,7 +516,6 @@ class slurm(
   # Slurm source building
   Boolean $do_build                       = $slurm::params::do_build,
   Boolean $do_package_install             = $slurm::params::do_package_install,
-  Boolean $src_archived                   = $slurm::params::src_archived,
   String  $src_checksum                   = $slurm::params::src_checksum,
   String  $src_checksum_type              = $slurm::params::src_checksum_type,
   String  $srcdir                         = $slurm::params::srcdir,
@@ -458,17 +525,20 @@ class slurm(
   #
   # Main configuration paramaters
   #
-  Array   $acct_storageenforce            = $slurm::params::acct_storageenforce,
-  String  $acct_gatherenergytype          = $slurm::params::acct_gatherenergytype,
+  Array   $accountingstorageenforce       = $slurm::params::accountingstorageenforce,
+  String  $acctgatherenergytype           = $slurm::params::acctgatherenergytype,
+  String  $acctgatherfilesystemtype       = $slurm::params::acctgatherfilesystemtype,
+  String  $acctgatherinfinibandtype       = $slurm::params::acctgatherinfinibandtype,
+  String  $acctgatherprofiletype          = $slurm::params::acctgatherprofiletype,
   String  $configdir                      = $slurm::params::configdir,
   String  $clustername                    = $slurm::params::clustername,
   String  $authtype                       = $slurm::params::authtype,
   String  $authinfo                       = $slurm::params::authinfo,
-  String  $cryptotype                     = $slurm::params::cryptotype,
-  String  $backupcontroller               = $slurm::params::backupcontroller,
-  String  $backupaddr                     = $slurm::params::backupaddr,
-  String  $controlmachine                 = $slurm::params::controlmachine,
-  String  $controladdr                    = $slurm::params::controladdr,
+  String  $credtype                       = $slurm::params::credtype,
+  # String  $backupcontroller               = $slurm::params::backupcontroller,
+  # String  $backupaddr                     = $slurm::params::backupaddr,
+  # String  $controlmachine                 = $slurm::params::controlmachine,
+  # String  $controladdr                    = $slurm::params::controladdr,
   String  $accountingstoragehost          = $slurm::params::accountingstoragehost,
   #
   Integer $batchstarttimeout              = $slurm::params::batchstarttimeout,
@@ -496,7 +566,7 @@ class slurm(
   String  $healthcheckprogram             = $slurm::params::healthcheckprogram,
   Integer $inactivelimit                  = $slurm::params::inactivelimit,
   String  $jobacctgathertype              = $slurm::params::jobacctgathertype,
-  Integer $jobacctgatherfrequency         = $slurm::params::jobacctgatherfrequency,
+  Variant[String,Integer]  $jobacctgatherfrequency         = $slurm::params::jobacctgatherfrequency,
   String  $jobacctgatherparams            = $slurm::params::jobacctgatherparams,
   String  $jobcheckpointdir               = $slurm::params::jobcheckpointdir,
   String  $jobcomphost                    = $slurm::params::jobcomphost,
@@ -507,9 +577,12 @@ class slurm(
   Array   $jobsubmitplugins               = $slurm::params::jobsubmitplugins,
   Integer $killwait                       = $slurm::params::killwait,
   String  $launchtype                     = $slurm::params::launchtype,
+  String  $launchparameters               = $slurm::params::launchparameters,
   String  $licenses                       = $slurm::params::licenses,
   String  $maildomain                     = $slurm::params::maildomain,
   String  $mailprog                       = $slurm::params::mailprog,
+  Optional[Integer] $maxarraysize         = $slurm::params::maxarraysize,
+  Optional[Integer] $maxjobcount          = $slurm::params::maxjobcount,
   Integer $maxtaskspernode                = $slurm::params::maxtaskspernode,
   Integer $messagetimeout                 = $slurm::params::messagetimeout,
   # Default type of MPI to be used.
@@ -542,22 +615,37 @@ class slurm(
   Array   $propagateresourcelimits_except = $slurm::params::propagateresourcelimits_except,
   Hash    $qos                            = $slurm::params::qos,
   Integer $resvoverrun                    = $slurm::params::resvoverrun,
+  String  $resumefailprogram              = $slurm::params::resumefailprogram,
+  String  $resumeprogram                  = $slurm::params::resumeprogram,
+  Integer $resumerate                     = $slurm::params::resumerate,
   Integer $resumetimeout                  = $slurm::params::resumetimeout,
   Integer $returntoservice                = $slurm::params::returntoservice,
+  String  $suspendprogram                 = $slurm::params::suspendprogram,
+  Integer $suspendtimeout                 = $slurm::params::suspendtimeout,
+  Integer $suspendtime                    = $slurm::params::suspendtime,
+  String  $suspendexcnodes                = $slurm::params::suspendexcnodes,
+  String  $suspendexcparts                = $slurm::params::suspendexcparts,
   String  $statesavelocation              = $slurm::params::statesavelocation,
   String  $schedulertype                  = $slurm::params::schedulertype,
   Array   $schedulerparameters            = $slurm::params::schedulerparameters,
   String  $selecttype                     = $slurm::params::selecttype,
   Array   $selecttype_params              = $slurm::params::selecttype_params,
+  $slurmctldhost                          = $slurm::params::slurmctldhost,
+  String  $slurmctldaddr                  = $slurm::params::slurmctldaddr,
   # Log details
   String  $slurmctlddebug                 = $slurm::params::slurmctlddebug,
+  String  $slurmctldsyslogdebug           = $slurm::params::slurmctldsyslogdebug,
   String  $slurmddebug                    = $slurm::params::slurmddebug,
+  String  $slurmdsyslogdebug              = $slurm::params::slurmdsyslogdebug,
+  String  $slurmdbddebugsyslog            = $slurm::params::slurmdbddebugsyslog,
   # Ports
   Integer $slurmctldport                  = $slurm::params::slurmctldport,
   Integer $slurmdport                     = $slurm::params::slurmdport,
   # Timeout
   Integer $slurmctldtimeout               = $slurm::params::slurmctldtimeout,
   Integer $slurmdtimeout                  = $slurm::params::slurmdtimeout,
+  Array   $slurmctldparameters            = $slurm::params::slurmctldparameters,
+  Array   $slurmdparameters               = $slurm::params::slurmdparameters,
   String  $srunportrange                  = $slurm::params::srunportrange,
   String  $srunepilog                     = $slurm::params::srunepilog,
   String  $srunprolog                     = $slurm::params::srunprolog,
@@ -568,6 +656,9 @@ class slurm(
   String  $taskprolog                     = $slurm::params::taskprolog,
   String  $tmpfs                          = $slurm::params::tmpfs,
   Integer $waittime                       = $slurm::params::waittime,
+  Integer $unkillablesteptimeout          = $slurm::params::unkillablesteptimeout,
+  String  $x11parameters                  = $slurm::params::x11parameters,
+
   # Trackable RESources (TRES)
   String  $accountingstoragetres          = $slurm::params::accountingstoragetres,
   String  $priorityweighttres             = $slurm::params::priorityweighttres,
@@ -619,6 +710,12 @@ class slurm(
   $gres_target                            = undef,
   Hash    $gres                           = {},
   #
+  # plugstack.conf
+  #
+  $plugstack_content                      = undef,
+  $plugstack_source                       = undef,
+  $plugstack_target                       = undef,
+  #
   # Munge authentication service
   #
   Boolean $munge_create_key               = $slurm::params::munge_create_key,
@@ -628,6 +725,13 @@ class slurm(
   String  $munge_key_filename             = $slurm::params::munge_key,
   Integer $munge_uid                      = $slurm::params::munge_uid,
   Integer $munge_gid                      = $slurm::params::munge_gid,
+  #
+  # PMIx settings -- see slurm::pmix class
+  #
+  Boolean $with_pmix                      = $slurm::params::with_pmix,
+  # String  $pmix_version                   = $slurm::params::pmix_version,
+  # String  $pmix_checksum_type             = $slurm::params::pmix_src_checksum_type,
+  # String  $pmix_checksum                  = $slurm::params::pmix_src_checksum,
   #
   # PAM settings
   #

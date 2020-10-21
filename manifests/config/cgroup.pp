@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2017-09-01 10:52 svarrette>
+# Time-stamp: <Fri 2019-10-11 01:06 svarrette>
 #
 # File::      <tt>config/cgroup.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -54,17 +54,20 @@ class slurm::config::cgroup inherits slurm::config {
     tag     => 'slurm::configfile',
   }
 
-  # [eventually] cgroup_allowed_devices_file.conf
-  if !empty($slurm::cgroup_alloweddevices) {
-    file { $slurm::params::cgroup_alloweddevices_configfile:
-      ensure  => $slurm::ensure,
-      path    => $allowed_devices_filename,
-      owner   => $slurm::username,
-      group   => $slurm::group,
-      mode    => $slurm::params::configfile_mode,
-      content => template('slurm/cgroup_allowed_devices_file.conf.erb'),
-      tag     => 'slurm::configfile',
-    }
-  }
+  # ~~[eventually] cgroup_allowed_devices_file.conf~~
+  # UPDATE Slurm > 18.08: cgroup_allowed_devices_file.conf is no longer required.
+  # By default all devices are allowed and GRES, that are associated with a
+  # device file, that are not requested are restricted.
+  # if !empty($slurm::cgroup_alloweddevices) {
+  #   file { $slurm::params::cgroup_alloweddevices_configfile:
+  #     ensure  => $slurm::ensure,
+  #     path    => $allowed_devices_filename,
+  #     owner   => $slurm::username,
+  #     group   => $slurm::group,
+  #     mode    => $slurm::params::configfile_mode,
+  #     content => template('slurm/cgroup_allowed_devices_file.conf.erb'),
+  #     tag     => 'slurm::configfile',
+  #   }
+  # }
 
 }

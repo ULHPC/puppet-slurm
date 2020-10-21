@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Sun 2019-02-03 14:48 svarrette>
+# Time-stamp: <Tue 2019-10-22 13:37 svarrette>
 #
 # File::      <tt>install.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -16,13 +16,14 @@ class slurm::install {
   include ::slurm
   include ::slurm::params
 
+  Class['slurm::common'] -> Class['slurm::install']
+
   # [Eventually] download and build slurm sources
   if $slurm::do_build {
     # Download the Slurm sources
     slurm::download { $slurm::version :
       ensure        => $slurm::ensure,
       target        => $slurm::srcdir,
-      archived      => $slurm::src_archived,
       checksum      => $slurm::src_checksum,
       checksum_type => $slurm::src_checksum_type,
     }
@@ -43,9 +44,9 @@ class slurm::install {
     slurm::install::packages { $slurm::version :
       ensure    => $slurm::ensure,
       pkgdir    => $slurm::builddir,
-      slurmd    => ($slurm::with_slurmd    or defined(Class['slurm::slurmd'])),
-      slurmctld => ($slurm::with_slurmctld or defined(Class['slurm::slurmctld'])),
-      slurmdbd  => ($slurm::with_slurmdbd  or defined(Class['slurm::slurmdbd'])),
+      slurmd    => ($slurm::with_slurmd    or defined(Class['::slurm::slurmd'])),
+      slurmctld => ($slurm::with_slurmctld or defined(Class['::slurm::slurmctld'])),
+      slurmdbd  => ($slurm::with_slurmdbd  or defined(Class['::slurm::slurmdbd'])),
       wrappers  => $slurm::wrappers,
       require   => Slurm::Build[$slurm::version],
     }

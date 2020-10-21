@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Time-stamp: <Sat 2019-02-02 00:46 svarrette>
+# Time-stamp: <Tue 2019-10-22 11:20 svarrette>
 ###########################################################################################
 # __     __                          _     ____              _       _
 # \ \   / /_ _  __ _ _ __ __ _ _ __ | |_  | __ )  ___   ___ | |_ ___| |_ _ __ __ _ _ __
 #  \ \ / / _` |/ _` | '__/ _` | '_ \| __| |  _ \ / _ \ / _ \| __/ __| __| '__/ _` | '_ \
-#   \ V / (_| | (_| | | | (_| | | | | |_  | |_) | (_) | (_) | |_\__ \ |_| | | (_| | |_) |
+    #   \ V / (_| | (_| | | | (_| | | | | |_  | |_) | (_) | (_) | |_\__ \ |_| | | (_| | |_) |
 #    \_/ \__,_|\__, |_|  \__,_|_| |_|\__| |____/ \___/ \___/ \__|___/\__|_|  \__,_| .__/
 #              |___/                                                              |_|
 #                  Copyright (c) 2017-2019 UL HPC Team <hpc-sysadmins@uni.lu>
@@ -32,6 +32,10 @@ EXTRA_PACKAGES=
 # List of default packages to install
 COMMON_DEFAULT_PACKAGES="ruby wget figlet git screen bash-completion rsync vim htop net-tools mailx stress"
 
+RUBY_VERSION=2.3.8
+RUBY_SRC_URL='https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.8.tar.gz'
+RUBY_SPEC='https://raw.githubusercontent.com/feedforce/ruby-rpm/master/ruby-2.3.spec'
+RPMBUILD_DIR=/root/rpmbuild
 GEMS="librarian-puppet falkorlib"
 
 ######
@@ -73,7 +77,30 @@ setup_redhat() {
 
     info "Installing default packages"
     yum install -y epel-release
-    yum install -y ${COMMON_DEFAULT_PACKAGES} ruby-devel bind-utils ${EXTRA_PACKAGES}  >/dev/null
+    yum install -y ${COMMON_DEFAULT_PACKAGES} ruby-devel gdbm-devel libyaml-devel bind-utils ${EXTRA_PACKAGES}  >/dev/null
+
+
+    sleep 1
+    info "Installing ruby 2.3 from SPEC file"
+    mkdir -p ${RPMBUILD_DIR}/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
+    if [ ! -f "${RPMBUILD_DIR}/SOURCES/$(basename ${RUBY_SRC_URL})" ]; then
+        wget ${RUBY_SRC_URL} -P ${RPMBUILD_DIR}/SOURCES
+    fi
+    if [ ! -f "${RPMBUILD_DIR}/SPECS/$(basename ${RUBY_SPEC})" ]; then
+        wget ${RUBY_SPEC} -P ${RPMBUILD_DIR}/SPECS --no-check-certificate
+    fi
+    yum groupinstall "Development Tools"
+    if [ -z  "$(ls ${RPMBUILD_DIR}/RPMS/x86_64/ruby-${RUBY_VERSION}*.rpm)" ]; then
+        rpmbuild -bb ${RPMBUILD_DIR}/SPECS/$(basename ${RUBY_SPEC})
+        ls --color=never ${RPMBUILD_DIR}/RPMS/x86_64/ruby-${RUBY_VERSION}*.rpm |  xargs yum -y localinstall
+    fi
+
+    #     yum install -y centos-release-scl rh-ruby23
+    #     cat > /etc/profile.d/rh-ruby23.sh <<EOF
+    # #!/bin/bash
+
+    # source scl_source enable rh-ruby23
+    # EOF
 
     info "Uninstalling (eventually) existing Puppet installation"
     yum erase -y puppet puppetlabs-release >/dev/null
@@ -84,7 +111,8 @@ setup_redhat() {
     sleep 1
     info "Installing Puppet and its dependencies"
     yum install -y puppet-agent >/dev/null
-}
+
+ }
 
 setup_apt() {
     case $1 in
@@ -196,9 +224,17 @@ EOF
 EOF
 }
 
+setup_rvm() {
+    info "installing RVM"
+    gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+    curl -sSL https://get.rvm.io | bash -s stable
+    source /home/vagrant/.profile
+    rvm install 'ruby-2.6.0'
+}
+
 setup_gems() {
-    info "installing gems ${GEMS}"
-    sudo gem install --no-ri --no-rdoc ${GEMS}
+    info "installing $(which gem)s ${GEMS} (using $(ruby --version))"
+    gem install --force --no-ri --no-rdoc ${GEMS}
 }
 
 ######################################################################################

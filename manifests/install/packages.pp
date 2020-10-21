@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Sun 2019-02-03 12:10 svarrette>
+# Time-stamp: <Wed 2020-09-23 20:42 svarrette>
 #
 # File::      <tt>install/packages.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -18,15 +18,38 @@
 #          Top directory of the sources builds (i.e. RPMs, debs...)
 #          For instance, built RPMs will be placed under
 #          <dir>/RPMS/${::architecture}
-
-# @example install version 17.06.7 (latest at the time of writing)  of SLURMd
+# @param slurmd              [Boolean]     Default: false
+#          Install Slurmd packages (compute and head node)
+# @param slurmctld           [Boolean]     Default: false
+#          Install Slurmctrld (controller node)
+# @param slurmdbd            [Boolean]     Default: false
+#          Install Slurm DBD Node
+# @param packages  [Array] (optional)
+#          Exhaustive list of the packages (RPM basenames - without versions and
+#          os specific suffixes.) to install
 #
-#     slurm::install::packages { '17.02.7':
-  #     ensure => 'present',
-  #     pkgdir => "/root/rpmbuild/RPMs/${::architecture}",
-  #     slurmd => true
-  #   }
+# @example install version 19.05.3-2 for a head (controller) node running also the SlurmDBD:
 #
+#     slurm::install::packages { '19.05.3-2':
+#        ensure    => 'present',
+#        pkgdir    => "/root/rpmbuild/',
+#        slurmctld => true,
+#        slurmd    => true,
+#     }
+#
+# @example install version 19.05.3-2 for a compute node (aimed at running SLURMd)
+#
+#     slurm::install::packages { '19.05.3-2':
+#        ensure => 'present',
+#        pkgdir => "/root/rpmbuild/',
+#        slurmd => true,
+#     }
+#
+# @example install version 19.05.3 for a login node:
+#     slurm::install::packages { '19.05.3-2':
+#        ensure => 'present',
+#        pkgdir => "/root/rpmbuild/',
+#     }
 #
 define slurm::install::packages(
   String  $ensure           = $slurm::params::ensure,
@@ -45,8 +68,13 @@ define slurm::install::packages(
   # $name is provided at define invocation
   $version = $name
 
-  if !($slurmd or $slurmctld or $slurmdbd or defined(Class['slurm::login']) or !empty($packages)) {
-    fail("Module ${module_name} expects a non-empty list of [built] packages to install OR specification of which daemon to install (i.e slurm{d,ctld,dbd}) or invocation of 'slurm::login' class for Login nodes")
+  if !($slurmd or $slurmctld or $slurmdbd or defined(Class['slurm::login']) or !empty($packages))
+  {
+    fail(
+      "Module ${module_name} expects a non-empty list of [built] packages to install " +
+      'OR specification of which daemon to install (i.e slurm{d,ctld,dbd}) or ' +
+      "invocation of 'slurm::login' class for Login nodes"
+    )
   }
 
   # notice("Package installation for slurmd    = ${slurmd}")
@@ -69,6 +97,9 @@ define slurm::install::packages(
     #    - slurm-perlapi
     #    - slurm-slurmctld (only on the head node)
     #    - slurm-slurmd    (only on the compute nodes)
+    #    - In addition:
+    #        * pmix (but NOT pmix-libmpi)
+    #        * slurm-libpmi
     # SlurmDBD Node
     #    - slurm
     #    - slurm-slurmdbd
@@ -104,7 +135,7 @@ define slurm::install::packages(
   # Real Full list
   $pkglist = empty($packages) ? {
     true    => $default_packages,
-    default => $pkgs
+    default => $packages
   }
   #notice("Package list: ${pkglist}")
   # ... including the version numbers
@@ -167,37 +198,4 @@ define slurm::install::packages(
       user    => 'root',
     }
   }
-
-  # case $ensure {
-    #   'absent': {
-      #     $execname = "yum-remove-slurm*${version}*.rpm"
-      #     $cmd ="yum -y remove slurm*-${version}*"
-      #     $check_onlyif = "test -n \"$(rpm -qa | grep slurm*${version})\""
-      #     $check_unless = "test -z \"$(rpm -qa | grep slurm*${version})\""
-      #   }
-    #   default: {
-      #     $execname  = "yum-localinstall-slurm*${version}*.rpm"
-      #     $cmd          = "yum -y --nogpgcheck localinstall ${join($rpms, ' ')}"
-      #     $check_onlyif = "test -n \"$(ls ${cwddir}/${rpms[0]} 2>/dev/null)\""
-      #     $check_unless = suffix(prefix($pkglist, "yum list installed | grep ${version} |& grep -E '^"), ".${::architecture}' > /dev/null")
-      #   }
-    # }
-  # Ensure individual RPMs are really installed
-  # package { $pkgs:
-    #   ensure => $ensure,
-    #   provider => 'rpm',
-    #   source =>
-    # }
-  # notice($cmd)
-  # notice($check_onlyif)
-  # notice($check_unless)
-  # exec { $execname:
-    #   path    => '/sbin:/usr/bin:/usr/sbin:/bin',
-    #   command => $cmd,
-    #   cwd     => $cwddir,
-    #   onlyif  => $check_onlyif,
-    #   unless  => $check_unless,
-    #   user    => 'root',
-    # }
-
 }

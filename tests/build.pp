@@ -12,7 +12,7 @@
 #
 # You can execute this manifest as follows in your vagrant box
 #
-#      sudo puppet apply -t /vagrant/tests/pam.pp
+#      sudo puppet apply --modulepath /vagrant/tests/vagrant/puppet/modules -vt /vagrant/tests/build.pp
 #
 node default {
   require ::slurm::params

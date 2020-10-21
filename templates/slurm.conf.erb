@@ -27,31 +27,42 @@ ClusterName=<%= scope['slurm::clustername'] %>
 # - Timers
 # - Power saving on idle nodes
 ###
-
-ControlMachine=<%= scope['slurm::controlmachine'] %>
-<% if scope['slurm::controladdr'].empty? -%>
-#ControlAddr=
+<% if scope['slurm::slurmctldhost'].empty? -%>
+#SlurmctldHost=
 <% else -%>
+<%    if scope['slurm::slurmctldhost'].is_a?(Array) -%>
+<%         scope['slurm::slurmctldhost'].each do |ctld| -%>
+SlurmctldHost=<%= ctld %>
+<%         end -%>
+<%    else -%>
+SlurmctldHost=<%= scope['slurm::slurmctldhost'] %>
+<%    end -%>
+<% end -%>
+<% if scope['slurm::slurmctldaddr'].empty? -%>
+#SlurmctldAddr=
+<% else -%>
+SlurmctldAddr=<%= scope['slurm::slurmctldaddr'] %>
+<% end -%>
+
+<% if (! scope['slurm::controlmachine'].empty?) and scope['slurm::slurmctldhost'].empty? -%>
+ControlMachine=<%= scope['slurm::controlmachine'] %>
+<% end -%>
+<% unless scope['slurm::controladdr'].empty? -%>
 ControlAddr=<%= scope['slurm::controladdr'] %>
 <% end -%>
-<% if scope['slurm::backupcontroller'].empty? -%>
-#BackupController=
-<% else -%>
+<% unless scope['slurm::backupcontroller'].empty? -%>
 BackupController=<%= scope['slurm::backupcontroller'] %>
 <% end -%>
-<% if scope['slurm::backupaddr'].empty? -%>
-#BackupAddr=
-<% else -%>
+<% unless scope['slurm::backupaddr'].empty? -%>
 BackupAddr=<%= scope['slurm::backupaddr'] %>
 <% end -%>
-
 
 #
 AuthType=auth/<%= scope['slurm::authtype'] %>
 <% unless scope['slurm::authinfo'].empty? -%>
 AuthInfo=auth/<%= scope['slurm::authinfo'] %>
 <% end -%>
-CryptoType=crypto/<%= scope['slurm::cryptotype'] %>
+CredType=cred/<%= scope['slurm::credtype'] %>
 
 <% if scope['slurm::checkpointtype'] == 'none' -%>
 #CheckpointType=checkpoint/none
@@ -96,6 +107,12 @@ ReturnToService=<%= scope['slurm::returntoservice'] %>
 #SallocDefaultCommand=
 SlurmctldPidFile=/var/run/slurmctld.pid
 SlurmctldPort=<%= scope['slurm::slurmctldport'] %>
+<% unless scope['slurm::slurmdparameters'].empty? -%>
+SlurmctldParameters=<%=  scope['slurm::slurmctldparameters'].join(',') %>
+<% end -%>
+<% unless scope['slurm::slurmdparameters'].empty? -%>
+SlurmdParameters=<%=  scope['slurm::slurmdparameters'].join(',')  %>
+<% end -%>
 SlurmdPidFile=/var/run/slurmd.pid
 SlurmdPort=<%= scope['slurm::slurmdport'] %>
 SlurmdSpoolDir=/var/lib/slurmd
@@ -136,6 +153,16 @@ SlurmctldDebug=<%= scope['slurm::slurmctlddebug'] %>
 SlurmctldLogFile=<%= scope['slurm::params::logdir'] %>/slurmctld.log
 SlurmdDebug=<%= scope['slurm::slurmddebug'] %>
 SlurmdLogFile=<%= scope['slurm::params::logdir'] %>/slurmd.log
+<% if scope['slurm::slurmdsyslogdebug'].empty? -%>
+#SlurmdSyslogDebug=
+<% else -%>
+SlurmdSyslogDebug=<%= scope['slurm::slurmdsyslogdebug']%>
+<% end -%>
+<% if scope['slurm::slurmctldsyslogdebug'].empty? -%>
+#SlurmctldSyslogDebug=
+<% else -%>
+SlurmctldSyslogDebug=<%= scope['slurm::slurmctldsyslogdebug']%>
+<% end -%>
 #SlurmSchedLogFile=
 #SlurmSchedLogLevel=
 
@@ -183,29 +210,63 @@ MinJobAge=300
 #OverTimeLimit=0
 SlurmctldTimeout=<%= scope['slurm::slurmctldtimeout'] %>
 SlurmdTimeout=<%= scope['slurm::slurmdtimeout'] %>
+<% if scope['slurm::unkillablesteptimeout'] == 60 -%>
 #UnkillableStepTimeout=60
+<% else -%>
+UnkillableStepTimeout=<%= scope['slurm::unkillablesteptimeout'] %>
+<% end -%>
 #VSizeFactor=0
 Waittime=<%= scope['slurm::waittime'] %>
 
 ### POWER SAVE SUPPORT FOR IDLE NODES (optional)
+<% if scope['slurm::suspendprogram'].empty? -%>
 #SuspendProgram=
+<% else -%>
+SuspendProgram=<%= scope['slurm::suspendprogram'] %>
+<% end -%>
+<% if scope['slurm::resumeprogram'].empty? -%>
 #ResumeProgram=
+<% else -%>
+ResumeProgram=<%= scope['slurm::resumeprogram'] %>
+<% end -%>
+<% unless scope['slurm::resumefailprogram'].empty? -%>
+ResumeFailProgram=<%= scope['slurm::resumefailprogram'] %>
+<% end -%>
+<% if scope['slurm::suspendtimeout'] > 0 -%>
+SuspendTimeout=<%= scope['slurm::suspendtimeout'] %>
+<% else -%>
 #SuspendTimeout=
+<% end -%>
+<% if scope['slurm::resumetimeout'] > 0 -%>
 ResumeTimeout=<%= scope['slurm::resumetimeout'] %>
+<% else -%>
+#ResumeTimeout=
+<% end -%>
+<% if scope['slurm::resumerate'] > 0 -%>
+ResumeRate=<%= scope['slurm::resumerate'] %>
+<% else -%>
 #ResumeRate=
+<% end -%>
+<% if scope['slurm::suspendexcnodes'].empty? -%>
 #SuspendExcNodes=
+<% else -%>
+SuspendExcNodes=<%= scope['slurm::suspendexcnodes'] %>
+<% end -%>
 #SuspendExcParts=
 #SuspendRate=
+<% if scope['slurm::suspendtime'] > 0 -%>
+SuspendTime=<%= scope['slurm::suspendtime'] %>
+<% else -%>
 #SuspendTime=
-
+<% end -%>
 
 ##################
 ### Accounting ###
 ##################
-<% if scope['slurm::acct_storageenforce'].empty? -%>
+<% if scope['slurm::accountingstorageenforce'].empty? -%>
 # AccountingStorageEnforce=qos,limits,associations
 <% else -%>
-AccountingStorageEnforce=<%= scope['slurm::acct_storageenforce'].join(',') %>
+AccountingStorageEnforce=<%= scope['slurm::accountingstorageenforce'].join(',') %>
 <% end -%>
 AccountingStorageHost=<%= scope['slurm::accountingstoragehost'] %>
 AccountingStorageLoc=slurm
@@ -214,7 +275,12 @@ AccountingStorageLoc=slurm
 AccountingStorageType=accounting_storage/slurmdbd
 #AccountingStorageUser=
 AccountingStoreJobComment=YES
-AcctGatherEnergyType=acct_gather_energy/<%= scope['slurm::acct_gatherenergytype']%>
+
+AcctGatherEnergyType=acct_gather_energy/<%=         scope['slurm::acctgatherenergytype'] %>
+AcctGatherFilesystemType=acct_gather_filesystem/<%= scope['slurm::acctgatherfilesystemtype'] %>
+AcctGatherInfinibandType=acct_gather_infiniband/<%= scope['slurm::acctgatherinfinibandtype'] %>
+AcctGatherProfileType=acct_gather_profile/<%=       scope['slurm::acctgatherprofiletype'] %>
+
 JobAcctGatherFrequency=<%= scope['slurm::jobacctgatherfrequency'] %>
 JobAcctGatherType=jobacct_gather/<%= scope['slurm::jobacctgathertype'] %>
 <% unless scope['slurm::jobacctgatherparams'].empty? -%>
@@ -226,14 +292,25 @@ JobAcctGatherParams=<%= scope['slurm::jobacctgatherparams'] %>
 Licenses=<%= scope['slurm::licenses'] %>
 <% end -%>
 
-
-
-#MaxJobCount=5000
 #MaxStepCount=40000
+<% if scope['slurm::maxarraysize'].nil? -%>
+# MaxArraySize=
+<% else -%>
+MaxArraySize=<%= scope['slurm::maxarraysize'] %>
+<% end -%>
+<% if scope['slurm::maxjobcount'].nil? -%>
+# MaxJobCount=
+<% else -%>
+MaxJobCount=<%= scope['slurm::maxjobcount'] %>
+<% end -%>
 MaxTasksPerNode=<%= scope['slurm::maxtaskspernode'] %>
 #PluginDir=
 #PlugStackConfig=
-#PrivateData=jobs
+<% if scope['slurm::privatedata'].empty?  -%>
+#PrivateData=accounts,users,usage,jobs
+<% else -%>
+PrivateData=<%= scope['slurm::privatedata'].join(',')  %>
+<% end -%>
 ProctrackType=proctrack/<%= scope['slurm::proctracktype'] %>
 #PropagatePrioProcess=0
 <% if scope['slurm::propagateresourcelimits'].empty? -%>
@@ -347,7 +424,9 @@ PriorityWeightTRES=<%= scope['slurm::priorityweighttres'] %>
 ###
 # Mechanism to be used to launch application tasks.
 #LaunchType=launch/<%= scope['slurm::launchtype'] %>
-
+<% unless scope['slurm::launchparameters'].empty? -%>
+LaunchParameters=<%= scope['slurm::launchparameters'] %>
+<% end -%>
 SelectType=select/<%= scope['slurm::selecttype'] %>
 SelectTypeParameters=<%= scope['slurm::selecttype_params'].join(',') %>
 <% if scope['slurm::taskepilog'].empty? -%>
@@ -404,6 +483,10 @@ MpiDefault=<%= scope['slurm::mpidefault'] %>
 #MpiParams=ports=#-#
 <% else -%>
 MpiParams=<%= scope['slurm::mpiparams'] %>
+<% end -%>
+<% unless scope['slurm::x11parameters'].empty? -%>
+### Slurm's built-in X11
+X11Parameters=<%= scope['slurm::x11parameters'] %>
 <% end -%>
 
 <% if scope['slurm::custom_content'] -%>
@@ -496,6 +579,8 @@ NodeName=<%= name.ljust(12) %> <%= content %>
 <%       content << " AllowQos=#{v['allowqos'].is_a?(Array) ? v['allowqos'].join(',') : v['allowqos']}"      if v['allowqos'] -%>
 <%       content << ' DisableRootJobs=YES'  if (!v['disablerootjobs'].nil?  and v['disablerootjobs']  and content !~ /DisableRootJobs=/) -%>
 <%       content << " TRESBillingWeights=#{v['TRESbillingweights'].is_a?(Array) ? v['TRESbillingweights'].join(',') : v['TRESbillingweights']}" if v['TRESbillingweights'] -%>
+<%       content << " MaxTime=#{v['maxtime']}" unless (v['maxtime'].nil? or content =~ /MaxTime=/) -%>
+<%       content << " DefaultTime=#{v['defaulttime']}" unless (v['defaulttime'].nil? or content =~ /DefaultTime=/) -%>
 <%    end -%>
 <%    unless (content.nil? or content.empty?) -%>
 PartitionName=<%= name.ljust(12)  %> <%= content %>
