@@ -35,6 +35,11 @@ require 'erb'
 end
 require 'terminal-table'
 
+### Plugin for Windows ###
+require 'win32/process' if Vagrant::Util::Platform.windows?
+require 'win32/dir' if Vagrant::Util::Platform.windows?
+require 'win32/service' if Vagrant::Util::Platform.windows?
+
 ### Global variables ###
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
