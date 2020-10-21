@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2019-10-14 14:52 svarrette>
+# Time-stamp: <Wed 2020-09-23 20:44 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -67,7 +67,8 @@
 # @param debuglevel         [String ]     Default: info
 #           The level of detail to provide the Slurm Database Daemon's logs.
 # @param debugflags         [String ]     Default: []
-#           in ['DB_ARCHIVE','DB_ASSOC','DB_EVENT','DB_JOB','DB_QOS','DB_QUERY','DB_RESERVATION','DB_RESOURCE','DB_STEP','DB_USAGE','DB_WCKEY']
+#           in ['DB_ARCHIVE','DB_ASSOC','DB_EVENT','DB_JOB','DB_QOS','DB_QUERY','DB_RESERVATION',
+#               'DB_RESOURCE','DB_STEP','DB_USAGE','DB_WCKEY']
 # @param privatedata        [Array]       Default: []
 #           Elligible values in ['accounts','jobs','reservations','usage','users']
 # @param purgeeventafter    Default: undef
@@ -191,7 +192,7 @@ inherits slurm
   Class['slurm::install'] -> Class['slurm::config']
 
   if $slurm::manage_firewall {
-    slurm::firewall { "${dbdport}":
+    slurm::firewall { $dbdport:
       ensure => $slurm::ensure,
     }
   }

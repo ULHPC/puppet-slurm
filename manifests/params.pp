@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2019-10-14 13:52 svarrette>
+# Time-stamp: <Wed 2020-09-23 20:37 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -217,7 +217,9 @@ class slurm::params {
   $preempttype             = 'qos'         # in ['none', 'partition_prio', 'qos']
   $prioritydecayhalflife   = '5-0'         # aka 5 days
   $priorityfavorsmall      = false
-  $priorityflags           = []            # in ['ACCRUE_ALWAYS','CALCULATE_RUNNING','DEPTH_OBLIVIOUS','FAIR_TREE','INCR_ONLY','MAX_TRES','SMALL_RELATIVE_TO_TIME']
+  $priorityflags           = []            # in ['ACCRUE_ALWAYS','CALCULATE_RUNNING','DEPTH_OBLIVIOUS',
+  #                                              'FAIR_TREE','INCR_ONLY','MAX_TRES',
+  #                                              'SMALL_RELATIVE_TO_TIME']
   $prioritymaxage          = '7-0'
   $priorityweighttres      = ''
   $prioritytype            = 'multifactor' # in ['basic', 'multifactor']

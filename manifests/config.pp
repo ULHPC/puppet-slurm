@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2019-10-14 14:18 svarrette>
+# Time-stamp: <Wed 2020-09-23 20:43 svarrette>
 #
 # File::      <tt>config.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -49,7 +49,7 @@ class slurm::config {
       }
     }
     file { $pluginsdir:
-      target => "${slurm::pluginsdir_target}",
+      target => $slurm::pluginsdir_target,
       owner  => $slurm::params::username,
       group  => $slurm::params::group,
     }

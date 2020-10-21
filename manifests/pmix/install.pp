@@ -56,7 +56,10 @@ define slurm::pmix::install(
           $check_unless = "test -z \"$(rpm -qa | grep -E 'pmix.*${version}')\""
         }
         default: {
-          Package["pmix-${version}"] {
+         #  $cmd = "yum -y --nogpgcheck localinstall  pmix*-${version}*"
+         #  $check_onlyif = "test -z \"$(rpm -qa | grep -E 'pmix.*${version}')\""
+         #  $check_unless = "test -n \"$(rpm -qa | grep -E 'pmix.*${version}')\""
+         Package["pmix-${version}"] {
             provider        => 'rpm',
             install_options => [ '--nodeps' ],
             source          => "${rpmdir}/${rpm}",

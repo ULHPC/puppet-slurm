@@ -2,7 +2,7 @@
 ##########################################################################
 # puppet_module_setup.rb
 # @author Sebastien Varrette <Sebastien.Varrette@uni.lu>
-# Time-stamp: <Thu 2019-01-31 20:05 svarrette>
+# Time-stamp: <Wed 2020-09-23 20:26 svarrette>
 #
 # @description Prepare the Vagrant box to test this Puppet module
 #
@@ -25,8 +25,8 @@ error 'Unable to find the metadata.json' unless File.exist?(jsonfile)
 
 metadata   = JSON.parse(IO.read(jsonfile))
 name       = metadata['name'].gsub(%r{^[^\/-]+[\/-]}, '')
-#modulepath = `puppet config print modulepath`.chomp
-#moduledir  = modulepath.split(':').first
+# modulepath = `puppet config print modulepath`.chomp
+# moduledir  = modulepath.split(':').first
 moduledir = File.join(puppetdir, 'modules')
 
 unless File.directory?(File.join(moduledir, 'stdlib'))
@@ -41,7 +41,7 @@ end
 #   run %{ puppet module #{action} #{lib} }
 # end
 
-#puts "Module path: #{modulepath}"
+# puts "Module path: #{modulepath}"
 puts "Moduledir:   #{moduledir}"
 
 unless File.exist?("#{moduledir}/#{name}")

@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Fri 2019-10-11 10:05 svarrette>
+# Time-stamp: <Wed 2020-09-23 19:05 svarrette>
 #
 # File::      <tt>build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -124,7 +124,8 @@ define slurm::build(
       Yum::Group[$slurm::params::groupinstall] -> Exec[$buildname]
 
       $rpmdir = "${dir}/RPMS/${::architecture}"
-      $rpms   = prefix(suffix(concat($slurm::params::common_rpms_basename, $slurm::params::slurmdbd_rpms_basename), "-${version}*.rpm"), "${rpmdir}/")
+      $rpms   = prefix(suffix(concat($slurm::params::common_rpms_basename, $slurm::params::slurmdbd_rpms_basename),
+                              "-${version}*.rpm"), "${rpmdir}/")
       # the below command should typically produce the following RPMs
       # slurm[-suffix]-<version>-1.el7.centos.x86_64.rpm
       case $ensure {
