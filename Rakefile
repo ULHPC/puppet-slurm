@@ -63,6 +63,7 @@ task :up do |t|
 end # task up
 
 require 'falkorlib/tasks/git'
+require 'falkorlib/tasks/puppet'
 
 def changelog_user
   return unless Rake.application.top_level_tasks.include? "changelog"
