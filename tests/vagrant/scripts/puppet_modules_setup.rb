@@ -2,7 +2,7 @@
 ##########################################################################
 # puppet_module_setup.rb
 # @author Sebastien Varrette <Sebastien.Varrette@uni.lu>
-# Time-stamp: <Wed 2020-09-23 20:26 svarrette>
+# Time-stamp: <Wed 2020-10-21 17:38 svarrette>
 #
 # @description Prepare the Vagrant box to test this Puppet module
 #
@@ -29,17 +29,18 @@ name       = metadata['name'].gsub(%r{^[^\/-]+[\/-]}, '')
 # moduledir  = modulepath.split(':').first
 moduledir = File.join(puppetdir, 'modules')
 
-unless File.directory?(File.join(moduledir, 'stdlib'))
-  run %( cd #{moduledir}/.. && librarian-puppet clean && rm Puppetfile* )
-  run %( ln -s /vagrant/metadata.json #{moduledir}/../ )
-  run %( cd #{moduledir}/.. && librarian-puppet install --verbose )
-end
-# metadata["dependencies"].each do |dep|
-#   lib = dep["name"]
-#     shortname = lib.gsub(/^.*[\/-]/,'')
-#     action = File.directory?("#{moduledir}/#{shortname}") ? 'upgrade --force' : 'install'
-#   run %{ puppet module #{action} #{lib} }
+# unless File.directory?(File.join(moduledir, 'stdlib'))
+#   run %( cd #{moduledir}/.. && librarian-puppet clean && rm Puppetfile* )
+#   run %( ln -s /vagrant/metadata.json #{moduledir}/../ )
+#   run %( cd #{moduledir}/.. && librarian-puppet install --verbose )
 # end
+
+metadata["dependencies"].each do |dep|
+  lib = dep["name"]
+  shortname = lib.gsub(/^.*[\/-]/,'')
+  action = File.directory?("#{moduledir}/#{shortname}") ? 'upgrade --force' : 'install'
+  run %{ puppet module #{action} --target-dir #{moduledir}   #{lib} }
+end
 
 # puts "Module path: #{modulepath}"
 puts "Moduledir:   #{moduledir}"
