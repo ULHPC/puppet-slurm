@@ -16,6 +16,8 @@ class slurm::install {
   include ::slurm
   include ::slurm::params
 
+  Class['slurm::common'] -> Class['slurm::install']
+
   # [Eventually] download and build slurm sources
   if $slurm::do_build {
     # Download the Slurm sources
