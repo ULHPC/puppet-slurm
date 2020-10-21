@@ -142,7 +142,7 @@ GEM
       concurrent-ruby (~> 1.0)
     jgrep (1.5.4)
     jmespath (1.4.0)
-    json (2.1.0)
+    json (2.3.0)
     json-schema (2.8.1)
       addressable (>= 2.4)
     jwt (2.2.2)
@@ -424,7 +424,7 @@ PLATFORMS
 DEPENDENCIES
   falkorlib
   fast_gettext
-  json (= 2.1.0)
+  json (= 2.3.0)
   puppet
   puppet-module-posix-default-r2.6 (~> 0.4)
   puppet-module-posix-dev-r2.6 (~> 0.4)
