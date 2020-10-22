@@ -192,7 +192,7 @@ inherits slurm
   Class['slurm::install'] -> Class['slurm::config']
 
   if $slurm::manage_firewall {
-    slurm::firewall { $dbdport:
+    slurm::firewall { "${dbdport}":
       ensure => $slurm::ensure,
     }
   }
