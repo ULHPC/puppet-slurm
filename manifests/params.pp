@@ -507,9 +507,9 @@ class slurm::params {
   ############################
   # See https://pmix.org/code/getting-the-reference-implementation/
   $with_pmix              = false # Whether or not using PMIx
-  $pmix_version           = '3.1.4'
+  $pmix_version           = '3.2.3'
   # Checksum for the pmix source archive (empty means no check will be done)
-  $pmix_src_checksum      = '0f3f575e486d8492441c34276d1d56cbb48b4c37'
+  $pmix_src_checksum      = '97978abcd4da1b2a3d2bf2452247c4d47f8cc6a3'
   $pmix_src_checksum_type = 'sha1'
   # From where the Slurm sources can be downloaded
   $pmix_download_baseurl  = 'https://github.com/openpmix/openpmix/releases/download'
