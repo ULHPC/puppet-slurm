@@ -15,7 +15,7 @@
 define slurm::firewall(
   String $ensure    = 'present',
   String  $zone     = 'public',
-  String  $port     = '',
+  $port             = undef,
   String  $seltype  = '',
   String  $protocol = 'tcp',
 )
@@ -28,8 +28,8 @@ define slurm::firewall(
   }
 
   # $name is provided at define invocation
-  $port_range = empty($port) ? {
-    true    => $name,
+  $port_range = $port ? {
+    undef   => $name,
     default => $port,
   }
 

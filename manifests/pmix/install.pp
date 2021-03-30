@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2019-10-08 23:21 svarrette>
+# Time-stamp: <Wed 2021-03-31 00:59 svarrette>
 #
 # File::      <tt>pmix/install.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -56,10 +56,10 @@ define slurm::pmix::install(
           $check_unless = "test -z \"$(rpm -qa | grep -E 'pmix.*${version}')\""
         }
         default: {
-         #  $cmd = "yum -y --nogpgcheck localinstall  pmix*-${version}*"
-         #  $check_onlyif = "test -z \"$(rpm -qa | grep -E 'pmix.*${version}')\""
-         #  $check_unless = "test -n \"$(rpm -qa | grep -E 'pmix.*${version}')\""
-         Package["pmix-${version}"] {
+          #  $cmd = "yum -y --nogpgcheck localinstall  pmix*-${version}*"
+          #  $check_onlyif = "test -z \"$(rpm -qa | grep -E 'pmix.*${version}')\""
+          #  $check_unless = "test -n \"$(rpm -qa | grep -E 'pmix.*${version}')\""
+          Package["pmix-${version}"] {
             provider        => 'rpm',
             install_options => [ '--nodeps' ],
             source          => "${rpmdir}/${rpm}",

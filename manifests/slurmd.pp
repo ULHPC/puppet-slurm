@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2020-09-23 20:45 svarrette>
+# Time-stamp: <Wed 2021-03-31 01:00 svarrette>
 #
 # File::      <tt>slurmd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -30,10 +30,10 @@ class slurm::slurmd inherits slurm
   Class['slurm::install'] -> Class['slurm::config']
 
   if $slurm::manage_firewall {
-    slurm::firewall { "${slurm::slurmdport}":
+    slurm::firewall { String($slurm::slurmdport):
       ensure => $slurm::ensure,
     }
-    slurm::firewall { "${slurm::srunportrange}":
+    slurm::firewall { String($slurm::srunportrange):
       ensure => $slurm::ensure,
     }
   }

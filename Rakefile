@@ -26,6 +26,16 @@ require 'puppet_blacksmith/rake_tasks' if Bundler.rubygems.find_name('puppet-bla
 require 'github_changelog_generator/task' if Bundler.rubygems.find_name('github_changelog_generator').any?
 require 'puppet-strings/tasks' if Bundler.rubygems.find_name('puppet-strings').any?
 
+exclude_paths = %w(
+  pkg/**/*
+  vendor/**/*
+  .vendor/**/*
+  spec/**/*
+  tests/vagrant/**/*
+)
+PuppetLint.configuration.ignore_paths = exclude_paths
+PuppetSyntax.exclude_paths = exclude_paths
+
 
 ## placeholder for custom configuration of FalkorLib.config.*
 ## See https://github.com/Falkor/falkorlib
