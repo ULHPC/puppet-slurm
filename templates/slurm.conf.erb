@@ -433,7 +433,7 @@ SelectTypeParameters=<%= scope['slurm::selecttype_params'].join(',') %>
 TaskEpilog=<%= scope['slurm::taskepilog'] %>
 <% end -%>
 <% if scope['slurm::taskplugin'].is_a?(Array) -%>
-TaskPlugin=task/<%= scope['slurm::taskplugin'].join(',task/')
+TaskPlugin=task/<%= scope['slurm::taskplugin'].join(',task/') %>
 <% else -%>
 TaskPlugin=task/<%= scope['slurm::taskplugin'] %>
 <% end -%>
