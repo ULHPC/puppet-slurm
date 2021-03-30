@@ -38,6 +38,7 @@ class slurm::params {
       'libX11-devel',
       'libssh2-devel',
       'libevent-devel',
+      'python3'
     ],
     default => []
   }
@@ -170,7 +171,6 @@ class slurm::params {
   $enforcepartlimits       = 'ALL'
   $epilog                  = ''
   $epilogslurmctld         = ''
-  $fastschedule            = 1           # in [ 0, 1, 2]
   $grestypes               = []          # list of generic resources to be managed
   $healthcheckinterval     = 30
   $healthchecknodestate    = 'ANY'       # in ['ALLOC', 'ANY','CYCLE','IDLE','MIXED']
@@ -275,8 +275,8 @@ class slurm::params {
   $srunprolog              = ''
   $switchtype              = 'none' # in ['nrt', 'none']
   $taskepilog              = ''
-  $taskplugin              = 'cgroup' # in ['affinity', 'cgroup','none']
-  $taskpluginparams        = ['cpusets']
+  $taskplugin              = ['affinity','cgroup'] # in ['affinity', 'cgroup','none']
+  $taskpluginparams        = []
   $taskprolog              = ''
   $tmpfs                   = '/tmp'
   $tresbillingweights      = ''
@@ -359,7 +359,7 @@ class slurm::params {
   $cgroup_maxkmempercent            = 100   # upper bound in percent of total Kmem for a job.
   $cgroup_minkmemspace              = 30    # lower bound (in MB) on the memory limits defined by AllowedKmemSpace.
   $cgroup_minramspace               = 30    # lower bound (in MB) on the memory limits defined by AllowedRAMSpace & AllowedSwapSpace.
-  $cgroup_taskaffinity              = true  # This feature requires the Portable Hardware Locality (hwloc) library
+  $cgroup_taskaffinity              = false # if true, this feature requires the Portable Hardware Locality (hwloc) library
 
   ###
   ### Generic RESource management -- gres.conf
@@ -429,11 +429,11 @@ class slurm::params {
     default  => undef
   }
   # Which version of Slurm to grab and build
-  $version = '19.05.3-2'
+  $version = '20.11.3'
 
   ### SLURM Sources
   # Checksum for the slurm source archive (empty means no check will be done)
-  $src_checksum      = '6fe2c6196f089f6210d5ba79e99b0656f5a527b4'
+  $src_checksum      = 'dcf328865591b42b6c8f5586b3e396e6eb30dcd7'
   $src_checksum_type = 'sha1'
   # From where the Slurm sources can be downloaded
   $download_baseurl    = 'https://download.schedmd.com/slurm/'
@@ -507,9 +507,9 @@ class slurm::params {
   ############################
   # See https://pmix.org/code/getting-the-reference-implementation/
   $with_pmix              = false # Whether or not using PMIx
-  $pmix_version           = '3.1.4'
+  $pmix_version           = '3.2.3'
   # Checksum for the pmix source archive (empty means no check will be done)
-  $pmix_src_checksum      = '0f3f575e486d8492441c34276d1d56cbb48b4c37'
+  $pmix_src_checksum      = '97978abcd4da1b2a3d2bf2452247c4d47f8cc6a3'
   $pmix_src_checksum_type = 'sha1'
   # From where the Slurm sources can be downloaded
   $pmix_download_baseurl  = 'https://github.com/openpmix/openpmix/releases/download'
@@ -608,7 +608,7 @@ class slurm::params {
   ### SLURM DataBase Configuration (slurmdbd.conf)  ###
   #####################################################
   $dbd_configfile      = 'slurmdbd.conf'
-  $dbd_configfile_mode = '0400'
+  $dbd_configfile_mode = '0600'
   $archivedir          = '/tmp'
   $archiveevents       = false # When purging events also archive them?
   $archivejobs         = false # When purging jobs also archive them?

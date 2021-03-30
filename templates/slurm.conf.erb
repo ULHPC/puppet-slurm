@@ -269,7 +269,6 @@ SuspendTime=<%= scope['slurm::suspendtime'] %>
 AccountingStorageEnforce=<%= scope['slurm::accountingstorageenforce'].join(',') %>
 <% end -%>
 AccountingStorageHost=<%= scope['slurm::accountingstoragehost'] %>
-AccountingStorageLoc=slurm
 #AccountingStoragePass=
 #AccountingStoragePort=
 AccountingStorageType=accounting_storage/slurmdbd
@@ -334,7 +333,6 @@ StateSaveLocation=<%= scope['slurm::statesavelocation'] %>
 # - Backfill
 # - job priority
 ###
-FastSchedule=<%= scope['slurm::fastschedule'] %>
 #SchedulerTimeSlice=30
 SchedulerType=sched/<%= scope['slurm::schedulertype'] %>
 <% if scope['slurm::schedulerparameters'].empty? -%>
@@ -434,7 +432,11 @@ SelectTypeParameters=<%= scope['slurm::selecttype_params'].join(',') %>
 <% else -%>
 TaskEpilog=<%= scope['slurm::taskepilog'] %>
 <% end -%>
+<% if scope['slurm::taskplugin'].is_a?(Array) -%>
+TaskPlugin=task/<%= scope['slurm::taskplugin'].join(',task/') %>
+<% else -%>
 TaskPlugin=task/<%= scope['slurm::taskplugin'] %>
+<% end -%>
 <% if scope['slurm::taskpluginparams'].empty? -%>
 #TaskPluginParam=
 <% else -%>

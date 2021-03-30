@@ -26,21 +26,27 @@
 #          Top directory of the sources builds (i.e. RPMs, debs...)
 #          For instance, built RPMs will be placed under
 #          <builddir>/RPMS/${::architecture}
+# @param do_build                 [Boolean]     Default: true
+#          Do we perform the build of the OpenPMIx packages from sources or not?
+# @param do_package_install       [Boolean]     Default: true
+#          Do we perform the install of the OpenPMIx packages or not?
 #
-# @example install version 3.1.4 of PMIx
+# @example install version 3.2.3 of PMIx
 #
 #     slurm::pmix { '3.1.4':
 #        ensure => 'present',
 #        builddir => "/root/rpmbuild/",
-#
+#     }
 #
 class slurm::pmix(
-  String  $ensure            = $slurm::params::ensure,
-  String  $version           = $slurm::params::pmix_version,
-  String  $srcdir            = $slurm::params::srcdir,
-  String  $src_checksum      = $slurm::params::pmix_src_checksum,
-  String  $src_checksum_type = $slurm::params::pmix_src_checksum_type,
-  String  $builddir          = $slurm::params::builddir,
+  String  $ensure             = $slurm::params::ensure,
+  String  $version            = $slurm::params::pmix_version,
+  String  $srcdir             = $slurm::params::srcdir,
+  String  $src_checksum       = $slurm::params::pmix_src_checksum,
+  String  $src_checksum_type  = $slurm::params::pmix_src_checksum_type,
+  String  $builddir           = $slurm::params::builddir,
+  Boolean $do_build           = $slurm::params::do_build,
+  Boolean $do_package_install = $slurm::params::do_package_install,
 ) {
   include ::slurm::params
 
@@ -52,19 +58,23 @@ class slurm::pmix(
     checksum_type => $src_checksum_type,
   }
 
-  # Now build them
-  slurm::pmix::build { $version :
-    ensure  => $ensure,
-    srcdir  => $srcdir,
-    dir     => $builddir,
-    require => Slurm::Pmix::Download[$version],
+  if $do_build {
+    # Now build them
+    slurm::pmix::build { $version :
+      ensure  => $ensure,
+      srcdir  => $srcdir,
+      dir     => $builddir,
+      require => Slurm::Pmix::Download[$version],
+    }
   }
 
-  # And install it
-  slurm::pmix::install { $version :
-    ensure   => $ensure,
-    builddir => $builddir,
-    require  => Slurm::Pmix::Build[$version],
+  if $do_package_install {
+    # And install it
+    slurm::pmix::install { $version :
+      ensure   => $ensure,
+      builddir => $builddir,
+      require  => Slurm::Pmix::Build[$version],
+    }
   }
 
 }
