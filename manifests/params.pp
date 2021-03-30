@@ -38,6 +38,7 @@ class slurm::params {
       'libX11-devel',
       'libssh2-devel',
       'libevent-devel',
+      'python3'
     ],
     default => []
   }
@@ -429,11 +430,11 @@ class slurm::params {
     default  => undef
   }
   # Which version of Slurm to grab and build
-  $version = '19.05.3-2'
+  $version = '20.11.3'
 
   ### SLURM Sources
   # Checksum for the slurm source archive (empty means no check will be done)
-  $src_checksum      = '6fe2c6196f089f6210d5ba79e99b0656f5a527b4'
+  $src_checksum      = 'dcf328865591b42b6c8f5586b3e396e6eb30dcd7'
   $src_checksum_type = 'sha1'
   # From where the Slurm sources can be downloaded
   $download_baseurl    = 'https://download.schedmd.com/slurm/'
@@ -608,7 +609,7 @@ class slurm::params {
   ### SLURM DataBase Configuration (slurmdbd.conf)  ###
   #####################################################
   $dbd_configfile      = 'slurmdbd.conf'
-  $dbd_configfile_mode = '0400'
+  $dbd_configfile_mode = '0600'
   $archivedir          = '/tmp'
   $archiveevents       = false # When purging events also archive them?
   $archivejobs         = false # When purging jobs also archive them?
