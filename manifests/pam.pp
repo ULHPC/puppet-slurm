@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-10-05 18:53 svarrette>
+# Time-stamp: <Wed 2021-03-31 00:56 svarrette>
 #
 # File::      <tt>pam.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -103,9 +103,9 @@ inherits slurm::params
   if $ulimits_source != undef {
     file { "${limits::limits_dir}/50_slurm.conf":
       ensure => $ensure,
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0644',
+      owner  => 'root',
+      group  => 'root',
+      mode   => '0644',
       source => $ulimits_source,
 
     }

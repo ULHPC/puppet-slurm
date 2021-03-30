@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2020-09-23 20:44 svarrette>
+# Time-stamp: <Wed 2021-03-31 00:58 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -192,7 +192,7 @@ inherits slurm
   Class['slurm::install'] -> Class['slurm::config']
 
   if $slurm::manage_firewall {
-    slurm::firewall { "${dbdport}":
+    slurm::firewall { $dbdport:
       ensure => $slurm::ensure,
     }
   }

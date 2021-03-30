@@ -40,3 +40,5 @@
 /.yardopts
 /spec/
 /.vscode/
+/tests/vagrant/
+
