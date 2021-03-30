@@ -278,9 +278,9 @@
 # @param switchtype               [String ]     Default: 'none'
 #           Elligible values in ['nrt', 'none']
 # @param taskepilog               [String ]     Default: ''
-# @param taskplugin               [String ]     Default: 'cgroup'
+# @param taskplugin               [String or Array]     Default: ['affinity','cgroup']
 #           Elligible values in ['affinity', 'cgroup','none']
-# @param taskpluginparams         [Array  ]     Default: ['cpusets']
+# @param taskpluginparams         [Array  ]     Default: []
 # @param taskprolog               [String ]     Default: ''
 # @param tmpfs                    [String ]     Default: '/tmp'
 # @param waittime                 [Integer]     Default: 0
@@ -372,7 +372,7 @@
 #            lower bound (in MB) on the memory limits defined by AllowedKmemSpace.
 # @param cgroup_minramspace        [String]     Default: '30M'
 #            lower bound (in MB) on the memory limits defined by AllowedRAMSpace & AllowedSwapSpace.
-# @param cgroup_taskaffinity       [Boolean]    Default: true
+# @param cgroup_taskaffinity       [Boolean]    Default: false
 #            This feature requires the Portable Hardware Locality (hwloc) library
 #
 ############################                      ####################################
@@ -648,7 +648,7 @@ class slurm(
   String  $srunprolog                     = $slurm::params::srunprolog,
   String  $switchtype                     = $slurm::params::switchtype,
   String  $taskepilog                     = $slurm::params::taskepilog,
-  String  $taskplugin                     = $slurm::params::taskplugin,
+  $taskplugin                             = $slurm::params::taskplugin,
   Array   $taskpluginparams               = $slurm::params::taskpluginparams,
   String  $taskprolog                     = $slurm::params::taskprolog,
   String  $tmpfs                          = $slurm::params::tmpfs,

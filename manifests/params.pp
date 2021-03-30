@@ -275,8 +275,8 @@ class slurm::params {
   $srunprolog              = ''
   $switchtype              = 'none' # in ['nrt', 'none']
   $taskepilog              = ''
-  $taskplugin              = 'cgroup' # in ['affinity', 'cgroup','none']
-  $taskpluginparams        = ['cpusets']
+  $taskplugin              = ['affinity','cgroup'] # in ['affinity', 'cgroup','none']
+  $taskpluginparams        = []
   $taskprolog              = ''
   $tmpfs                   = '/tmp'
   $tresbillingweights      = ''
@@ -359,7 +359,7 @@ class slurm::params {
   $cgroup_maxkmempercent            = 100   # upper bound in percent of total Kmem for a job.
   $cgroup_minkmemspace              = 30    # lower bound (in MB) on the memory limits defined by AllowedKmemSpace.
   $cgroup_minramspace               = 30    # lower bound (in MB) on the memory limits defined by AllowedRAMSpace & AllowedSwapSpace.
-  $cgroup_taskaffinity              = true  # This feature requires the Portable Hardware Locality (hwloc) library
+  $cgroup_taskaffinity              = false # if true, this feature requires the Portable Hardware Locality (hwloc) library
 
   ###
   ### Generic RESource management -- gres.conf
