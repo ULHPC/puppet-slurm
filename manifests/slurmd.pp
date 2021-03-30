@@ -30,10 +30,10 @@ class slurm::slurmd inherits slurm
   Class['slurm::install'] -> Class['slurm::config']
 
   if $slurm::manage_firewall {
-    slurm::firewall { $slurm::slurmdport:
+    slurm::firewall { String($slurm::slurmdport):
       ensure => $slurm::ensure,
     }
-    slurm::firewall { $slurm::srunportrange:
+    slurm::firewall { String($slurm::srunportrange):
       ensure => $slurm::ensure,
     }
   }

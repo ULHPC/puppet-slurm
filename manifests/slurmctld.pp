@@ -43,7 +43,7 @@ class slurm::slurmctld inherits slurm
   Class['slurm::install'] -> Class['slurm::config']
 
   if $slurm::manage_firewall {
-    slurm::firewall { $slurm::slurmctldport:
+    slurm::firewall { String($slurm::slurmctldport):
       ensure => $slurm::ensure,
     }
   }
