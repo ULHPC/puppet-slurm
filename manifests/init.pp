@@ -135,8 +135,6 @@
 # @param enforcepartlimits        [String]      Default: 'ALL'
 # @param epilog                   [String]      Default: ''
 # @param epilogslurmctld          [String]      Default: ''
-# @param fastschedule             [Integer]     Default: 1
-#           Elligible values in [ 0, 1, 2]
 # @param grestypes                [Array]       Default: []
 #           list of generic resources to be managed
 # @param healthcheckinterval      [Integer]     Default: 30
@@ -558,7 +556,6 @@ class slurm(
   String  $enforcepartlimits              = $slurm::params::enforcepartlimits,
   String  $epilog                         = $slurm::params::epilog,
   String  $epilogslurmctld                = $slurm::params::epilogslurmctld,
-  Integer $fastschedule                   = $slurm::params::fastschedule,
   Integer $getenvtimeout                  = $slurm::params::getenvtimeout,
   Array   $grestypes                      = $slurm::params::grestypes,
   Integer $healthcheckinterval            = $slurm::params::healthcheckinterval,
