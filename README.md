@@ -6,7 +6,7 @@
 
 Configure and manage [Slurm](https://slurm.schedmd.com/): A Highly Scalable Resource Manager
 
-      Copyright (c) 2017-2020 UL HPC Team <hpc-sysadmins@uni.lu>
+      Copyright (c) 2017-2021 UL HPC Team <hpc-sysadmins@uni.lu>
       .             see also http://hpc.uni.lu
 
 ## Overview
