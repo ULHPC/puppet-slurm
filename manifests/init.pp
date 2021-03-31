@@ -85,6 +85,8 @@
 #
 # @param accountingstorageenforce [Array]       Default: ['qos', 'limits', 'associations']
 #          What level of association-based enforcement to impose on job submissions.
+# @param accountingstorageexternalhost [Array] Default: []
+#          List of external slurmdbds (<host/ip>[:port][,...]) to register with
 # @param accountingstoragehost    [String]      Default: $:hostname
 # @param accountingstoragetres    [String]      Default: ''
 #
@@ -540,6 +542,7 @@ class slurm(
   # String  $controlmachine                 = $slurm::params::controlmachine,
   # String  $controladdr                    = $slurm::params::controladdr,
   String  $accountingstoragehost          = $slurm::params::accountingstoragehost,
+  Array   $accountingstorageexternalhost  = $slurm::params::accountingstorageexternalhost,
   #
   Integer $batchstarttimeout              = $slurm::params::batchstarttimeout,
   String  $checkpointtype                 = $slurm::params::checkpointtype,

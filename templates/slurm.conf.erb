@@ -269,6 +269,12 @@ SuspendTime=<%= scope['slurm::suspendtime'] %>
 <% else -%>
 AccountingStorageEnforce=<%= scope['slurm::accountingstorageenforce'].join(',') %>
 <% end -%>
+
+<% if scope['slurm::accountingstorageexternalhost'].empty? -%>
+#AccountingStorageExternalHost=
+<% else -%>
+AccountingStorageExternalHost=<%= scope['slurm::accountingstorageexternalhost'].join(',') %>
+<% end -%>
 AccountingStorageHost=<%= scope['slurm::accountingstoragehost'] %>
 #AccountingStoragePass=
 #AccountingStoragePort=
