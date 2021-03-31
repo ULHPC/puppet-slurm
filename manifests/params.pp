@@ -462,7 +462,7 @@ class slurm::params {
     'lua',           # build Slurm LUA bindings
     'mysql',         # require mysql/mariadb support
     'numa',          # require NUMA support
-    #'slurmrestd',   # build slurmrestd 
+    'slurmrestd',    # build slurmrestd 
     #'slurmsmwd',    # build slurmsmwd
     #'ucx',          # require ucx support
     'pmix',         # require pmix support
