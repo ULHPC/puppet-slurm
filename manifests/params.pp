@@ -29,6 +29,7 @@ class slurm::params {
   $pre_requisite_packages = $::osfamily ? {
     'Redhat' => [
       'hwloc', 'hwloc-devel', 'hwloc-plugins', 'numactl', 'numactl-devel',
+      'http-parser-devel', 'json-c-devel',
       'lua', 'lua-devel',
       'mysql-devel',
       'openssl', 'openssl-devel',
