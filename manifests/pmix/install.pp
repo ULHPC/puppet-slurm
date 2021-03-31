@@ -48,6 +48,7 @@ define slurm::pmix::install(
       include ::yum
       $rpmdir = "${builddir}/RPMS/${::architecture}"
       $rpm = "pmix-${version}*.rpm"
+      $rpmdevel = "pmix-devel-${version}*.rpm"
 
       case $ensure {
         'absent': {
@@ -63,6 +64,11 @@ define slurm::pmix::install(
             provider        => 'rpm',
             install_options => [ '--nodeps' ],
             source          => "${rpmdir}/${rpm}",
+          }
+          Package["pmix-devel-${version}"] {
+            provider        => 'rpm',
+            install_options => [ '--nodeps' ],
+            source          => "${rpmdir}/${rpmdevel}",
           }
         }
       }
