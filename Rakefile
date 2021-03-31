@@ -26,17 +26,6 @@ require 'puppet_blacksmith/rake_tasks' if Bundler.rubygems.find_name('puppet-bla
 require 'github_changelog_generator/task' if Bundler.rubygems.find_name('github_changelog_generator').any?
 require 'puppet-strings/tasks' if Bundler.rubygems.find_name('puppet-strings').any?
 
-exclude_paths = %w(
-  pkg/**/*
-  vendor/**/*
-  .vendor/**/*
-  spec/**/*
-  tests/vagrant/**/*
-)
-PuppetLint.configuration.ignore_paths = exclude_paths
-PuppetSyntax.exclude_paths = exclude_paths
-
-
 ## placeholder for custom configuration of FalkorLib.config.*
 ## See https://github.com/Falkor/falkorlib
 
@@ -52,6 +41,25 @@ FalkorLib.config.gitflow do |c|
 		:develop => 'devel'
 	}
 end
+
+desc "Update changelog using gitchangelog https://pypi.org/project/gitchangelog/"
+task :gitchangelog do |t|
+  info "#{t.comment}"
+  run %{gitchangelog > CHANGELOG.md}
+  info "=> about to commit changes in CHANGELOG.md"
+  really_continue?
+  FalkorLib::Git.add('CHANGELOG.md', 'Synchronize Changelog with latest commits')
+end
+namespace :pdk do
+  ##### pdk:{build,validate} ####
+  [ 'build', 'validate'].each do |action|
+    desc "Run pdk #{action}"
+    task action.to_sym do |t|
+      info "#{t.comment}"
+      run %{pdk #{action}}
+    end
+  end
+end # namespace pdk
 
 ###########   up   ###########
 desc "Update your local branches"
@@ -73,6 +81,15 @@ task :up do |t|
 end # task up
 
 require 'falkorlib/tasks/git'
+
+task 'validate' => 'pdk:validate'
+%w(major minor patch).each do |level|
+  task "version:bump:#{level}" => 'validate'
+end
+Rake::Task["version:release"].enhance do
+  Rake::Task["gitchangelog"].invoke
+  Rake::Task["pdk:build"].invoke
+end
 
 def changelog_user
   return unless Rake.application.top_level_tasks.include? "changelog"
@@ -107,6 +124,15 @@ def changelog_future_release
   returnVal
 end
 
+exclude_paths = %w(
+  pkg/**/*
+  vendor/**/*
+  .vendor/**/*
+  spec/**/*
+  tests/vagrant/**/*
+)
+PuppetLint.configuration.ignore_paths = exclude_paths
+PuppetSyntax.exclude_paths = exclude_paths
 PuppetLint.configuration.send('disable_relative')
 
 if Bundler.rubygems.find_name('github_changelog_generator').any?

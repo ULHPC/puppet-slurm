@@ -144,6 +144,7 @@ JobCompHost=<%= scope['slurm::jobcomphost'] %>
 <% else -%>
 JobCompLoc=<%= scope['slurm::jobcomploc'] %>
 <% end -%>
+#JobCompParams=
 #JobCompPass=
 #JobCompPort=
 JobCompType=jobcomp/<%= scope['slurm::jobcomptype'] %>
@@ -268,6 +269,12 @@ SuspendTime=<%= scope['slurm::suspendtime'] %>
 <% else -%>
 AccountingStorageEnforce=<%= scope['slurm::accountingstorageenforce'].join(',') %>
 <% end -%>
+
+<% if scope['slurm::accountingstorageexternalhost'].empty? -%>
+#AccountingStorageExternalHost=
+<% else -%>
+AccountingStorageExternalHost=<%= scope['slurm::accountingstorageexternalhost'].join(',') %>
+<% end -%>
 AccountingStorageHost=<%= scope['slurm::accountingstoragehost'] %>
 #AccountingStoragePass=
 #AccountingStoragePort=
@@ -339,6 +346,11 @@ SchedulerType=sched/<%= scope['slurm::schedulertype'] %>
 #SchedulerParameters=
 <% else -%>
 SchedulerParameters=<%=  scope['slurm::schedulerparameters'].join(',') %>
+<% end -%>
+<% if scope['slurm::dependencyparameters'].empty? -%>
+#DependencyParameters=
+<% else -%>
+DependencyParameters=<%=  scope['slurm::dependencyparameters'].join(',') %>
 <% end -%>
 
 # Plugin used to identify which jobs can be preempted in order to start a pending job.

@@ -139,7 +139,7 @@ class slurm::params {
 
   # Accounting storage slurmdbd server
   $accountingstoragehost   = $::hostname
-
+  $accountingstorageexternalhost = []
   # Authentication method for communications between Slurm components.
   $authtype                = 'munge' # in [ 'none', 'munge' ]
   $authinfo                = ''
@@ -162,6 +162,7 @@ class slurm::params {
   $debugflags              = []
 
   $defmempercpu            = 0           # 0 = unlimited, mutually exclusive with $defmempernode
+  $dependencyparameters    = []          # in [ 'disable_remote_singleton', 'kill_invalid_depend' ]
   $maxmempercpu            = 0           # 0 = unlimited
   $maxmempernode           = undef
   $messagetimeout          = 10

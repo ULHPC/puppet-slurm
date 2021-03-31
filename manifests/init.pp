@@ -85,6 +85,8 @@
 #
 # @param accountingstorageenforce [Array]       Default: ['qos', 'limits', 'associations']
 #          What level of association-based enforcement to impose on job submissions.
+# @param accountingstorageexternalhost [Array] Default: []
+#          List of external slurmdbds (<host/ip>[:port][,...]) to register with
 # @param accountingstoragehost    [String]      Default: $:hostname
 # @param accountingstoragetres    [String]      Default: ''
 #
@@ -131,6 +133,8 @@
 # @param maxmempernode            [Integer]     Default: undef
 # @param defmempernode            [Integer]     Default: undef
 #           0 = unlimited, mutually exclusive with $defmempercpu
+# @param dependencyparameters     [Array]       Default: []
+#          Elligible values in ['disable_remote_singleton', 'kill_invalid_depend']
 # @param disablerootjobs          [Boolean]     Default: true
 # @param enforcepartlimits        [String]      Default: 'ALL'
 # @param epilog                   [String]      Default: ''
@@ -538,6 +542,7 @@ class slurm(
   # String  $controlmachine                 = $slurm::params::controlmachine,
   # String  $controladdr                    = $slurm::params::controladdr,
   String  $accountingstoragehost          = $slurm::params::accountingstoragehost,
+  Array   $accountingstorageexternalhost  = $slurm::params::accountingstorageexternalhost,
   #
   Integer $batchstarttimeout              = $slurm::params::batchstarttimeout,
   String  $checkpointtype                 = $slurm::params::checkpointtype,
@@ -552,6 +557,7 @@ class slurm(
   $maxmempernode                          = $slurm::params::maxmempernode,
   $defmempernode                          = $slurm::params::defmempernode,
   #
+  Array   $dependencyparameters           = $slurm::params::dependencyparameters,
   Boolean $disablerootjobs                = $slurm::params::disablerootjobs,
   String  $enforcepartlimits              = $slurm::params::enforcepartlimits,
   String  $epilog                         = $slurm::params::epilog,
