@@ -26,17 +26,6 @@ require 'puppet_blacksmith/rake_tasks' if Bundler.rubygems.find_name('puppet-bla
 require 'github_changelog_generator/task' if Bundler.rubygems.find_name('github_changelog_generator').any?
 require 'puppet-strings/tasks' if Bundler.rubygems.find_name('puppet-strings').any?
 
-exclude_paths = %w(
-  pkg/**/*
-  vendor/**/*
-  .vendor/**/*
-  spec/**/*
-  tests/vagrant/**/*
-)
-PuppetLint.configuration.ignore_paths = exclude_paths
-PuppetSyntax.exclude_paths = exclude_paths
-
-
 ## placeholder for custom configuration of FalkorLib.config.*
 ## See https://github.com/Falkor/falkorlib
 
@@ -52,6 +41,24 @@ FalkorLib.config.gitflow do |c|
 		:develop => 'devel'
 	}
 end
+
+desc "Update changelog using gitchangelog https://pypi.org/project/gitchangelog/"
+task :gitchangelog do |t|
+  info "#{t.comment}"
+  run %{gitchangelog > CHANGELOG.md}
+  info "=> about to commit changes in CHANGELOG.md"
+  really_continue?
+  FalkorLib::Git.add('CHANGELOG.md', 'Synchronize Changelog with latest commits')
+end
+namespace :pdk do
+  ##### pdk:validate ####
+  desc "Run pdk validate"
+  task :validate do |t|
+    info "#{t.comment}"
+    run %{pdk validate}
+  end 
+end # namespace pdk
+
 
 ###########   up   ###########
 desc "Update your local branches"
@@ -107,6 +114,15 @@ def changelog_future_release
   returnVal
 end
 
+exclude_paths = %w(
+  pkg/**/*
+  vendor/**/*
+  .vendor/**/*
+  spec/**/*
+  tests/vagrant/**/*
+)
+PuppetLint.configuration.ignore_paths = exclude_paths
+PuppetSyntax.exclude_paths = exclude_paths
 PuppetLint.configuration.send('disable_relative')
 
 if Bundler.rubygems.find_name('github_changelog_generator').any?
