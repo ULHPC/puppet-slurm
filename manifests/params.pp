@@ -455,16 +455,19 @@ class slurm::params {
   $build_with = [
     #'cray',         # build for a Native-Slurm Cray system
     #'cray_network', # build for a non-Cray system with a Cray network
+    #'cray_shasta',  # build for a Cray Shasta system
     'hdf5',          # require hdf5 support
     'hwloc',         # require hwloc support
     'lua',           # build Slurm LUA bindings
     'mysql',         # require mysql/mariadb support
     'numa',          # require NUMA support
+    #'slurmrestd',   # build slurmrestd 
     #'slurmsmwd',    # build slurmsmwd
     #'ucx',          # require ucx support
     'pmix',         # require pmix support
   ]
   $build_without = [
+    'cray_shasta',
     #'debug',        # don't compile with debugging symbols
     #'munge',        # DEPRECATED - don't build auth-munge RPM
     #'pam',          # don't require pam-devel RPM to be installed
