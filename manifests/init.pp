@@ -554,7 +554,7 @@ class slurm(
   $maxmempernode                          = $slurm::params::maxmempernode,
   $defmempernode                          = $slurm::params::defmempernode,
   #
-  Array   $dependencyparameters.          = $slurm::params::dependencyparameters,
+  Array   $dependencyparameters           = $slurm::params::dependencyparameters,
   Boolean $disablerootjobs                = $slurm::params::disablerootjobs,
   String  $enforcepartlimits              = $slurm::params::enforcepartlimits,
   String  $epilog                         = $slurm::params::epilog,
