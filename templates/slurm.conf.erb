@@ -144,6 +144,7 @@ JobCompHost=<%= scope['slurm::jobcomphost'] %>
 <% else -%>
 JobCompLoc=<%= scope['slurm::jobcomploc'] %>
 <% end -%>
+#JobCompParams=
 #JobCompPass=
 #JobCompPort=
 JobCompType=jobcomp/<%= scope['slurm::jobcomptype'] %>
@@ -339,6 +340,11 @@ SchedulerType=sched/<%= scope['slurm::schedulertype'] %>
 #SchedulerParameters=
 <% else -%>
 SchedulerParameters=<%=  scope['slurm::schedulerparameters'].join(',') %>
+<% end -%>
+<% if scope['slurm::dependencyparameters'].empty? -%>
+#DependencyParameters=
+<% else -%>
+DependencyParameters=<%=  scope['slurm::dependencyparameters'].join(',') %>
 <% end -%>
 
 # Plugin used to identify which jobs can be preempted in order to start a pending job.

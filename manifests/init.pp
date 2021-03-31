@@ -131,6 +131,8 @@
 # @param maxmempernode            [Integer]     Default: undef
 # @param defmempernode            [Integer]     Default: undef
 #           0 = unlimited, mutually exclusive with $defmempercpu
+# @param dependencyparameters     [Array]       Default: []
+#          Elligible values in ['disable_remote_singleton', 'kill_invalid_depend']
 # @param disablerootjobs          [Boolean]     Default: true
 # @param enforcepartlimits        [String]      Default: 'ALL'
 # @param epilog                   [String]      Default: ''
@@ -552,6 +554,7 @@ class slurm(
   $maxmempernode                          = $slurm::params::maxmempernode,
   $defmempernode                          = $slurm::params::defmempernode,
   #
+  Array   $dependencyparameters.          = $slurm::params::dependencyparameters,
   Boolean $disablerootjobs                = $slurm::params::disablerootjobs,
   String  $enforcepartlimits              = $slurm::params::enforcepartlimits,
   String  $epilog                         = $slurm::params::epilog,
