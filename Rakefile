@@ -51,14 +51,15 @@ task :gitchangelog do |t|
   FalkorLib::Git.add('CHANGELOG.md', 'Synchronize Changelog with latest commits')
 end
 namespace :pdk do
-  ##### pdk:validate ####
-  desc "Run pdk validate"
-  task :validate do |t|
-    info "#{t.comment}"
-    run %{pdk validate}
-  end 
+  ##### pdk:{build,validate} ####
+  [ 'build', 'validate'].each do |action|
+    desc "Run pdk #{action}"
+    task action.to_sym do |t|
+      info "#{t.comment}"
+      run %{pdk #{action}}
+    end
+  end
 end # namespace pdk
-
 
 ###########   up   ###########
 desc "Update your local branches"
@@ -80,6 +81,15 @@ task :up do |t|
 end # task up
 
 require 'falkorlib/tasks/git'
+
+task 'validate' => 'pdk:validate'
+%w(major minor patch).each do |level|
+  task "version:bump:#{level}" => 'validate'
+end
+Rake::Task["version:release"].enhance do
+  Rake::Task["gitchangelog"].invoke
+  Rake::Task["pdk:build"].invoke
+end
 
 def changelog_user
   return unless Rake.application.top_level_tasks.include? "changelog"
