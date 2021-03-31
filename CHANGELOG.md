@@ -4,6 +4,17 @@ Changelog
 
 (unreleased)
 ------------
+- [rake] gitchanelog and pdk:validate tasks. [Sebastien Varrette]
+- Merge tag 'v1.4.2' into devel. [Sebastien Varrette]
+
+  Meaningful Changelog with gitchangelog
+
+
+v1.4.2 (2021-03-30)
+-------------------
+- Merge branch 'release/1.4.2' into production. [Sebastien Varrette]
+- Bump to version '1.4.2' [Sebastien Varrette]
+- Updated Changelog. [Sebastien Varrette]
 - Merge tag 'v1.4.1' into devel. [Sebastien Varrette]
 
   PDK validate
