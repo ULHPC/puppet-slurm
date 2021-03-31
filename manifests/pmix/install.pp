@@ -80,7 +80,7 @@ define slurm::pmix::install(
 
   # Let's go (independently of the distribution)
   if $ensure == 'present' {
-    package { "pmix-${version}":
+    package { [ "pmix-${version}", "pmix-devel-${version}" ]:
       ensure  => $ensure,
     }
   }

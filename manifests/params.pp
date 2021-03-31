@@ -467,7 +467,6 @@ class slurm::params {
     'pmix',         # require pmix support
   ]
   $build_without = [
-    'cray_shasta',
     #'debug',        # don't compile with debugging symbols
     #'munge',        # DEPRECATED - don't build auth-munge RPM
     #'pam',          # don't require pam-devel RPM to be installed
