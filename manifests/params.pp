@@ -519,6 +519,7 @@ class slurm::params {
   $pmix_download_baseurl  = 'https://github.com/openpmix/openpmix/releases/download'
   $pmix_rpms = [
     'pmix',           # Main RPM basename
+    'pmix-devel',     # New mandatory development RPMS (required for detecting PMIx for Slurm)
     'pmix-libpmi',    # PMI-1 and PMI-2 compatibility libraries (i.e. libpmi and
     #                   libpmi2 libraries)  - conflicts with slurm-libpmi so
     #                   SHOULD NOT be installed

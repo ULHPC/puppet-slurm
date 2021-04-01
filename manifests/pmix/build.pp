@@ -98,7 +98,7 @@ define slurm::pmix::build(
       $extra_define_opts = join(suffix(prefix($defines, "--prefix \""), "\""), ' ')
 
       # the below command should typically produce the following RPMs
-      # pmix[-libpmi]-<version>-1.el7.x86_64.rpm
+      # pmix[-libpmi][-devel]-<version>-1.el7.x86_64.rpm
       case $ensure {
         'absent': {
           $cmd          = "rm -f ${rpmdir}/pmix*-${version}*.rpm"
