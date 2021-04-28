@@ -462,6 +462,8 @@
 #           independently (and prior) to Slurm.
 #           If true, the class slurm::pmix will be included.
 #           Use Hiera to set appropriately the slurm::pmix::* variables
+# @param pmix_install_path        [String]      Default: /usr
+#           Path where pmix is installed
 #
 ############################              ####################################
 ############################ PAM Settings ####################################
@@ -732,6 +734,7 @@ class slurm(
   # PMIx settings -- see slurm::pmix class
   #
   Boolean $with_pmix                      = $slurm::params::with_pmix,
+  String  $pmix_install_path              = $slurm::params::pmix_install_path,
   # String  $pmix_version                   = $slurm::params::pmix_version,
   # String  $pmix_checksum_type             = $slurm::params::pmix_src_checksum_type,
   # String  $pmix_checksum                  = $slurm::params::pmix_src_checksum,
