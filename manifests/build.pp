@@ -108,7 +108,7 @@ define slurm::build(
       Class['::slurm::pmix'] -> Exec[$buildname]
       # Slurm::Pmix::Install[$slurm::pmix::version] -> Exec[$buildname]
     }
-    $define_pmix = "--define \"_with_pmix --with-pmix=${$pmix_install_path}\""
+    $define_pmix = "--define \"_with_pmix --with-pmix=${pmix_install_path}\""
   } else {
     $define_pmix = ''
   }
