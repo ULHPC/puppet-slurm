@@ -28,6 +28,8 @@
 # @param without [Array] Default: [] -- see slurm::params
 #          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
 #          List of --without build options to pass to rpmbuild
+# @param pmix_install_path [String] Default: [] -- see slurm::params
+#          Path where PMIx is installed
 #
 # @example Building version 19.05.3-2 of SLURM
 #
