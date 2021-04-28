@@ -60,11 +60,12 @@
 #      slurm-torque-19.05.3-2.el7.x86_64.rpm
 #
 define slurm::build(
-  String  $ensure  = $slurm::params::ensure,
-  String  $srcdir  = $slurm::params::srcdir,
-  String  $dir     = $slurm::params::builddir,
-  Array   $with    = $slurm::params::build_with,
-  Array   $without = $slurm::params::build_without,
+  String  $ensure            = $slurm::params::ensure,
+  String  $srcdir            = $slurm::params::srcdir,
+  String  $dir               = $slurm::params::builddir,
+  Array   $with              = $slurm::params::build_with,
+  Array   $without           = $slurm::params::build_without,
+  String  $pmix_install_path = $slurm::params::pmix_install_path,
 )
 {
   include ::slurm::params
@@ -105,7 +106,7 @@ define slurm::build(
       Class['::slurm::pmix'] -> Exec[$buildname]
       # Slurm::Pmix::Install[$slurm::pmix::version] -> Exec[$buildname]
     }
-    $define_pmix = "--define \"_with_pmix --with-pmix=${slurm::params::pmix_install_path}\""
+    $define_pmix = "--define \"_with_pmix --with-pmix=${$pmix_install_path}\""
   } else {
     $define_pmix = ''
   }
