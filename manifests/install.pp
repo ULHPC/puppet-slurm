@@ -30,12 +30,13 @@ class slurm::install {
 
     # Now build them
     slurm::build { $slurm::version :
-      ensure  => $slurm::ensure,
-      srcdir  => $slurm::srcdir,
-      dir     => $slurm::builddir,
-      with    => $slurm::build_with,
-      without => $slurm::build_without,
-      require => Slurm::Download[$slurm::version],
+      ensure            => $slurm::ensure,
+      srcdir            => $slurm::srcdir,
+      dir               => $slurm::builddir,
+      with              => $slurm::build_with,
+      without           => $slurm::build_without,
+      pmix_install_path => $slurm::pmix_install_path,
+      require           => Slurm::Download[$slurm::version],
     }
   }
 
