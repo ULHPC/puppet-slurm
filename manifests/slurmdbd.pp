@@ -103,7 +103,8 @@
 # @param trackslurmctlddown [Boolean]     Default: false
 #           Boolean yes or no. If set the slurmdbd will mark all idle resources
 #           on the cluster as down when a slurmctld disconnects or is no longer
-#           reachable.
+# @param manage_install_mysql [Boolean]   Default: true
+#           Install mysql or not
 # @param bootstrap_mysql    [Boolean]     Default: true
 #
 ########################                  ##############################
@@ -170,6 +171,7 @@ class slurm::slurmdbd(
   String  $storagetype        = $slurm::params::storagetype,
   String  $storageuser        = $slurm::params::storageuser,
   Boolean $trackslurmctlddown = $slurm::params::trackslurmctlddown,
+  Boolean $manage_install_mysql = true,
   #
   # MySQL settings
   #
@@ -225,43 +227,44 @@ inherits slurm
       },
     }
 
-    include ::mysql::server::account_security
+    if $manage_install_mysql {
+      include ::mysql::server::account_security
 
-    mysql::db { $storageloc:
-      user     => $storageuser,
-      password => $storagepass,
-      host     => $dbdhost,
-      grant    => ['ALL'],
-      before   => File[$slurm::params::dbd_configfile],
-    }
-
-    # Job completion logging mechanism type
-    if ($slurm::jobcomptype and $slurm::jobcomptype == 'mysql' and $slurm::jobcomploc and (!empty($slurm::jobcomploc))) {
-      mysql::db { $slurm::jobcomploc :
+      mysql::db { $storageloc:
         user     => $storageuser,
         password => $storagepass,
         host     => $dbdhost,
         grant    => ['ALL'],
         before   => File[$slurm::params::dbd_configfile],
       }
-    }
 
-
-    # Eventually create the 'slurm'@'*' user with all rights
-    unique([ $storagehost, $::hostname, $::fqdn]).each |String $host| {
-      mysql_user { "${storageuser}@${host}":
-        password_hash => mysql_password($storagepass),
+      # Job completion logging mechanism type
+      if ($slurm::jobcomptype and $slurm::jobcomptype == 'mysql' and $slurm::jobcomploc and (!empty($slurm::jobcomploc))) {
+        mysql::db { $slurm::jobcomploc :
+          user     => $storageuser,
+          password => $storagepass,
+          host     => $dbdhost,
+          grant    => ['ALL'],
+          before   => File[$slurm::params::dbd_configfile],
+        }
       }
-      mysql_grant {  "${storageuser}@${host}/${storageloc}.*":
-        privileges => ['ALL'],
-        table      => "${storageloc}.*",
-        user       => "${storageuser}@${host}",
-        require    => Mysql_user["${storageuser}@${host}"],
-        before     => File[$slurm::params::dbd_configfile],
+
+
+      # Eventually create the 'slurm'@'*' user with all rights
+      unique([ $storagehost, $::hostname, $::fqdn]).each |String $host| {
+        mysql_user { "${storageuser}@${host}":
+          password_hash => mysql_password($storagepass),
+        }
+        mysql_grant {  "${storageuser}@${host}/${storageloc}.*":
+          privileges => ['ALL'],
+          table      => "${storageloc}.*",
+          user       => "${storageuser}@${host}",
+          require    => Mysql_user["${storageuser}@${host}"],
+          before     => File[$slurm::params::dbd_configfile],
+        }
       }
     }
   }
-
   # Now prepare the slurmdbd.conf
   $dbdconf_content = $content ? {
     undef   => $source ? {
