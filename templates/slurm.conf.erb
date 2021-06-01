@@ -107,7 +107,7 @@ ReturnToService=<%= scope['slurm::returntoservice'] %>
 #SallocDefaultCommand=
 SlurmctldPidFile=/var/run/slurmctld.pid
 SlurmctldPort=<%= scope['slurm::slurmctldport'] %>
-<% unless scope['slurm::slurmdparameters'].empty? -%>
+<% unless scope['slurm::slurmctldparameters'].empty? -%>
 SlurmctldParameters=<%=  scope['slurm::slurmctldparameters'].join(',') %>
 <% end -%>
 <% unless scope['slurm::slurmdparameters'].empty? -%>
