@@ -101,13 +101,11 @@ define slurm::acct::mgr(
     'absent': {
       $label        = "delete-${entity}-${real_name}"
       $cmd          = "sacctmgr -i del ${entity} ${real_name}"
-      $check_onlyif = undef
       $check_unless = undef
     }
     default: {
       $label        = "add-${entity}-${real_name}"
       $cmd          = "sacctmgr -i add ${entity} ${real_name} ${opts}"
-      $check_onlyif = "test -z \"$(sacctmgr --noheader -p list ${entity})\""
       $check_unless = "test -n \"$(sacctmgr --noheader -p list ${entity} | grep ${real_name})\""
     }
   }
@@ -116,7 +114,6 @@ define slurm::acct::mgr(
     exec { $label:
       path    => '/sbin:/usr/bin:/usr/sbin:/bin',
       command => $cmd,
-      onlyif  => $check_onlyif,
       unless  => $check_unless,
       require => Class['::slurm::config'],
     }
