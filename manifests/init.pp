@@ -526,6 +526,7 @@ class slurm(
   String  $builddir                       = $slurm::params::builddir,
   Array   $build_with                     = $slurm::params::build_with,
   Array   $build_without                  = $slurm::params::build_without,
+  String  $download_baseurl               = $slurm::params::download_baseurl,
   #
   # Main configuration paramaters
   #
