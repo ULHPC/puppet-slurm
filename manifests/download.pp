@@ -59,7 +59,7 @@ define slurm::download(
   else { fail("Wrong specification for ${module_name}") }
 
   # URL from where to download the sources
-  $url = "${slurm::params::download_baseurl}/${archive}"
+  $url = "${slurm::download_baseurl}/${archive}"
   # Absolute path to the downloaded source file
   $path =  "${target}/${archive}"
 
