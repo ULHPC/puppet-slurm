@@ -107,7 +107,7 @@ ReturnToService=<%= scope['slurm::returntoservice'] %>
 #SallocDefaultCommand=
 SlurmctldPidFile=/var/run/slurmctld.pid
 SlurmctldPort=<%= scope['slurm::slurmctldport'] %>
-<% unless scope['slurm::slurmdparameters'].empty? -%>
+<% unless scope['slurm::slurmctldparameters'].empty? -%>
 SlurmctldParameters=<%=  scope['slurm::slurmctldparameters'].join(',') %>
 <% end -%>
 <% unless scope['slurm::slurmdparameters'].empty? -%>
@@ -149,7 +149,7 @@ JobCompLoc=<%= scope['slurm::jobcomploc'] %>
 #JobCompPort=
 JobCompType=jobcomp/<%= scope['slurm::jobcomptype'] %>
 #JobCompUser=
-#JobContainerType=job_container/<%= scope['slurm::jobcontainertype'] %>
+JobContainerType=job_container/<%= scope['slurm::jobcontainertype'] %>
 SlurmctldDebug=<%= scope['slurm::slurmctlddebug'] %>
 SlurmctldLogFile=<%= scope['slurm::params::logdir'] %>/slurmctld.log
 SlurmdDebug=<%= scope['slurm::slurmddebug'] %>
