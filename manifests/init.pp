@@ -536,6 +536,8 @@ class slurm(
   String  $clustername                    = $slurm::params::clustername,
   String  $authtype                       = $slurm::params::authtype,
   String  $authinfo                       = $slurm::params::authinfo,
+  Array   $authalttypes                   = $slurm::params::authalttypes,
+  Array   $authaltparameters              = $slurm::params::authaltparameters,
   String  $credtype                       = $slurm::params::credtype,
   # String  $backupcontroller               = $slurm::params::backupcontroller,
   # String  $backupaddr                     = $slurm::params::backupaddr,
