@@ -642,8 +642,8 @@ class slurm(
   String  $slurmdsyslogdebug              = $slurm::params::slurmdsyslogdebug,
   String  $slurmdbddebugsyslog            = $slurm::params::slurmdbddebugsyslog,
   # Ports
-  Integer $slurmctldport                  = $slurm::params::slurmctldport,
-  Integer $slurmdport                     = $slurm::params::slurmdport,
+  Variant[Integer,String] $slurmctldport  = $slurm::params::slurmctldport,
+  Variant[Integer,String] $slurmdport     = $slurm::params::slurmdport,
   # Timeout
   Integer $slurmctldtimeout               = $slurm::params::slurmctldtimeout,
   Integer $slurmdtimeout                  = $slurm::params::slurmdtimeout,
