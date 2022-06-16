@@ -144,6 +144,8 @@ class slurm::params {
   # Authentication method for communications between Slurm components.
   $authtype                = 'munge' # in [ 'none', 'munge' ]
   $authinfo                = ''
+  $authalttypes            = []
+  $authaltparameters       = []
   $credtype                = 'munge'   # used to be Cryptotype
 
   # What level of association-based enforcement to impose on job submissions

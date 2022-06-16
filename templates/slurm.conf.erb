@@ -62,6 +62,19 @@ AuthType=auth/<%= scope['slurm::authtype'] %>
 <% unless scope['slurm::authinfo'].empty? -%>
 AuthInfo=auth/<%= scope['slurm::authinfo'] %>
 <% end -%>
+
+<% if scope['slurm::authalttypes'].empty? -%>
+#AuthAltTypes=
+<% else -%>
+AuthAltTypes=<%= scope['slurm::authalttypes'].join(',') %>
+<% end -%>
+
+<% if scope['slurm::authaltparameters'].empty? -%>
+#AuthAltParameters=
+<% else -%>
+AuthAltParameters=<%= scope['slurm::authaltparameters'].join(',') %>
+<% end -%>
+
 CredType=cred/<%= scope['slurm::credtype'] %>
 
 <% if scope['slurm::checkpointtype'] == 'none' -%>
