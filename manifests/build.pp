@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2020-09-23 19:05 svarrette>
+# Time-stamp: <Tue 2022-07-05 15:19 svarrette>
 #
 # File::      <tt>build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -14,22 +14,22 @@
 # This assumes the sources have been downloaded using slurm::download
 #
 #
-# @param ensure  [String]  Default: 'present'
+# @param ensure            [String]  Default: 'present'
 #          Ensure the presence (or absence) of building
-# @param srcdir  [String] Default: '/usr/local/src'
+# @param srcdir            [String] Default: '/usr/local/src'
 #          Where the [downloaded] Slurm sources are located
-# @param dir     [String] Default: '/root/rpmbuild' on redhat systems
+# @param dir               [String] Default: '/root/rpmbuild' on redhat systems
 #          Top directory of the sources builds (i.e. RPMs, debs...)
 #          For instance, built RPMs will be placed under
 #          <dir>/RPMS/${::architecture}
-# @param with    [Array] Default: [ 'lua', ... ] -- see slurm::params
+# @param with              [Array] Default: [ 'lua', ... ] -- see slurm::params
 #          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
 #          List of --with build options to pass to rpmbuild
-# @param without [Array] Default: [] -- see slurm::params
+# @param without           [Array] Default: [] -- see slurm::params
 #          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
 #          List of --without build options to pass to rpmbuild
-# @param pmix_install_path [String] Default: [] -- see slurm::params
-#          Path where PMIx is installed
+# @param pmix_install_path [String] Default: '/usr/'
+#          Where PMIx is installed
 #
 # @example Building version 19.05.3-2 of SLURM
 #
@@ -87,7 +87,7 @@ define slurm::build(
   }
   # NOT YET IMPLEMENTED:
   # if ('pmix' in $with)
-  #    find a way to set --with pmix=${slurm[::params]::pmix_install_path}
+  #    find a way to set --with pmix=${pmix_install_path}
   #    (by default, installed under /usr so all good...)
 
   $without_options = empty($without) ? {
@@ -112,7 +112,6 @@ define slurm::build(
   } else {
     $define_pmix = ''
   }
-
   case $::osfamily {
     'Redhat': {
       include ::epel
