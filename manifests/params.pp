@@ -29,6 +29,7 @@ class slurm::params {
   $pre_requisite_packages = $::osfamily ? {
     'Redhat' => [
       'hwloc', 'hwloc-devel', 'hwloc-plugins', 'numactl', 'numactl-devel',
+      'http-parser-devel', 'json-c-devel',
       'lua', 'lua-devel',
       'mysql-devel',
       'openssl', 'openssl-devel',
@@ -143,6 +144,8 @@ class slurm::params {
   # Authentication method for communications between Slurm components.
   $authtype                = 'munge' # in [ 'none', 'munge' ]
   $authinfo                = ''
+  $authalttypes            = []
+  $authaltparameters       = []
   $credtype                = 'munge'   # used to be Cryptotype
 
   # What level of association-based enforcement to impose on job submissions
@@ -455,11 +458,13 @@ class slurm::params {
   $build_with = [
     #'cray',         # build for a Native-Slurm Cray system
     #'cray_network', # build for a non-Cray system with a Cray network
+    #'cray_shasta',  # build for a Cray Shasta system
     'hdf5',          # require hdf5 support
     'hwloc',         # require hwloc support
     'lua',           # build Slurm LUA bindings
     'mysql',         # require mysql/mariadb support
     'numa',          # require NUMA support
+    'slurmrestd',    # build slurmrestd 
     #'slurmsmwd',    # build slurmsmwd
     #'ucx',          # require ucx support
     'pmix',         # require pmix support
@@ -516,6 +521,7 @@ class slurm::params {
   $pmix_download_baseurl  = 'https://github.com/openpmix/openpmix/releases/download'
   $pmix_rpms = [
     'pmix',           # Main RPM basename
+    'pmix-devel',     # New mandatory development RPMS (required for detecting PMIx for Slurm)
     'pmix-libpmi',    # PMI-1 and PMI-2 compatibility libraries (i.e. libpmi and
     #                   libpmi2 libraries)  - conflicts with slurm-libpmi so
     #                   SHOULD NOT be installed

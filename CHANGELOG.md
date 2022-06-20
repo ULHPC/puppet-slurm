@@ -4,6 +4,22 @@ Changelog
 
 (unreleased)
 ------------
+- Merge tag 'v1.4.3' into devel. [Sebastien Varrette]
+
+  Support for new slurm.conf parameters introduced in 20.x
+
+
+v1.4.3 (2021-03-31)
+-------------------
+- Merge branch 'release/1.4.3' into production. [Sebastien Varrette]
+- Bump to version '1.4.3' [Sebastien Varrette]
+- Support for new configuration parameter AccountingStorageExternalHost.
+  [Sebastien Varrette]
+- Syntax fix. [Sebastien Varrette]
+- Support for new configuration parameter DependencyParameters.
+  [Sebastien Varrette]
+- [rake] bump dependencies enhancement. [Sebastien Varrette]
+- Synchronize Changelog with latest commits. [Sebastien Varrette]
 - [rake] gitchanelog and pdk:validate tasks. [Sebastien Varrette]
 - Merge tag 'v1.4.2' into devel. [Sebastien Varrette]
 
