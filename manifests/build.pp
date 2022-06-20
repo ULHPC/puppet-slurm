@@ -14,20 +14,22 @@
 # This assumes the sources have been downloaded using slurm::download
 #
 #
-# @param ensure  [String]  Default: 'present'
+# @param ensure            [String]  Default: 'present'
 #          Ensure the presence (or absence) of building
-# @param srcdir  [String] Default: '/usr/local/src'
+# @param srcdir            [String] Default: '/usr/local/src'
 #          Where the [downloaded] Slurm sources are located
-# @param dir     [String] Default: '/root/rpmbuild' on redhat systems
+# @param dir               [String] Default: '/root/rpmbuild' on redhat systems
 #          Top directory of the sources builds (i.e. RPMs, debs...)
 #          For instance, built RPMs will be placed under
 #          <dir>/RPMS/${::architecture}
-# @param with    [Array] Default: [ 'lua', ... ] -- see slurm::params
+# @param with              [Array] Default: [ 'lua', ... ] -- see slurm::params
 #          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
 #          List of --with build options to pass to rpmbuild
-# @param without [Array] Default: [] -- see slurm::params
+# @param without           [Array] Default: [] -- see slurm::params
 #          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
 #          List of --without build options to pass to rpmbuild
+# @param pmix_install_path [String] Default: '/usr/'
+#          Where PMIx is installed
 #
 # @example Building version 19.05.3-2 of SLURM
 #
@@ -60,11 +62,12 @@
 #      slurm-torque-19.05.3-2.el7.x86_64.rpm
 #
 define slurm::build(
-  String  $ensure  = $slurm::params::ensure,
-  String  $srcdir  = $slurm::params::srcdir,
-  String  $dir     = $slurm::params::builddir,
-  Array   $with    = $slurm::params::build_with,
-  Array   $without = $slurm::params::build_without,
+  String  $ensure            = $slurm::params::ensure,
+  String  $srcdir            = $slurm::params::srcdir,
+  String  $dir               = $slurm::params::builddir,
+  Array   $with              = $slurm::params::build_with,
+  Array   $without           = $slurm::params::build_without,
+  String  $pmix_install_path = $slurm::params::pmix_install_path,
 )
 {
   include ::slurm::params
@@ -84,7 +87,7 @@ define slurm::build(
   }
   # NOT YET IMPLEMENTED:
   # if ('pmix' in $with)
-  #    find a way to set --with pmix=${slurm[::params]::pmix_install_path}
+  #    find a way to set --with pmix=${pmix_install_path}
   #    (by default, installed under /usr so all good...)
 
   $without_options = empty($without) ? {
@@ -105,11 +108,10 @@ define slurm::build(
       Class['::slurm::pmix'] -> Exec[$buildname]
       # Slurm::Pmix::Install[$slurm::pmix::version] -> Exec[$buildname]
     }
-    $define_pmix = "--define \"_with_pmix --with-pmix=${slurm::params::pmix_install_path}\""
+    $define_pmix = "--define \"_with_pmix --with-pmix=${pmix_install_path}\""
   } else {
     $define_pmix = ''
   }
-
   case $::osfamily {
     'Redhat': {
       include ::epel
