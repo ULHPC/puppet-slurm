@@ -1,6 +1,6 @@
 ##############################################################################
 # Rakefile - Configuration file for rake (http://rake.rubyforge.org/)
-# Time-stamp: <Wed 2020-09-23 21:32 svarrette>
+# Time-stamp: <Thu 2022-06-30 14:43 svarrette>
 #
 # Copyright (c) 2017  UL HPC Team <hpc-sysadmins@uni.lu>
 #                       ____       _         __ _ _
@@ -17,6 +17,7 @@
 # See also https://github.com/garethr/puppet-module-skeleton
 ##############################################################################
 require 'falkorlib'
+
 # frozen_string_literal: true
 require 'bundler'
 require 'puppet_litmus/rake_tasks' if Bundler.rubygems.find_name('puppet_litmus').any?
@@ -31,15 +32,15 @@ require 'puppet-strings/tasks' if Bundler.rubygems.find_name('puppet-strings').a
 
 # Adapt the versioning aspects
 FalkorLib.config.versioning do |c|
-	c[:type] = 'puppet_module'
+    c[:type] = 'puppet_module'
 end
 
 # Adapt the Git flow aspects
 FalkorLib.config.gitflow do |c|
-	c[:branches] = {
-		:master  => 'production',
-		:develop => 'devel'
-	}
+    c[:branches] = {
+        :master  => 'production',
+        :develop => 'devel'
+    }
 end
 
 desc "Update changelog using gitchangelog https://pypi.org/project/gitchangelog/"
@@ -91,6 +92,7 @@ Rake::Task["version:release"].enhance do
   Rake::Task["pdk:build"].invoke
 end
 
+
 def changelog_user
   return unless Rake.application.top_level_tasks.include? "changelog"
   returnVal = nil || JSON.load(File.read('metadata.json'))['author']
@@ -133,7 +135,10 @@ exclude_paths = %w(
 )
 PuppetLint.configuration.ignore_paths = exclude_paths
 PuppetSyntax.exclude_paths = exclude_paths
-PuppetLint.configuration.send('disable_relative')
+# PuppetLint.configuration.send('disable_relative')
+# PuppetLint.configuration.send('disable_manifest_whitespace_closing_brace_before')
+
+
 
 if Bundler.rubygems.find_name('github_changelog_generator').any?
   GitHubChangelogGenerator::RakeTask.new :changelog do |config|

@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Mon 2019-10-14 13:54 svarrette>
+# Time-stamp: <Thu 2022-06-30 14:41 svarrette>
 #
 # File::      <tt>config/plugstack.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -49,8 +49,4 @@ class slurm::config::plugstack inherits slurm::config {
     target  => $slurm::plugstack_target,
     tag     => 'slurm::configfile',
   }
-
-
-
-
 }

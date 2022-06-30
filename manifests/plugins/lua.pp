@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2017-08-30 18:42 svarrette>
+# Time-stamp: <Thu 2022-06-30 14:42 svarrette>
 #
 # File::      <tt>plugins/lua.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -46,7 +46,5 @@ class slurm::plugins::lua inherits slurm::plugins {
     tag     => 'slurm::configfile',
     require => File[$slurm::configdir],
   }
-
-
 
 }

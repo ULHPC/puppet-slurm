@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2017-10-05 18:53 svarrette>
+# Time-stamp: <Thu 2022-06-30 14:33 svarrette>
 #
 # File::      <tt>firewall.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -51,6 +51,4 @@ define slurm::firewall(
       }
     }
   }
-
-
-  }
+}

@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2020-09-23 19:05 svarrette>
+# Time-stamp: <Thu 2022-06-30 14:27 svarrette>
 #
 # File::      <tt>build.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -159,5 +159,4 @@ define slurm::build(
     onlyif  => $check_onlyif,
     unless  => $check_unless,
   }
-
 }

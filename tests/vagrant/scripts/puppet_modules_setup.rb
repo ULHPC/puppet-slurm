@@ -2,7 +2,7 @@
 ##########################################################################
 # puppet_module_setup.rb
 # @author Sebastien Varrette <Sebastien.Varrette@uni.lu>
-# Time-stamp: <Wed 2020-10-21 17:38 svarrette>
+# Time-stamp: <Thu 2022-06-30 15:01 svarrette>
 #
 # @description Prepare the Vagrant box to test this Puppet module
 #
@@ -35,8 +35,8 @@ moduledir = File.join(puppetdir, 'modules')
 #   run %( cd #{moduledir}/.. && librarian-puppet install --verbose )
 # end
 
-metadata["dependencies"].each do |dep|
-  lib = dep["name"]
+metadata['dependencies'].each do |dep|
+  lib = dep['name']
   shortname = lib.gsub(/^.*[\/-]/,'')
   action = File.directory?("#{moduledir}/#{shortname}") ? 'upgrade --force' : 'install'
   run %{ puppet module #{action} --target-dir #{moduledir}   #{lib} }
