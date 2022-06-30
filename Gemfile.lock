@@ -76,6 +76,7 @@ GEM
     ed25519 (1.3.0)
     erubi (1.10.0)
     excon (0.92.3)
+    facter (2.4.6)
     facter (2.4.6-universal-darwin)
       CFPropertyList (~> 2.2.6)
     facterdb (1.18.0)
@@ -193,7 +194,7 @@ GEM
     mime-types-data (3.2022.0105)
     minigit (0.0.4)
     minitar (0.9)
-    minitest (5.16.1)
+    minitest (5.15.0)
     mocha (1.1.0)
       metaclass (~> 0.0.1)
     molinillo (0.8.0)
@@ -225,17 +226,28 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (4.0.7)
-    puppet (7.17.0-universal-darwin)
+    puppet (6.27.0)
+      concurrent-ruby (~> 1.0)
+      deep_merge (~> 1.0)
+      facter (> 2.0.1, < 5)
+      fast_gettext (~> 1.1)
+      hiera (>= 3.2.1, < 4)
+      httpclient (~> 2.8)
+      locale (~> 2.1)
+      multi_json (~> 1.10)
+      puppet-resource_api (~> 1.5)
+      semantic_puppet (~> 1.0)
+    puppet (6.27.0-universal-darwin)
       CFPropertyList (~> 2.2)
       concurrent-ruby (~> 1.0)
       deep_merge (~> 1.0)
       facter (> 2.0.1, < 5)
-      fast_gettext (>= 1.1, < 3)
+      fast_gettext (~> 1.1)
       hiera (>= 3.2.1, < 4)
+      httpclient (~> 2.8)
       locale (~> 2.1)
       multi_json (~> 1.10)
       puppet-resource_api (~> 1.5)
-      scanf (~> 1.0)
       semantic_puppet (~> 1.0)
     puppet-blacksmith (6.1.1)
       puppet-modulebuilder (~> 0.2)
@@ -433,7 +445,6 @@ GEM
       windows_error
     rubyntlm (0.6.3)
     rubyzip (2.3.2)
-    scanf (1.0.0)
     semantic_puppet (1.0.4)
     serverspec (2.42.0)
       multi_json
@@ -527,6 +538,7 @@ GEM
       webrick (~> 1.7.0)
 
 PLATFORMS
+  ruby
   x86_64-darwin-19
 
 DEPENDENCIES
