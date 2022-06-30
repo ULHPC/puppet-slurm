@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Sat 2017-09-30 01:03 svarrette>
+# Time-stamp: <Thu 2022-06-30 14:42 svarrette>
 #
 # File::      <tt>repo/syncto.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -51,7 +51,5 @@ define slurm::repo::syncto(
     purge   => $purge,
     options => '-a --copy-links',
   }
-
-
 
 }

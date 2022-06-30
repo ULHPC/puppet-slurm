@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2021-03-31 00:58 svarrette>
+# Time-stamp: <Tue 2022-07-05 15:24 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -115,10 +115,9 @@
 # @param  innodb_log_file_size      [String]  Default: '64M'
 # @param  innodb_lock_wait_timeout  [Integer] Default: 500
 
-
 # === Authors
 #
-# The UL HPC Team <hpc-sysadmins@uni.lu> of the University of Luxembourg, in
+# The UL HPC Team <hpc-team@uni.lu> of the University of Luxembourg, in
 # particular
 # * Sebastien Varrette <Sebastien.Varrette@uni.lu>
 # * Valentin Plugaru   <Valentin.Plugaru@uni.lu>
@@ -238,7 +237,7 @@ inherits slurm
         before   => File[$slurm::params::dbd_configfile],
       }
 
-      # Job completion logging mechanism type
+     # Job completion logging mechanism type
       if ($slurm::jobcomptype and $slurm::jobcomptype == 'mysql' and $slurm::jobcomploc and (!empty($slurm::jobcomploc))) {
         mysql::db { $slurm::jobcomploc :
           user     => $storageuser,
@@ -248,8 +247,6 @@ inherits slurm
           before   => File[$slurm::params::dbd_configfile],
         }
       }
-
-
       # Eventually create the 'slurm'@'*' user with all rights
       unique([ $storagehost, $::hostname, $::fqdn]).each |String $host| {
         mysql_user { "${storageuser}@${host}":
@@ -337,6 +334,4 @@ inherits slurm
     }
 
   }
-
-
 }
