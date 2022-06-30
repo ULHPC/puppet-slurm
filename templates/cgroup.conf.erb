@@ -90,4 +90,6 @@ MinRAMSpace=<%=  scope['slurm::cgroup_minramspace']   %>
 # allocated cores using sched_setaffinity
 # /!\ This feature requires the Portable Hardware Locality (hwloc) library
 <% end -%>
+<% if versioncmp(slurm::version, '21.0') > 0 %>
 TaskAffinity=<%= scope['slurm::cgroup_taskaffinity'] ? 'yes' : 'no' %>
+<% end -%>
