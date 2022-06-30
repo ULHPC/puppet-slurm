@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Thu 2022-06-30 14:37 svarrette>
+# Time-stamp: <Thu 2022-06-30 16:27 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -635,6 +635,7 @@ class slurm::params {
   $storagepass         = 'janIR4TvYoSEqNF94QM' # use 'openssl rand 14 -base64' for instance
   $trackslurmctlddown  = false
   $bootstrap_mysql     = true
+  $manage_install_mysql = true
 
   ##############################
   ### MariaDB configuration  ###

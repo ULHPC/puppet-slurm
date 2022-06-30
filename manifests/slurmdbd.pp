@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2022-07-05 15:34 svarrette>
+# Time-stamp: <Tue 2022-07-05 15:35 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -161,14 +161,14 @@ class slurm::slurmdbd(
   String  $storagetype        = $slurm::params::storagetype,
   String  $storageuser        = $slurm::params::storageuser,
   Boolean $trackslurmctlddown = $slurm::params::trackslurmctlddown,
-  Boolean $manage_install_mysql = true,
   #
   # MySQL settings
   #
   String  $innodb_buffer_pool_size  = $slurm::params::innodb_buffer_pool_size,
   String  $innodb_log_file_size     = $slurm::params::innodb_log_file_size,
   Integer $innodb_lock_wait_timeout = $slurm::params::innodb_lock_wait_timeout,
-  Boolean $bootstrap_mysql    = $slurm::params::bootstrap_mysql,
+  Boolean $bootstrap_mysql          = $slurm::params::bootstrap_mysql,
+  Boolean $manage_install_mysql     = $slurm::params::manage_install_mysql,
 )
 inherits slurm
 {
