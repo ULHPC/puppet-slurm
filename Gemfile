@@ -31,6 +31,9 @@ group :development do
   gem "puppet-module-win-dev-r#{minor_version}", '~> 0.4',       require: false, platforms: [:mswin, :mingw, :x64_mingw]
   gem "puppetlabs_spec_helper"
   gem "metadata-json-lint"
+  gem "rubocop"
+  gem "rubocop-rspec"
+  gem "rubocop-i18n"
 end
 
 puppet_version = ENV['PUPPET_GEM_VERSION']
