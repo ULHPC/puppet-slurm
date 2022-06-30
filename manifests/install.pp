@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2019-10-22 13:37 svarrette>
+# Time-stamp: <Thu 2022-06-30 14:37 svarrette>
 #
 # File::      <tt>install.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -52,15 +52,4 @@ class slurm::install {
       require   => Slurm::Build[$slurm::version],
     }
   }
-
-
-
-
-
-
-
-
-
-
-
 }

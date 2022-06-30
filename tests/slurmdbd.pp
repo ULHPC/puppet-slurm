@@ -8,8 +8,7 @@ node default {
 
   include ::slurm
   class { '::slurm::slurmdbd':
-    privatedata => [ 'accounts', 'users', 'usage', 'jobs']
-
+    privatedata => [ 'accounts', 'users', 'usage', 'jobs'],
   }
 
 }

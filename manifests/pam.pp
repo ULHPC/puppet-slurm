@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2021-03-31 00:56 svarrette>
+# Time-stamp: <Thu 2022-06-30 14:38 svarrette>
 #
 # File::      <tt>pam.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -90,7 +90,6 @@ inherits slurm::params
     }
   }
 
-
   if ($use_pam_slurm_adopt) {
     # TODO:
     notice('use pam_slurm_adopt')
@@ -119,7 +118,7 @@ inherits slurm::params
     $ulimits.each |String $item, $value| {
       limits::limits { "*/${item}":
         ensure => $ensure,
-        both   => $value
+        both   => $value,
       }
       # ulimit::rule { "slurm-${item}":
       #   ensure        => $ensure,

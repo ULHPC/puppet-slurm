@@ -15,7 +15,7 @@ node default {
   }
   slurm::download { 'slurm-18.08.8.tar.bz2':
     ensure   => $ensure,
-    checksum => '4a2c176b54a56763704bcc7abfd9b8a4f91c82b8'
+    checksum => '4a2c176b54a56763704bcc7abfd9b8a4f91c82b8',
   }
 
 }
