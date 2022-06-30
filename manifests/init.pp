@@ -74,8 +74,6 @@
 # @param build_without            [Array]       Default: []
 #          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
 #          List of --without build options to pass to rpmbuild
-# @param build_pmix_install_path [String] Default: '/usr/'
-#          Where PMIx is installed
 # @param service_manage           [Boolean]     Default: true
 #          Whether to manage the slurm services.
 ########################                       ####################################
@@ -526,7 +524,6 @@ class slurm(
   String  $builddir                       = $slurm::params::builddir,
   Array   $build_with                     = $slurm::params::build_with,
   Array   $build_without                  = $slurm::params::build_without,
-  String  $build_pmix_install_path        = $slurm::params::pmix_install_path,
   #
   # Main configuration paramaters
   #
