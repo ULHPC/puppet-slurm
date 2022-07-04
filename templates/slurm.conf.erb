@@ -293,8 +293,6 @@ AccountingStorageHost=<%= scope['slurm::accountingstoragehost'] %>
 #AccountingStoragePort=
 AccountingStorageType=accounting_storage/slurmdbd
 #AccountingStorageUser=
-AccountingStoreFlags=job_comment
-
 <% if scope['slurm::accountingstoreflags'].empty? -%>
 #AccountingStoreFlags=
 <% else -%>
