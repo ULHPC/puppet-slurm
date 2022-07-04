@@ -295,6 +295,12 @@ AccountingStorageType=accounting_storage/slurmdbd
 #AccountingStorageUser=
 AccountingStoreFlags=job_comment
 
+<% if scope['slurm::accountingstoreflags'].empty? -%>
+#AccountingStoreFlags=
+<% else -%>
+AccountingStoreFlags=<%= scope['slurm::accountingstoreflags'].join(',') %>
+<% end -%>
+
 AcctGatherEnergyType=acct_gather_energy/<%=         scope['slurm::acctgatherenergytype'] %>
 AcctGatherFilesystemType=acct_gather_filesystem/<%= scope['slurm::acctgatherfilesystemtype'] %>
 AcctGatherInfinibandType=acct_gather_infiniband/<%= scope['slurm::acctgatherinfinibandtype'] %>
