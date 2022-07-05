@@ -90,6 +90,8 @@
 # @param accountingstoragehost    [String]      Default: $:hostname
 # @param accountingstoragetres    [String]      Default: ''
 #
+# @param accountingstoreflags [Array] Default: []
+#
 # @param acctgatherenergytype    [String]      Default: 'none'
 #          Identifies the plugin to be used for energy consumption accounting
 #          Elligible values in [ 'none', 'ipmi', 'rapl' ]
@@ -543,6 +545,7 @@ class slurm(
   # String  $backupaddr                     = $slurm::params::backupaddr,
   # String  $controlmachine                 = $slurm::params::controlmachine,
   # String  $controladdr                    = $slurm::params::controladdr,
+  Array   $accountingstoreflags           = $slurm::params::accountingstoreflags,
   String  $accountingstoragehost          = $slurm::params::accountingstoragehost,
   Array   $accountingstorageexternalhost  = $slurm::params::accountingstorageexternalhost,
   #

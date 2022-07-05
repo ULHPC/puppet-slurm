@@ -293,7 +293,12 @@ AccountingStorageHost=<%= scope['slurm::accountingstoragehost'] %>
 #AccountingStoragePort=
 AccountingStorageType=accounting_storage/slurmdbd
 #AccountingStorageUser=
-AccountingStoreJobComment=YES
+
+<% if scope['slurm::accountingstoreflags'].empty? -%>
+#AccountingStoreFlags=
+<% else -%>
+AccountingStoreFlags=<%= scope['slurm::accountingstoreflags'].join(',') %>
+<% end -%>
 
 AcctGatherEnergyType=acct_gather_energy/<%=         scope['slurm::acctgatherenergytype'] %>
 AcctGatherFilesystemType=acct_gather_filesystem/<%= scope['slurm::acctgatherfilesystemtype'] %>
