@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2022-07-05 15:35 svarrette>
+# Time-stamp: <Tue 2022-07-05 23:07 svarrette>
 #
 # File::      <tt>slurmdbd.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -115,6 +115,15 @@
 # @param  innodb_log_file_size      [String]  Default: '64M'
 # @param  innodb_lock_wait_timeout  [Integer] Default: 500
 
+# === Authors
+#
+# The UL HPC Team <hpc-team@uni.lu> of the University of Luxembourg, in
+# particular
+# * Sebastien Varrette <Sebastien.Varrette@uni.lu>
+# * Valentin Plugaru   <Valentin.Plugaru@uni.lu>
+# * Sarah Peter        <Sarah.Peter@uni.lu>
+# * Hyacinthe Cartiaux <Hyacinthe.Cartiaux@uni.lu>
+# * Clement Parisot    <Clement.Parisot@uni.lu>
 #
 # === Warnings
 #
