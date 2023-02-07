@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Sat 2017-09-30 09:39 svarrette>
+# Time-stamp: <Thu 2022-06-30 14:39 svarrette>
 #
 # File::      <tt>repo.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -107,7 +107,6 @@ inherits slurm::params
     true    => $slurm::group,
     default => 'root',
   }
-
 
   if $ensure in [ 'present', 'latest' ] {
     exec { "mkdir -p ${real_path}":

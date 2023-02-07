@@ -74,8 +74,6 @@
 # @param build_without            [Array]       Default: []
 #          see https://github.com/SchedMD/slurm/blob/master/slurm.spec
 #          List of --without build options to pass to rpmbuild
-# @param build_pmix_install_path [String] Default: '/usr/'
-#          Where PMIx is installed
 # @param service_manage           [Boolean]     Default: true
 #          Whether to manage the slurm services.
 ########################                       ####################################
@@ -91,6 +89,8 @@
 #          List of external slurmdbds (<host/ip>[:port][,...]) to register with
 # @param accountingstoragehost    [String]      Default: $:hostname
 # @param accountingstoragetres    [String]      Default: ''
+#
+# @param accountingstoreflags [Array] Default: []
 #
 # @param acctgatherenergytype    [String]      Default: 'none'
 #          Identifies the plugin to be used for energy consumption accounting
@@ -526,7 +526,6 @@ class slurm(
   String  $builddir                       = $slurm::params::builddir,
   Array   $build_with                     = $slurm::params::build_with,
   Array   $build_without                  = $slurm::params::build_without,
-  String  $build_pmix_install_path        = $slurm::params::pmix_install_path,
   #
   # Main configuration paramaters
   #
@@ -546,6 +545,7 @@ class slurm(
   # String  $backupaddr                     = $slurm::params::backupaddr,
   # String  $controlmachine                 = $slurm::params::controlmachine,
   # String  $controladdr                    = $slurm::params::controladdr,
+  Array   $accountingstoreflags           = $slurm::params::accountingstoreflags,
   String  $accountingstoragehost          = $slurm::params::accountingstoragehost,
   Array   $accountingstorageexternalhost  = $slurm::params::accountingstorageexternalhost,
   #
@@ -647,8 +647,8 @@ class slurm(
   String  $slurmdsyslogdebug              = $slurm::params::slurmdsyslogdebug,
   String  $slurmdbddebugsyslog            = $slurm::params::slurmdbddebugsyslog,
   # Ports
-  Integer $slurmctldport                  = $slurm::params::slurmctldport,
-  Integer $slurmdport                     = $slurm::params::slurmdport,
+  Variant[Integer,String] $slurmctldport  = $slurm::params::slurmctldport,
+  Variant[Integer,String] $slurmdport     = $slurm::params::slurmdport,
   # Timeout
   Integer $slurmctldtimeout               = $slurm::params::slurmctldtimeout,
   Integer $slurmdtimeout                  = $slurm::params::slurmdtimeout,

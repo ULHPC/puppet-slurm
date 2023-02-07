@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-09-05 10:49 svarrette>
+# Time-stamp: <Thu 2022-06-30 14:38 svarrette>
 #
 # File::      <tt>munge.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -203,9 +203,4 @@ inherits slurm::params
       subscribe  => File[$key_filename],
     }
   }
-
-
-
-
-
 }

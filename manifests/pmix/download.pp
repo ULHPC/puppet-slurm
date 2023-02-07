@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2019-10-09 10:44 svarrette>
+# Time-stamp: <Thu 2022-06-30 14:42 svarrette>
 #
 # File::      <tt>pmix/download.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -109,6 +109,5 @@ define slurm::pmix::download(
   #     before => Archive[$archive]
   #   }
   # }
-
 
 }

@@ -31,7 +31,4 @@ node default {
   #   require => Slurm::Pmix::Build[$version]
   # }
 
-
-
-
 }

@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2019-10-22 13:37 svarrette>
+# Time-stamp: <Thu 2022-06-30 14:37 svarrette>
 #
 # File::      <tt>install.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -30,13 +30,12 @@ class slurm::install {
 
     # Now build them
     slurm::build { $slurm::version :
-      ensure            => $slurm::ensure,
-      srcdir            => $slurm::srcdir,
-      dir               => $slurm::builddir,
-      with              => $slurm::build_with,
-      without           => $slurm::build_without,
-      pmix_install_path => $slurm::build_pmix_install_path,
-      require           => Slurm::Download[$slurm::version],
+      ensure  => $slurm::ensure,
+      srcdir  => $slurm::srcdir,
+      dir     => $slurm::builddir,
+      with    => $slurm::build_with,
+      without => $slurm::build_without,
+      require => Slurm::Download[$slurm::version],
     }
   }
 
@@ -52,15 +51,4 @@ class slurm::install {
       require   => Slurm::Build[$slurm::version],
     }
   }
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Wed 2020-09-23 20:37 svarrette>
+# Time-stamp: <Thu 2022-06-30 14:37 svarrette>
 #
 # File::      <tt>params.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -39,7 +39,7 @@ class slurm::params {
       'libX11-devel',
       'libssh2-devel',
       'libevent-devel',
-      'python3'
+      'python3', 'python3-devel'
     ],
     default => []
   }
@@ -141,6 +141,7 @@ class slurm::params {
   # Accounting storage slurmdbd server
   $accountingstoragehost   = $::hostname
   $accountingstorageexternalhost = []
+  $accountingstoreflags = []
   # Authentication method for communications between Slurm components.
   $authtype                = 'munge' # in [ 'none', 'munge' ]
   $authinfo                = ''
@@ -378,8 +379,6 @@ class slurm::params {
   $pluginsdir           = 'plugstack.conf.d'
   $pluginsdir_target    = undef
 
-
-
   #####################
   ### SLURM Daemons ###
   #####################
@@ -464,7 +463,7 @@ class slurm::params {
     'lua',           # build Slurm LUA bindings
     'mysql',         # require mysql/mariadb support
     'numa',          # require NUMA support
-    'slurmrestd',    # build slurmrestd 
+    'slurmrestd',    # build slurmrestd
     #'slurmsmwd',    # build slurmsmwd
     #'ucx',          # require ucx support
     'pmix',         # require pmix support

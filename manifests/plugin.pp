@@ -1,5 +1,5 @@
 ################################################################################
-# Time-stamp: <Tue 2017-08-29 18:10 svarrette>
+# Time-stamp: <Thu 2022-06-30 14:39 svarrette>
 #
 # File::      <tt>plugin.pp</tt>
 # Author::    UL HPC Team (hpc-sysadmins@uni.lu)
@@ -31,8 +31,6 @@ define slurm::plugin(
   $target         = undef,
   $source         = undef,
   $content        = undef
-
-
 )
 {
   include ::slurm::params
@@ -69,5 +67,4 @@ define slurm::plugin(
   #   extract         => false,
   #   creates         => $path,
   # }
-
 }

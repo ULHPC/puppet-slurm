@@ -1,6 +1,6 @@
 {
   "name": "ULHPC-slurm",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "author": "UL HPC Team",
   "summary": "Configure and manage Slurm: A Highly Scalable Resource Manager",
   "license": "Apache-2.0",
@@ -88,7 +88,7 @@
     "slurmctld",
     "slurmdbd"
   ],
-  "pdk-version": "1.18.1",
-  "template-url": "pdk-default#1.18.1",
-  "template-ref": "tags/1.18.1-0-g3d2e75c"
+  "pdk-version": "2.5.0",
+  "template-url": "pdk-default#2.5.0",
+  "template-ref": "tags/2.5.0-0-g369d483"
 }
