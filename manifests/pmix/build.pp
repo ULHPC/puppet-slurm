@@ -90,8 +90,13 @@ define slurm::pmix::build(
           ensure => 'present',
         }
       }
+      if !defined(Package['python3-devel']) {
+        package { 'python3-devel':
+          ensure => 'present',
+        }
+      }
       Yum::Group[$slurm::params::groupinstall] -> Exec[$buildname]
-      Package['libevent-devel'] -> Exec[$buildname]
+      Package['libevent-devel'] -> Package['python3-devel'] -> Exec[$buildname]
 
       $rpmdir = "${dir}/RPMS/${::architecture}"
       $rpms = prefix(suffix($slurm::params::pmix_rpms, "-${version}*.rpm"), "${rpmdir}/")

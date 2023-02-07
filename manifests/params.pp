@@ -39,7 +39,7 @@ class slurm::params {
       'libX11-devel',
       'libssh2-devel',
       'libevent-devel',
-      'python3',
+      'python3', 'python3-devel'
     ],
     default => []
   }
