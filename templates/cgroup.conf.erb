@@ -85,9 +85,9 @@ MaxKmemPercent= <%= scope['slurm::cgroup_maxkmempercent'] %>
 <% end -%>
 MinKmemSpace=<%= scope['slurm::cgroup_minkmemspace']  %>
 MinRAMSpace=<%=  scope['slurm::cgroup_minramspace']   %>
-<% if  scope['slurm::cgroup_taskaffinity'] -%>
+<% if scope['slurm::cgroup_taskaffinity'] -%>
 # Set a default task affinity to bind each step task to a subset of the
 # allocated cores using sched_setaffinity
 # /!\ This feature requires the Portable Hardware Locality (hwloc) library
+TaskAffinity=yes
 <% end -%>
-TaskAffinity=<%= scope['slurm::cgroup_taskaffinity'] ? 'yes' : 'no' %>
