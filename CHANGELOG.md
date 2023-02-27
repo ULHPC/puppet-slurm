@@ -4,6 +4,87 @@ Changelog
 
 (unreleased)
 ------------
+- Merge tag 'v1.4.5' into devel. [Hyacinthe Cartiaux]
+
+  v1.4.5
+
+
+v1.4.5 (2023-02-07)
+-------------------
+- Merge branch 'release/1.4.5' into production. [Hyacinthe Cartiaux]
+- Bump to version '1.4.5' [Hyacinthe Cartiaux]
+- Install python3-devel to build pmix. [Hyacinthe Cartiaux]
+- Bundle update. [Hyacinthe Cartiaux]
+- Merge pull request #63 from uvNikita/accounting-store-flags.
+  [Sebastien Varrette]
+
+  Add AccountingStoreFlags, remove AccountingStoreJobComment
+- Remove AccountingStoreJobComment. [Nikita Uvarov]
+
+  Option was removed in 21.08
+- Add AccountingStoreFlags. [Nikita Uvarov]
+- Revert "New parameter slurm::build_pmix_install_path" [Sebastien
+  Varrette]
+
+  This reverts commit 9a74180471f109c907e997829029ea0721784eaa.
+- Merge pull request #62 from uvNikita/patch-6. [Sebastien Varrette]
+
+  Allow slurmdport and slurmctldport to be Strings
+- Allow slurmdport and slurmctldport to be Strings. [Nikita Uvarov]
+
+  As per https://slurm.schedmd.com/slurm.conf.html,
+  port parameters can be port ranges.
+- Merge branch 'feature/pdk-update' into devel. [Sebastien Varrette]
+- Pdk validate. [Sebastien Varrette]
+- Devecontainer. [Sebastien Varrette]
+- PDK update. [Sebastien Varrette]
+- Update rubocop. [Sebastien Varrette]
+- [Gemfile] metadata-json-lint. [Sebastien Varrette]
+- [Gemfile] restore puppetlabs_spec_helper. [Sebastien Varrette]
+- Update gemspec. [Sebastien Varrette]
+- Merge tag 'v1.4.4' into devel. [Hyacinthe Cartiaux]
+
+  v1.4.4
+
+
+v1.4.4 (2022-06-20)
+-------------------
+- Merge branch 'release/1.4.4' into production. [Hyacinthe Cartiaux]
+- Bump to version '1.4.4' [Hyacinthe Cartiaux]
+- New parameter slurm::build_pmix_install_path. [Hyacinthe Cartiaux]
+- Merge pull request #61 from uvNikita/auth-alt. [Sebastien Varrette]
+
+  Add AuthAltTypes and AuthAltParameters
+- Add AuthAltTypes and AuthAltParameters. [Nikita Uvarov]
+
+  These two parameters can be used in the new slurmrestd service.
+- Puppet update. [Sebastien Varrette]
+- Merge pull request #59 from uvNikita/patch-5. [Sebastien Varrette]
+
+  Uncomment JobContainerType in slurm.conf.erb
+- Uncomment JobContainerType in slurm.conf.erb. [Nikita Uvarov]
+- Merge pull request #58 from uvNikita/patch-5. [Sebastien Varrette]
+
+  Remove redundant checkif from acct::mgr
+- Remove redundant checkif from acct::mgr. [Nikita Uvarov]
+
+  `unless` parameter should be enough
+- Merge pull request #57 from uvNikita/patch-5. [Sebastien Varrette]
+
+  Fix typo in slurm.conf template
+  Thanks!
+- Fix typo in slurm.conf template. [Nikita Uvarov]
+
+  slurmdparameters -> slurmctldparameters
+- [pmix::build] pmix-devel package mandatory. [Sebastien Varrette]
+- [slurm::params] enable slurmrestd build by default. [Sebastien
+  Varrette]
+- [slurm::params] pre-requisite packages to build slurmrestd. [Sebastien
+  Varrette]
+- [slurm::pmix::install] pmix-devel. [Sebastien Varrette]
+- Disable cray_shasta. [Sebastien Varrette]
+- [slurm::pmix::install] install pmix-devel. [Sebastien Varrette]
+- Synchronize Changelog with latest commits. [Sebastien Varrette]
 - Merge tag 'v1.4.3' into devel. [Sebastien Varrette]
 
   Support for new slurm.conf parameters introduced in 20.x
