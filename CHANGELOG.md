@@ -4,6 +4,18 @@ Changelog
 
 (unreleased)
 ------------
+- Merge tag 'v1.4.6' into devel. [Hyacinthe Cartiaux]
+
+  v1.4.6
+
+
+v1.4.6 (2023-02-27)
+-------------------
+- Merge branch 'release/1.4.6' into production. [Hyacinthe Cartiaux]
+- Bump to version '1.4.6' [Hyacinthe Cartiaux]
+- Cgroup.conf template - make TaskAffinity optional (removed in 21.08.2
+  and default is no) [Hyacinthe Cartiaux]
+- Synchronize Changelog with latest commits. [Hyacinthe Cartiaux]
 - Merge tag 'v1.4.5' into devel. [Hyacinthe Cartiaux]
 
   v1.4.5
