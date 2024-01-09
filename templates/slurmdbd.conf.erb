@@ -44,6 +44,18 @@ AuthType=auth/<%= scope['slurm::authtype'] %>
 AuthInfo=auth/<%= scope['slurm::authinfo'] %>
 <% end -%>
 
+<% if scope['slurm::authalttypes'].empty? -%>
+#AuthAltTypes=
+<% else -%>
+AuthAltTypes=<%= scope['slurm::authalttypes'].join(',') %>
+<% end -%>
+
+<% if scope['slurm::authaltparameters'].empty? -%>
+#AuthAltParameters=
+<% else -%>
+AuthAltParameters=<%= scope['slurm::authaltparameters'].join(',') %>
+<% end -%>
+
 # How many seconds between commits on a connection from a Slurmctld. This speeds
 # up inserts into the database dramatically.
 # /!\ There is a [very] small probability of data loss
