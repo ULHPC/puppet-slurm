@@ -242,6 +242,7 @@ class slurm::params {
   $prologslurmctld         = ''
   $propagateresourcelimits = []
   $propagateresourcelimits_except = [ 'MEMLOCK'] # see https://slurm.schedmd.com/faq.html#memlock
+  $reconfigflags           = []
   $resvoverrun             = 0
   $resumetimeout           = 60
   $resumeprogram           = ''
@@ -252,8 +253,10 @@ class slurm::params {
   $suspendprogram          = ''
   $suspendtimeout          = 0
   $suspendtime             = 0
+  $suspendrate             = 0
   $suspendexcnodes         = ''
   $suspendexcparts         = ''
+  $suspendexcstates        = []
   $statesavelocation       = '/var/lib/slurmctld'
   $schedulertype           = 'backfill' # in ['backfill', 'builtin', 'hold']
   $schedulerparameters     = []
