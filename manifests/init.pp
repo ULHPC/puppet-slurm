@@ -233,6 +233,7 @@
 # @param prolog                   [String]      Default: ''
 # @param prologflags              [Array]       Default: []
 # @param prologslurmctld          [String]      Default: ''
+# @param reconfigflags            [Array]       Default: []
 # @param propagateresourcelimits  [Array]       Default: []
 # @param propagateresourcelimits_except [Array] Default: ['MEMLOCK']
 # @param resvoverrun              [Integer]     Default: 0
@@ -245,8 +246,12 @@
 # @param suspendprogram           [String]      Default: ''
 # @param suspendtimeout           [Integer]     Default: ''
 # @param suspendtime              [Integer]     Default: ''
+# @param suspendrate              [Integer]     Default: ''
 # @param suspendexcnodes          [String]      Default: ''
 # @param suspendexcparts          [String]      Default: ''
+# @param suspendexcstates         [Array]       Default: []
+#           SuspendExcStates specifies node states that should not to be powered down
+#           automatically. It was introduced in 23.02.
 # @param statesavelocation        [String]      Default: '/var/lib/slurmctld'
 #           Fully qualified pathname of a directory into which the Slurm
 #           controller, slurmctld, saves its state
@@ -619,6 +624,7 @@ class slurm(
   Boolean $priorityfavorsmall             = $slurm::params::priorityfavorsmall,
   Array   $prologflags                    = $slurm::params::prologflags,
   String  $prologslurmctld                = $slurm::params::prologslurmctld,
+  Array   $reconfigflags                  = $slurm::params::reconfigflags,
   Array   $propagateresourcelimits        = $slurm::params::propagateresourcelimits,
   Array   $propagateresourcelimits_except = $slurm::params::propagateresourcelimits_except,
   Hash    $qos                            = $slurm::params::qos,
@@ -631,8 +637,10 @@ class slurm(
   String  $suspendprogram                 = $slurm::params::suspendprogram,
   Integer $suspendtimeout                 = $slurm::params::suspendtimeout,
   Integer $suspendtime                    = $slurm::params::suspendtime,
+  Integer $suspendrate                    = $slurm::params::suspendrate,
   String  $suspendexcnodes                = $slurm::params::suspendexcnodes,
   String  $suspendexcparts                = $slurm::params::suspendexcparts,
+  Array   $suspendexcstates               = $slurm::params::suspendexcstates,
   String  $statesavelocation              = $slurm::params::statesavelocation,
   String  $schedulertype                  = $slurm::params::schedulertype,
   Array   $schedulerparameters            = $slurm::params::schedulerparameters,

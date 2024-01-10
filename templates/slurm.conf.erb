@@ -266,8 +266,21 @@ ResumeRate=<%= scope['slurm::resumerate'] %>
 <% else -%>
 SuspendExcNodes=<%= scope['slurm::suspendexcnodes'] %>
 <% end -%>
+<% if scope['slurm::suspendexcparts'].empty? -%>
 #SuspendExcParts=
-#SuspendRate=
+<% else -%>
+SuspendExcParts=<%= scope['slurm::suspendexcparts'] %>
+<% end -%>
+<% if scope['slurm::suspendexcstates'].empty? -%>
+#SuspendExcStates=
+<% else -%>
+SuspendExcStates=<%= scope['slurm::suspendexcstates'].join(',') %>
+<% end -%>
+<% if scope['slurm::suspendrate'] > 0 -%>
+SuspendRate=<%= scope['slurm::suspendrate'] %>
+<% else -%>
+#SuspendTime=
+<% end -%>
 <% if scope['slurm::suspendtime'] > 0 -%>
 SuspendTime=<%= scope['slurm::suspendtime'] %>
 <% else -%>
@@ -507,6 +520,11 @@ PrologSlurmctld=<%= scope['slurm::prologslurmctld'] %>
 #PrologFlags=contain
 <% else -%>
 PrologFlags=<%= scope['slurm::prologflags'].join(',') %>
+<% end -%>
+<% if scope['slurm::reconfigflags'].empty? -%>
+#ReconfigFlags=
+<% else -%>
+ReconfigFlags=<%= scope['slurm::reconfigflags'].join(',') %>
 <% end -%>
 
 ### MPI default
