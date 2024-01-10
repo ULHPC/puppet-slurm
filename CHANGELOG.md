@@ -4,6 +4,18 @@ Changelog
 
 (unreleased)
 ------------
+- Merge tag 'v1.4.7' into devel. [Teddy Valette]
+
+  v1.4.7
+
+
+v1.4.7 (2023-05-22)
+-------------------
+- Merge branch 'release/1.4.7' into production. [Teddy Valette]
+- Bump to version '1.4.7' [Teddy Valette]
+- [slurm::params] add rocky support for munge dependencies. [Teddy
+  Valette]
+- Synchronize Changelog with latest commits. [Hyacinthe Cartiaux]
 - Merge tag 'v1.4.6' into devel. [Hyacinthe Cartiaux]
 
   v1.4.6
