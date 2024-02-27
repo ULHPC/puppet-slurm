@@ -621,7 +621,7 @@ class slurm::params {
   $archivedir          = '/tmp'
   $archiveevents       = false # When purging events also archive them?
   $archivejobs         = false # When purging jobs also archive them?
-  $archiveresv         = false # When purging reservations also archive them?
+  $archiveresvs        = false # When purging reservations also archive them?
   $archivesteps        = false # When purging steps also archive them?
   $archivesuspend      = false # When purging suspend data also archive it?
   $archivetxn          = false # When purging transaction data also archive it?
