@@ -368,6 +368,7 @@ class slurm::params {
   $cgroup_minkmemspace              = 30    # lower bound (in MB) on the memory limits defined by AllowedKmemSpace.
   $cgroup_minramspace               = 30    # lower bound (in MB) on the memory limits defined by AllowedRAMSpace & AllowedSwapSpace.
   $cgroup_taskaffinity              = false # if true, this feature requires the Portable Hardware Locality (hwloc) library
+  $cgroup_signalchildrenprocesses   = false # if true, send signals (for cancelling, suspending, resuming, etc.) to all children processes in a job/step.
 
   ###
   ### Generic RESource management -- gres.conf

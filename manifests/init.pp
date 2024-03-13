@@ -385,6 +385,8 @@
 #            lower bound (in MB) on the memory limits defined by AllowedRAMSpace & AllowedSwapSpace.
 # @param cgroup_taskaffinity       [Boolean]    Default: false
 #            This feature requires the Portable Hardware Locality (hwloc) library
+# @param cgroup_signalchildrenprocesses [Boolean] Default: false
+#            Send signals (for cancelling, suspending, resuming, etc.) to all children processes in a job/step.
 #
 ############################                      ####################################
 ############################ gres.conf attributes ####################################
@@ -718,6 +720,7 @@ class slurm(
   Integer $cgroup_minkmemspace            = $slurm::params::cgroup_minkmemspace,
   Integer $cgroup_minramspace             = $slurm::params::cgroup_minramspace,
   Boolean $cgroup_taskaffinity            = $slurm::params::cgroup_taskaffinity,
+  Boolean $cgroup_signalchildrenprocesses = $slurm::params::cgroup_signalchildrenprocesses,
   #
   # gres.conf
   #
