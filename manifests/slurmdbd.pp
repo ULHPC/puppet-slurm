@@ -45,7 +45,7 @@
 #           When purging events also archive them?
 # @param archivejobs        [Boolean]     Default: false
 #           When purging jobs also archive them?
-# @param archiveresv        [Boolean]     Default: false
+# @param archiveresvs       [Boolean]     Default: false
 #           When purging reservations also archive them?
 # @param archivesteps       [Boolean]     Default: false
 #           When purging steps also archive them?
@@ -141,7 +141,7 @@ class slurm::slurmdbd(
   String  $archivedir         = $slurm::params::archivedir,
   Boolean $archiveevents      = $slurm::params::archiveevents,
   Boolean $archivejobs        = $slurm::params::archivejobs,
-  Boolean $archiveresv        = $slurm::params::archiveresv,
+  Boolean $archiveresvs       = $slurm::params::archiveresvs,
   Boolean $archivesteps       = $slurm::params::archivesteps,
   Boolean $archivesuspend     = $slurm::params::archivesuspend,
   Boolean $archivetxn         = $slurm::params::archivetxn,

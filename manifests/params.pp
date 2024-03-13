@@ -368,6 +368,7 @@ class slurm::params {
   $cgroup_minkmemspace              = 30    # lower bound (in MB) on the memory limits defined by AllowedKmemSpace.
   $cgroup_minramspace               = 30    # lower bound (in MB) on the memory limits defined by AllowedRAMSpace & AllowedSwapSpace.
   $cgroup_taskaffinity              = false # if true, this feature requires the Portable Hardware Locality (hwloc) library
+  $cgroup_signalchildrenprocesses   = false # if true, send signals (for cancelling, suspending, resuming, etc.) to all children processes in a job/step.
 
   ###
   ### Generic RESource management -- gres.conf
@@ -621,7 +622,7 @@ class slurm::params {
   $archivedir          = '/tmp'
   $archiveevents       = false # When purging events also archive them?
   $archivejobs         = false # When purging jobs also archive them?
-  $archiveresv         = false # When purging reservations also archive them?
+  $archiveresvs        = false # When purging reservations also archive them?
   $archivesteps        = false # When purging steps also archive them?
   $archivesuspend      = false # When purging suspend data also archive it?
   $archivetxn          = false # When purging transaction data also archive it?

@@ -279,7 +279,7 @@ SuspendExcStates=<%= scope['slurm::suspendexcstates'].join(',') %>
 <% if scope['slurm::suspendrate'] > 0 -%>
 SuspendRate=<%= scope['slurm::suspendrate'] %>
 <% else -%>
-#SuspendTime=
+#SuspendRate=
 <% end -%>
 <% if scope['slurm::suspendtime'] > 0 -%>
 SuspendTime=<%= scope['slurm::suspendtime'] %>

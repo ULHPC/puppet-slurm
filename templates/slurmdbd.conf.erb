@@ -99,10 +99,10 @@ ArchiveJobs=yes
 <% else -%>
 #ArchiveJobs=yes
 <% end -%>
-<% if scope['slurm::slurmdbd::archiveresv'] -%>
-ArchiveResv=yes
+<% if scope['slurm::slurmdbd::archiveresvs'] -%>
+ArchiveResvs=yes
 <% else -%>
-#ArchiveResv=yes
+#ArchiveResvs=yes
 <% end -%>
 #ArchiveScript=
 <% if scope['slurm::slurmdbd::archivesteps'] -%>

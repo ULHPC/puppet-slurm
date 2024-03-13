@@ -4,6 +4,29 @@ Changelog
 
 (unreleased)
 ------------
+- Merge tag 'v1.4.8' into devel. [Teddy Valette]
+
+  v1.4.8
+
+
+v1.4.8 (2024-01-10)
+-------------------
+- Merge branch 'release/1.4.8' into production. [Teddy Valette]
+- Bump to version '1.4.8' [Teddy Valette]
+- Merge pull request #68 from ULHPC/feature/powersaving. [Teddy
+  Rodrigues Valette]
+
+  slurm.conf - add a few parameters for power saving
+- Slurm.conf - add a few parameters for power saving     - ReconfigFlags
+  - SuspendRate     - SuspendExcStates     - SuspendExcParts. [Teddy
+  Valette]
+- Merge pull request #66 from uvNikita/slurmdbd/auth-alt-params. [Teddy
+  Rodrigues Valette]
+
+  [slurm::slurmdbd] set AuthAltTypes and AuthAltParameters
+- [slurm::slurmdbd] set AuthAltTypes and AuthAltParameters. [Nikita
+  Uvarov]
+- Synchronize Changelog with latest commits. [Teddy Valette]
 - Merge tag 'v1.4.7' into devel. [Teddy Valette]
 
   v1.4.7
