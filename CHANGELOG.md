@@ -4,6 +4,33 @@ Changelog
 
 (unreleased)
 ------------
+- Merge tag 'v1.4.9' into devel. [Teddy Rodrigues Valette]
+
+  v1.4.9
+
+
+v1.4.9 (2024-03-13)
+-------------------
+- Merge branch 'release/1.4.9' into production. [Teddy Rodrigues
+  Valette]
+- Bump to version '1.4.9' [Teddy Rodrigues Valette]
+- Merge pull request #69 from ULHPC/23-11_cgroup_changes. [Teddy
+  Rodrigues Valette]
+
+  cgroup.conf - adapt template for v23.11
+- Cgroup.conf - adapt template for v23.11     - Removed deprecated
+  parameters AllowedKmemSpace, ConstrainKmemSpace, MaxKmemPercent,
+  MinKmemSpace for >= 23.11.     - Remove CgroupAutomount= option from
+  cgroup.conf for >= 23.11.     - Add "SignalChildrenProcesses=<yes|no>"
+  option to cgroup.conf for >= 23.11.     - See
+  https://github.com/SchedMD/slurm/blob/slurm-23.11/RELEASE_NOTES.
+  [Teddy Rodrigues Valette]
+- Metadata.json - update tested dependencies. [Hyacinthe Cartiaux]
+- Slurmdbd.conf - fix typo in ArchiveResvs parameter. [Teddy Rodrigues
+  Valette]
+- Slurm.conf - typo in commented definition of SuspendRate. [Teddy
+  Rodrigues Valette]
+- Synchronize Changelog with latest commits. [Teddy Valette]
 - Merge tag 'v1.4.8' into devel. [Teddy Valette]
 
   v1.4.8
