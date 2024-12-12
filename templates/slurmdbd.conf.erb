@@ -60,7 +60,7 @@ AuthAltParameters=<%= scope['slurm::authaltparameters'].join(',') %>
 # up inserts into the database dramatically.
 # /!\ There is a [very] small probability of data loss
 <% if scope['slurm::slurmdbd::commitdelay'] > 0  -%>
-CommitDelay=<%= scope['slurm::slurmdbpausd::commitdelay'] %>
+CommitDelay=<%= scope['slurm::slurmdbd::commitdelay'] %>
 <% else -%>
 #CommitDelay=<%= scope['slurm::slurmdbd::commitdelay'] %>
 <% end -%>
