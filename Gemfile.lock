@@ -168,11 +168,11 @@ GEM
     logging (2.4.0)
       little-plugger (~> 1.1)
       multi_json (~> 1.14)
-    metadata-json-lint (4.2.1)
+    metadata-json-lint (4.1.0)
       json-schema (>= 2.8, < 6.0)
       semantic_puppet (~> 1.0)
       spdx-licenses (~> 1.0)
-    method_source (1.1.0)
+    method_source (0.8.2)
     minigit (0.0.4)
     minitar (0.12.1)
     minitest (5.25.5)
@@ -211,9 +211,10 @@ GEM
       forwardable
       singleton
     prism (1.4.0)
-    pry (0.15.2)
-      coderay (~> 1.1)
-      method_source (~> 1.0)
+    pry (0.10.4)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
     public_suffix (6.0.2)
     puppet (8.10.0)
       concurrent-ruby (~> 1.0)
@@ -396,6 +397,7 @@ GEM
     simplecov-html (0.13.1)
     simplecov_json_formatter (0.1.4)
     singleton (0.3.0)
+    slop (3.6.0)
     spdx-licenses (1.3.0)
     specinfra (2.94.0)
       base64
@@ -486,10 +488,10 @@ DEPENDENCIES
   facterdb (~> 1.18)
   falkorlib (>= 0.9.1)
   json (= 2.6.3)
-  metadata-json-lint (~> 4.0)
+  metadata-json-lint (~> 4.1.0)
   parallel_tests (= 3.12.1)
-  pry (~> 0.10)
-  puppet
+  pry (~> 0.10.0)
+  puppet (= 8.10.0)
   puppet-debugger (~> 1.0)
   puppet-strings (~> 4.0)
   puppet_litmus (~> 1.0)
@@ -504,4 +506,4 @@ DEPENDENCIES
   voxpupuli-puppet-lint-plugins (~> 5.0)
 
 BUNDLED WITH
-   2.4.19
+   2.4.13
