@@ -4,6 +4,27 @@ Changelog
 
 (unreleased)
 ------------
+- Merge tag 'v1.5.1' into devel. [Hyacinthe Cartiaux]
+
+  v1.5.1
+
+
+v1.5.1 (2024-09-03)
+-------------------
+- Merge branch 'release/1.5.1' into production. [Hyacinthe Cartiaux]
+- Bump to version '1.5.1' [Hyacinthe Cartiaux]
+- Gemfile.lock update. [Hyacinthe Cartiaux]
+- Gemfile.lock update. [Hyacinthe Cartiaux]
+- Merge pull request #77 from jorhett/fix-slurmd-spooldir. [Hyacinthe
+  Cartiaux]
+
+  Fix slurmd spooldir to be consistent/default
+- Fix slurmd spooldir to be consistent/default. [Jo Rhett]
+- Falkorlib and facter update. [Hyacinthe Cartiaux]
+- Lint! [Hyacinthe Cartiaux]
+- Syntax clean. [Hyacinthe Cartiaux]
+- PDK and Falkorlib update tentative. [Hyacinthe Cartiaux]
+- Synchronize Changelog with latest commits. [Hyacinthe Cartiaux]
 - Merge tag 'v1.5.0' into devel. [Hyacinthe Cartiaux]
 
   v1.5.0

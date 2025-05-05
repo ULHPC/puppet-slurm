@@ -100,6 +100,8 @@
 # @param storageport        [Integer]     Default: 3306
 # @param storagetype        [String]      Default: 'mysql'
 # @param storageuser        [String]      Default: 'slurm'
+# @param storagecharset     [String]      Default: undefined  # to override mysql module default
+# @param storagecollate     [String]      Default: undefined  # to override mysql module default
 # @param trackslurmctlddown [Boolean]     Default: false
 #           Boolean yes or no. If set the slurmdbd will mark all idle resources
 #           on the cluster as down when a slurmctld disconnects or is no longer
@@ -168,6 +170,8 @@ class slurm::slurmdbd (
   Integer $storageport        = $slurm::params::storageport,
   String  $storagetype        = $slurm::params::storagetype,
   String  $storageuser        = $slurm::params::storageuser,
+  String  $storagecharset     = undef,
+  String  $storagecollate     = undef,
   Boolean $trackslurmctlddown = $slurm::params::trackslurmctlddown,
   #
   # MySQL settings
@@ -227,6 +231,8 @@ inherits slurm {
       user     => $storageuser,
       password => $storagepass,
       host     => $dbdhost,
+      charset  => $storagecharset,
+      collate  => $storagecollate,
       grant    => ['ALL'],
       before   => File[$slurm::params::dbd_configfile],
     }

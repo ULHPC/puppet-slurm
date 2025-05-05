@@ -46,7 +46,7 @@ class slurm::params {
   # Probably out of scope here, but useful
   $extra_packages = $facts['os']['family'] ? {
     'Redhat' => [
-      'libibmad', 'rrdtool-devel',
+      'infiniband-diags', 'rrdtool-devel',
     ],
     default  => []
   }
