@@ -233,7 +233,7 @@ SlurmdTimeout=<%= scope['slurm::slurmdtimeout'] %>
 UnkillableStepTimeout=<%= scope['slurm::unkillablesteptimeout'] %>
 <% end -%>
 #VSizeFactor=0
-Waittime=<%= scope['slurm::waittime'] %>
+WaitTime=<%= scope['slurm::waittime'] %>
 
 ### POWER SAVE SUPPORT FOR IDLE NODES (optional)
 <% if scope['slurm::suspendprogram'].empty? -%>
