@@ -4,6 +4,43 @@ Changelog
 
 (unreleased)
 ------------
+- Merge tag 'v1.5.3' into devel. [Hyacinthe Cartiaux]
+
+  v1.5.3
+
+
+v1.5.3 (2025-08-26)
+-------------------
+- Merge branch 'release/1.5.3' into production. [Hyacinthe Cartiaux]
+- Bump to version '1.5.3' [Hyacinthe Cartiaux]
+- Update ruby environment. [Hyacinthe Cartiaux]
+- Merge pull request #87 from uvNikita/rebootprogram. [Hyacinthe
+  Cartiaux]
+
+  Add "RebootProgram" parameter
+- Add "RebootProgram" parameter. [Nikita Uvarov]
+- Merge pull request #86 from ULHPC/dependabot/bundler/thor-1.4.0.
+  [Hyacinthe Cartiaux]
+
+  Bump thor from 1.3.2 to 1.4.0
+- Bump thor from 1.3.2 to 1.4.0. [dependabot[bot]]
+
+  Bumps [thor](https://github.com/rails/thor) from 1.3.2 to 1.4.0.
+  - [Release notes](https://github.com/rails/thor/releases)
+  - [Commits](https://github.com/rails/thor/compare/v1.3.2...v1.4.0)
+
+  ---
+  updated-dependencies:
+  - dependency-name: thor
+    dependency-version: 1.4.0
+    dependency-type: indirect
+  ...
+- Merge pull request #84 from uvNikita/accounting/typo. [Hyacinthe
+  Cartiaux]
+
+  Fix typo in accounting.pp
+- Fix typo in accounting.pp. [Nikita Uvarov]
+- Synchronize Changelog with latest commits. [Hyacinthe Cartiaux]
 - Merge tag 'v1.5.2' into devel. [Hyacinthe Cartiaux]
 
   v1.5.2
