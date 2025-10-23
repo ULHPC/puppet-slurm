@@ -153,7 +153,7 @@ class slurm::params {
   $accountingstoragetres    = ''
   $acctgatherenergytype     = 'none'
   $acctgatherfilesystemtype = 'none'
-  $acctgatherinfinibandtype = 'none'
+  $acctgatherinterconnecttype = 'none'
   $acctgatherprofiletype    = 'none'
   $batchstarttimeout       = 10
   $getenvtimeout           = 2
