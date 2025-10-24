@@ -100,10 +100,10 @@
 # @param acctgatherfilesystemtype [String]      Default: 'none'
 #          plugin to be used for filesystem traffic accounting.
 #          Elligible values in [ 'none', 'lustre' ]
-# @param acctgatherinfinibandtype      [String]       Default: 'none'
+# @param acctgatherinterconnecttype [String]    Default: 'none'
 #          Identifies the plugin to be used for infiniband network traffic
 #          accounting.
-#          Elligible values in [ 'none', 'ofed' ]
+#          Elligible values in [ 'none', 'ofed', 'sysfs' ]
 # @param acctgatherprofiletype    [String]      Default: 'none'
 #          Plugin to be used for detailed job profiling.
 #          Require to define acct_gather.conf for non-none values
@@ -543,7 +543,7 @@ class slurm (
   Array   $accountingstorageenforce       = $slurm::params::accountingstorageenforce,
   String  $acctgatherenergytype           = $slurm::params::acctgatherenergytype,
   String  $acctgatherfilesystemtype       = $slurm::params::acctgatherfilesystemtype,
-  String  $acctgatherinfinibandtype       = $slurm::params::acctgatherinfinibandtype,
+  String  $acctgatherinterconnecttype     = $slurm::params::acctgatherinterconnecttype,
   String  $acctgatherprofiletype          = $slurm::params::acctgatherprofiletype,
   String  $configdir                      = $slurm::params::configdir,
   String  $clustername                    = $slurm::params::clustername,

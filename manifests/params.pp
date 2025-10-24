@@ -153,7 +153,7 @@ class slurm::params {
   $accountingstoragetres    = ''
   $acctgatherenergytype     = 'none'
   $acctgatherfilesystemtype = 'none'
-  $acctgatherinfinibandtype = 'none'
+  $acctgatherinterconnecttype = 'none'
   $acctgatherprofiletype    = 'none'
   $batchstarttimeout       = 10
   $getenvtimeout           = 2
@@ -233,7 +233,7 @@ class slurm::params {
   $priorityweightjobsize   = 0
   $priorityweightpartition = 0
   $priorityweightqos       = 0
-  $privatedata             = []  # in ['accounts','cloud','jobs','nodes','partitions','reservations','usage','users']
+  $privatedata             = []  # in ['accounts','events','jobs','nodes','partitions','reservations','usage','users']
   $proctracktype           = 'cgroup'      # in ['cgroup', 'cray', 'linuxproc', 'lua', 'sgi_job','pgid']
 
   $prolog                  = ''
