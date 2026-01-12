@@ -94,6 +94,7 @@
 #
 # @param accountingstoreflags [Array] Default: []
 #
+# @param acctgathernodefreq      [Integer]     Default: 0
 # @param acctgatherenergytype    [String]      Default: 'none'
 #          Identifies the plugin to be used for energy consumption accounting
 #          Elligible values in [ 'none', 'ipmi', 'rapl' ]
@@ -541,6 +542,7 @@ class slurm (
   # Main configuration paramaters
   #
   Array   $accountingstorageenforce       = $slurm::params::accountingstorageenforce,
+  Integer $acctgathernodefreq             = $slurm::params::acctgathernodefreq,
   String  $acctgatherenergytype           = $slurm::params::acctgatherenergytype,
   String  $acctgatherfilesystemtype       = $slurm::params::acctgatherfilesystemtype,
   String  $acctgatherinterconnecttype     = $slurm::params::acctgatherinterconnecttype,
