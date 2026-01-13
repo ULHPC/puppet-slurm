@@ -151,6 +151,7 @@ class slurm::params {
   # What level of association-based enforcement to impose on job submissions
   $accountingstorageenforce = ['qos', 'limits', 'associations']
   $accountingstoragetres    = ''
+  $acctgathernodefreq       = 0
   $acctgatherenergytype     = 'none'
   $acctgatherfilesystemtype = 'none'
   $acctgatherinterconnecttype = 'none'
@@ -199,7 +200,7 @@ class slurm::params {
   $maxarraysize            = undef
   $maxjobcount             = undef
   $maxtaskspernode         = 512
-
+  $metrics                 = 'openmetrics'
   # Default type of MPI to be used. Srun may override this configuration parameter in any case.
   # in ['lam','mpich1_p4','mpich1_shmem','mpichgm','mpichmx','mvapich','none','openmpi','pmi2']
   $mpidefault              = 'none'   # See https://slurm.schedmd.com/mpi_guide.html

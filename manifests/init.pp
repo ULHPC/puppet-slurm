@@ -94,6 +94,7 @@
 #
 # @param accountingstoreflags [Array] Default: []
 #
+# @param acctgathernodefreq      [Integer]     Default: 0
 # @param acctgatherenergytype    [String]      Default: 'none'
 #          Identifies the plugin to be used for energy consumption accounting
 #          Elligible values in [ 'none', 'ipmi', 'rapl' ]
@@ -183,6 +184,7 @@
 # @param maxarraysize             [Integer]     Default: undef
 # @param maxjobcount              [Integer]     Default: undef
 # @param maxtaskspernode          [Integer]     Default: 512
+# @param metrics                  [String]      Default: 'openmetrics'
 # @param mpidefault               [String]      Default: 'none'
 #           Default type of MPI to be used. Srun may override this configuration parameter in any case.
 #           Elligible values in ['lam','mpich1_p4','mpich1_shmem','mpichgm','mpichmx','mvapich','none','openmpi','pmi2']
@@ -541,6 +543,7 @@ class slurm (
   # Main configuration paramaters
   #
   Array   $accountingstorageenforce       = $slurm::params::accountingstorageenforce,
+  Integer $acctgathernodefreq             = $slurm::params::acctgathernodefreq,
   String  $acctgatherenergytype           = $slurm::params::acctgatherenergytype,
   String  $acctgatherfilesystemtype       = $slurm::params::acctgatherfilesystemtype,
   String  $acctgatherinterconnecttype     = $slurm::params::acctgatherinterconnecttype,
@@ -604,6 +607,7 @@ class slurm (
   Optional[Integer] $maxjobcount          = $slurm::params::maxjobcount,
   Integer $maxtaskspernode                = $slurm::params::maxtaskspernode,
   Integer $messagetimeout                 = $slurm::params::messagetimeout,
+  String  $metrics                        = $slurm::params::metrics,
   # Default type of MPI to be used.
   String  $mpidefault                     = $slurm::params::mpidefault,
   String  $mpiparams                      = $slurm::params::mpiparams,
