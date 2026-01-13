@@ -321,6 +321,7 @@ AccountingStorageType=accounting_storage/slurmdbd
 AccountingStoreFlags=<%= scope['slurm::accountingstoreflags'].join(',') %>
 <% end -%>
 
+AcctGatherNodeFreq=<%= scope['slurm::acctgathernodefreq'] %>
 AcctGatherEnergyType=acct_gather_energy/<%=         scope['slurm::acctgatherenergytype'] %>
 AcctGatherFilesystemType=acct_gather_filesystem/<%= scope['slurm::acctgatherfilesystemtype'] %>
 AcctGatherInterconnectType=acct_gather_interconnect/<%= scope['slurm::acctgatherinterconnecttype'] %>
