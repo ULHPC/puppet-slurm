@@ -169,4 +169,11 @@ StoragePort=<%= scope['slurm::slurmdbd::storageport'] %>
 StorageLoc=<%= scope['slurm::slurmdbd::storageloc'].ljust(12) %>   # Name of the database
 StorageUser=<%= scope['slurm::slurmdbd::storageuser'] %>
 # /!\ Password used to gain access to the database
-StoragePass=<%= scope['slurm::slurmdbd::storagepass'] %>
+<%-
+if scope['slurm::slurmdbd::storagepass'].is_a?(Puppet::Pops::Types::PSensitiveType::Sensitive)
+  storagepass = scope['slurm::slurmdbd::storagepass'].unwrap
+else
+  storagepass = scope['slurm::slurmdbd::storagepass']
+end
+-%>
+StoragePass=<%= storagepass %>

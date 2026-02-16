@@ -4,6 +4,32 @@ Changelog
 
 (unreleased)
 ------------
+- Merge tag 'v1.5.5' into devel. [Mike Massonnet]
+
+  v1.5.5
+
+
+v1.5.5 (2026-01-13)
+-------------------
+- Merge branch 'release/1.5.5' into production. [Mike Massonnet]
+- Make Rakefile happy with new Gemfile.lock. [Mike Massonnet]
+- Bump to version '1.5.5' [Mike Massonnet]
+- Update Gemfile (due to rake version:bump:patch) [Mike Massonnet]
+- Merge pull request #90 from ULHPC/acctgathernodefreq. [Mike Massonnet]
+
+  [templates/slurm.conf] Add setting AcctGatherNodeFreq
+- [templates/slurm.conf] Add setting AcctGatherNodeFreq. [Mike
+  Massonnet]
+
+  https://slurm.schedmd.com/slurm.conf.html#OPT_AcctGatherNodeFreq
+  > For AcctGather plugin values of none, this parameter is ignored. For
+  > all other values this parameter is the number of seconds between node
+  > accounting samples.
+- Merge pull request #89 from Obmondo/metrics. [Mike Massonnet]
+
+  Enable metrics for Slurm
+- Enable metrics for Slurm. [deepakt7340]
+- Synchronize Changelog with latest commits. [Mike Massonnet]
 - Merge tag 'v1.5.4' into devel. [Mike Massonnet]
 
   v1.5.4

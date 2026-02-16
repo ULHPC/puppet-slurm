@@ -166,7 +166,7 @@ class slurm::slurmdbd (
   String  $storagehost        = $slurm::params::storagehost,
   String  $storagebackuphost  = $slurm::params::storagebackuphost,
   String  $storageloc         = $slurm::params::storageloc,
-  String  $storagepass        = $slurm::params::storagepass,
+  Variant[Sensitive[String], String] $storagepass = $slurm::params::storagepass,
   Integer $storageport        = $slurm::params::storageport,
   String  $storagetype        = $slurm::params::storagetype,
   String  $storageuser        = $slurm::params::storageuser,
@@ -229,7 +229,7 @@ inherits slurm {
 
     mysql::db { $storageloc:
       user     => $storageuser,
-      password => $storagepass,
+      password => Sensitive($storagepass),
       host     => $dbdhost,
       charset  => $storagecharset,
       collate  => $storagecollate,
@@ -241,7 +241,7 @@ inherits slurm {
     if ($slurm::jobcomptype and $slurm::jobcomptype == 'mysql' and $slurm::jobcomploc and (!empty($slurm::jobcomploc))) {
       mysql::db { $slurm::jobcomploc :
         user     => $storageuser,
-        password => $storagepass,
+        password => Sensitive($storagepass),
         host     => $dbdhost,
         grant    => ['ALL'],
         before   => File[$slurm::params::dbd_configfile],
@@ -252,7 +252,7 @@ inherits slurm {
     unique([$storagehost, $facts['networking']['hostname'], $facts['networking']['fqdn']]).each |String $host| {
       if $host.length < 60 {
         mysql_user { "${storageuser}@${host}":
-          password_hash => mysql::password($storagepass),
+          password_hash => Sensitive(mysql::password($storagepass)),
         }
         mysql_grant { "${storageuser}@${host}/${storageloc}.*":
           privileges => ['ALL'],
