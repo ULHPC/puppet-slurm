@@ -275,7 +275,10 @@ inherits slurm {
   $dbdconf_content = $content ? {
     undef   => $source ? {
       undef   => $target ? {
-        undef   => template('slurm/slurmdbd.conf.erb'),
+        undef   => ($storagepass =~ Sensitive) ? {
+          true  => Sensitive(template('slurm/slurmdbd.conf.erb')),
+          false => template('slurm/slurmdbd.conf.erb'),
+        },
         default => $content,
       },
       default => $content
