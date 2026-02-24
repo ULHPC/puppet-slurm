@@ -538,7 +538,7 @@ DEPENDENCIES
   parallel_tests (= 3.12.1)
   pdk (~> 3.4.0)
   pry (~> 0.10.0)
-  puppet (= 8.10.0)
+  puppet
   puppet-debugger (~> 1.0)
   puppet-strings (~> 4.0)
   puppet_litmus (~> 1.0)
