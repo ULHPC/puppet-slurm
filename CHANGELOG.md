@@ -4,6 +4,50 @@ Changelog
 
 (unreleased)
 ------------
+- Merge tag 'v1.5.7' into devel. [Mike Massonnet]
+
+  v1.5.7
+
+
+v1.5.7 (2026-02-24)
+-------------------
+- Merge branch 'release/1.5.7' into production. [Mike Massonnet]
+- Make Rakefile happy with new Gemfile.lock. [Mike Massonnet]
+- Bump to version '1.5.7' [Mike Massonnet]
+- Make Rakefile happy with new Gemfile.lock. [Mike Massonnet]
+- Merge pull request #96 from ULHPC/m8t/mysql_binding_port. [Mike
+  Massonnet]
+
+  [manifests/slurmdbd] Bootstrapped MySQL instance defaults always to 127.0.0.1 (#74)
+- [manifests/slurmdbd] Bootstrapped MySQL instance defaults always to
+  bind-address 127.0.0.1 (#74) [Mike Massonnet]
+
+  https://github.com/ULHPC/puppet-slurm/issues/74
+
+  For sack of improvement, make it a variable (should be converted to
+  hiera cf #78.)
+- Merge pull request #95 from ULHPC/m8t/module_git. [Mike Massonnet]
+
+  Do not customize gitconfig (#85)
+- [manifests/repo] Do not customize gitconfig as there is no implicit
+  git commit/push from this module (#85) [Mike Massonnet]
+- Merge pull request #94 from ULHPC/m8t/slurmdbd_conf_sensitive. [Mike
+  Massonnet]
+
+  [security] Render slurmdbd.conf template optionally Sensitive
+- [security] Render slurmdbd.conf template optionally Sensitive. [Mike
+  Massonnet]
+
+  follow-up 3f3ad77
+
+  When passing a Sensitive storagepass to the class, content for the
+  generated template is also defined Sensitive. This way the secret is
+  hidden from PuppetDB.
+
+  However there is one downside, the diff is hidden from the `puppet
+  agent` execution, and there is no file kept for diff inside the
+  clientbucket directory.
+- Synchronize Changelog with latest commits. [Mike Massonnet]
 - Merge tag 'v1.5.6' into devel. [Mike Massonnet]
 
   v1.5.6
