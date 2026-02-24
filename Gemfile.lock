@@ -40,7 +40,7 @@ GEM
     ast (2.4.3)
     awesome_print (1.9.2)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1213.0)
+    aws-partitions (1.1218.0)
     aws-sdk-core (3.242.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
@@ -49,7 +49,7 @@ GEM
       bigdecimal
       jmespath (~> 1, >= 1.6.1)
       logger
-    aws-sdk-ec2 (1.601.0)
+    aws-sdk-ec2 (1.603.0)
       aws-sdk-core (~> 3, >= 3.241.4)
       aws-sigv4 (~> 1.5)
     aws-sigv4 (1.12.1)
@@ -101,6 +101,7 @@ GEM
     docker-api (2.4.0)
       excon (>= 0.64.0)
       multi_json
+    drb (2.2.3)
     erubi (1.13.1)
     excon (1.3.2)
       logger
@@ -185,7 +186,8 @@ GEM
     method_source (0.8.2)
     minigit (0.0.4)
     minitar (0.12.1)
-    minitest (6.0.1)
+    minitest (6.0.2)
+      drb (~> 2.0)
       prism (~> 1.5)
     mize (0.6.1)
     mocha (2.8.2)
@@ -214,7 +216,7 @@ GEM
     parallel (1.27.0)
     parallel_tests (3.12.1)
       parallel
-    parser (3.3.10.1)
+    parser (3.3.10.2)
       ast (~> 2.4.1)
       racc
     pastel (0.8.0)
@@ -450,7 +452,7 @@ GEM
       unicode-display_width (>= 1.1.1, < 3)
     text (1.3.1)
     thor (1.5.0)
-    tins (1.51.1)
+    tins (1.52.0)
       bigdecimal
       mize (~> 0.6)
       readline
@@ -513,7 +515,7 @@ GEM
       winrm (~> 2.0)
     wisper (2.0.1)
     yard (0.9.36)
-    zeitwerk (2.7.4)
+    zeitwerk (2.7.5)
 
 PLATFORMS
   aarch64-linux-gnu
@@ -536,7 +538,7 @@ DEPENDENCIES
   parallel_tests (= 3.12.1)
   pdk (~> 3.4.0)
   pry (~> 0.10.0)
-  puppet
+  puppet (= 8.10.0)
   puppet-debugger (~> 1.0)
   puppet-strings (~> 4.0)
   puppet_litmus (~> 1.0)
