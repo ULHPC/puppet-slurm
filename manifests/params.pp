@@ -646,6 +646,7 @@ class slurm::params {
   ##############################
   ### MariaDB configuration  ###
   ##############################
+  $storagehost_bind_address = '127.0.0.1'
   # Buffer Pool Size: 256MB + 256 * log2(RAM size in GB)
   $innodb_buffer_pool_size  = '256M'
   $innodb_log_file_size     = '24M'

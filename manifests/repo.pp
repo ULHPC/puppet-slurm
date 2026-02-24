@@ -128,26 +128,6 @@ inherits slurm::params {
       force  => true,
     }
   }
-  # notice($source)
-  # notice($real_path)
-  if !defined(Git::Config['push.default']) {
-    git::config { 'push.default':
-      value => 'matching',
-      user  => $slurm::params::username,
-    }
-  }
-  if !defined(Git::Config['user.name']) {
-    git::config { 'user.name':
-      value => $slurm::params::comment,
-      user  => $slurm::params::username,
-    }
-  }
-  if !defined(Git::Config['user.email']) {
-    git::config { 'user.email':
-      value => "${slurm::params::username}@${facts['networking']['fqdn']}",
-      user  => $slurm::params::username,
-    }
-  }
 
   vcsrepo { $real_path:
     ensure   => $ensure,

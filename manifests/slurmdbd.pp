@@ -201,22 +201,11 @@ inherits slurm {
 
   # [Eventually] bootstrap the MySQL DB
   if $bootstrap_mysql {
-    # you now need to  allow remote access from a different host rather than
-    # localhost within /etc/my.cnf.d/server.cnf i.e. $mysql::server::config_file
-    # i.e. comment the line
-    # [mysqld]
-    # ...
-    # bind-address = 127.0.0.1
-    if $storagehost != 'localhost' {
-      $bind_setting = $ensure ? {
-        'present' => '0.0.0.0',
-        default   => '127.0.0.1',
-      }
-    }
+    # Ensure MySQL instance
     class { 'mysql::server':
       override_options => {
         'mysqld' => {
-          'bind-address'             => $bind_setting,
+          'bind-address'             => $slurm::params::storagehost_bind_address,
           # Buffer Pool Size: 256MB + 256 * log2(RAM size in GB)
           'innodb_buffer_pool_size'  => $innodb_buffer_pool_size,
           'innodb_log_file_size'     => $innodb_log_file_size,
@@ -225,8 +214,10 @@ inherits slurm {
       },
     }
 
+    # Ensure clean system users
     include mysql::server::account_security
 
+    # Ensure slurm database
     mysql::db { $storageloc:
       user     => $storageuser,
       password => Sensitive($storagepass),
@@ -275,7 +266,10 @@ inherits slurm {
   $dbdconf_content = $content ? {
     undef   => $source ? {
       undef   => $target ? {
-        undef   => template('slurm/slurmdbd.conf.erb'),
+        undef   => ($storagepass =~ Sensitive) ? {
+          true  => Sensitive(template('slurm/slurmdbd.conf.erb')),
+          false => template('slurm/slurmdbd.conf.erb'),
+        },
         default => $content,
       },
       default => $content

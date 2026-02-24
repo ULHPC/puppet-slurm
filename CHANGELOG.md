@@ -4,6 +4,45 @@ Changelog
 
 (unreleased)
 ------------
+- Merge tag 'v1.5.6' into devel. [Mike Massonnet]
+
+  v1.5.6
+
+
+v1.5.6 (2026-02-16)
+-------------------
+- Merge branch 'release/1.5.6' into production. [Mike Massonnet]
+- Make Rakefile happy with new Gemfile.lock. [Mike Massonnet]
+- Bump to version '1.5.6' [Mike Massonnet]
+- Update Gemfile (due to rake version:bump:patch) [Mike Massonnet]
+- Merge pull request #92 from ULHPC/m8t/sensitive. [Mike Massonnet]
+
+  [security] Sensitive type for storagepass
+- [security] Sensitive type for storagepass. [Mike Massonnet]
+
+  Permit to pass storagepass with Sensitive type.
+
+  This commit hides the storagepass from the class attributes inside
+  PuppetDB, but still renders the password visible inside PuppetDB with
+  the generated content of the template.
+- Merge pull request #91 from ULHPC/dependabot/bundler/faraday-2.14.1.
+  [Mike Massonnet]
+
+  Bump faraday from 2.14.0 to 2.14.1
+- Bump faraday from 2.14.0 to 2.14.1. [dependabot[bot]]
+
+  Bumps [faraday](https://github.com/lostisland/faraday) from 2.14.0 to 2.14.1.
+  - [Release notes](https://github.com/lostisland/faraday/releases)
+  - [Changelog](https://github.com/lostisland/faraday/blob/main/CHANGELOG.md)
+  - [Commits](https://github.com/lostisland/faraday/compare/v2.14.0...v2.14.1)
+
+  ---
+  updated-dependencies:
+  - dependency-name: faraday
+    dependency-version: 2.14.1
+    dependency-type: indirect
+  ...
+- Synchronize Changelog with latest commits. [Mike Massonnet]
 - Merge tag 'v1.5.5' into devel. [Mike Massonnet]
 
   v1.5.5
