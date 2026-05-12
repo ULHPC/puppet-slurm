@@ -40,6 +40,11 @@ class slurm::install {
 
   # [Eventually] Install the built packages/RPMs
   if $slurm::do_package_install {
+    $install_package_require = $slurm::do_build ? {
+      true  => Slurm::Build[$slurm::version],
+      false => undef
+    }
+
     slurm::install::packages { $slurm::version :
       ensure    => $slurm::ensure,
       pkgdir    => $slurm::builddir,
@@ -47,10 +52,7 @@ class slurm::install {
       slurmctld => ($slurm::with_slurmctld or defined(Class['slurm::slurmctld'])),
       slurmdbd  => ($slurm::with_slurmdbd  or defined(Class['slurm::slurmdbd'])),
       wrappers  => $slurm::wrappers,
-      require   => $slurm::do_build ? {
-        true  => Slurm::Build[$slurm::version],
-        false => undef
-      },
+      require   => $install_package_require,
     }
   }
 }

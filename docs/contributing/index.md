@@ -1,5 +1,5 @@
-This project is released under the terms of the [Apache-2.0 Licence](LICENSE). 
-So you are more than welcome to contribute to its development as follows: 
+This project is released under the terms of the [Apache-2.0 Licence](LICENSE).
+So you are more than welcome to contribute to its development as follows:
 
 1. Fork it
 2. Create your feature branch (`rake git:feature:start[<feature_name>]`)

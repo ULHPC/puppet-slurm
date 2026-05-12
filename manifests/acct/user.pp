@@ -27,7 +27,7 @@
 #
 define slurm::acct::user (
   Enum['present', 'absent'] $ensure         = $slurm::params::ensure,
-  String                    $defaultaccount = '',
+  Optional[String]          $defaultaccount = undef,
   Hash                      $options        = {},
 ) {
   $default_options = empty($defaultaccount) ? {

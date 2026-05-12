@@ -57,8 +57,8 @@ define slurm::install::packages (
   Boolean                   $slurmd    = $slurm::params::with_slurmd,
   Boolean                   $slurmctld = $slurm::params::with_slurmctld,
   Boolean                   $slurmdbd  = $slurm::params::with_slurmdbd,
-  Optional[Array]           $wrappers  = [],
-  Optional[Array]           $packages  = []
+  Optional[Array]           $wrappers  = undef,
+  Optional[Array]           $packages  = undef,
 ) {
   include slurm::params
 
@@ -105,28 +105,28 @@ define slurm::install::packages (
     #    - slurm-slurmdbd
     ################
     $default_packages = ($slurmdbd ? {
-        # Slurm DB
-        true    => ($slurmctld ? {
-            true    => ($slurmd ? {
-                true    => concat($common_rpms, $slurmdbd_rpms, $slurmctld_rpms, $slurmd_rpms, $wrappers), # slurmDB + slurmctld + slurmd
-                default => concat($common_rpms, $slurmdbd_rpms, $slurmctld_rpms, $wrappers),               # slurmDB + slurmctld
-            }),
-            default => ($slurmd ? {
-                true    => concat($common_rpms, $slurmdbd_rpms, $slurmd_rpms, $wrappers), # slurmDB + slurmd
-                default => concat($common_rpms, $slurmdbd_rpms, $wrappers),               # slurmDB
-            }),
+      # Slurm DB
+      true    => ($slurmctld ? {
+        true    => ($slurmd ? {
+          true    => concat($common_rpms, $slurmdbd_rpms, $slurmctld_rpms, $slurmd_rpms, $wrappers), # slurmDB + slurmctld + slurmd
+          default => concat($common_rpms, $slurmdbd_rpms, $slurmctld_rpms, $wrappers),               # slurmDB + slurmctld
         }),
-        # NO Slurm DB
-        default => ($slurmctld ? {
-            true    => ($slurmd ? {
-                true    => concat($common_rpms, $slurmctld_rpms, $slurmd_rpms, $wrappers) , # slurmctld + slurmd
-                default => concat($common_rpms, $slurmctld_rpms, $wrappers),                # slurmctld
-            }),
-            default => ($slurmd ? {
-                true    => concat($common_rpms, $slurmd_rpms, $wrappers) ,    # slurmd
-                default => concat($common_rpms, $wrappers),                   # None of the daemons are requested -
-            }),
+        default => ($slurmd ? {
+          true    => concat($common_rpms, $slurmdbd_rpms, $slurmd_rpms, $wrappers), # slurmDB + slurmd
+          default => concat($common_rpms, $slurmdbd_rpms, $wrappers),               # slurmDB
         }),
+      }),
+      # NO Slurm DB
+      default => ($slurmctld ? {
+        true    => ($slurmd ? {
+          true    => concat($common_rpms, $slurmctld_rpms, $slurmd_rpms, $wrappers) , # slurmctld + slurmd
+          default => concat($common_rpms, $slurmctld_rpms, $wrappers),                # slurmctld
+        }),
+        default => ($slurmd ? {
+          true    => concat($common_rpms, $slurmd_rpms, $wrappers) ,    # slurmd
+          default => concat($common_rpms, $wrappers),                   # None of the daemons are requested -
+        }),
+      }),
     })
   }
   else {
@@ -186,7 +186,7 @@ define slurm::install::packages (
   if $ensure == 'present' {
     $pkglist.each |String $pkg| {
       package { $pkg:
-        ensure  => $ensure,
+        ensure => $ensure,
       }
     }
   }

@@ -47,7 +47,7 @@
 define slurm::acct::qos (
   Enum['present', 'absent'] $ensure   = $slurm::params::ensure,
   Integer                   $priority = 0,
-  String                    $content  = '',
+  Optional[String]          $content  = undef,
   Hash                      $options  = {},
 ) {
   $default_options = {

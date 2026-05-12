@@ -75,12 +75,12 @@ class slurm::repo (
   Enum['present', 'absent', 'latest'] $ensure = $slurm::params::ensure,
   Enum['git', 'bzr', 'hg', 'svn']     $provider    = 'git',
   String                              $basedir     = $slurm::params::repo_basedir,
-  String                              $path        = '',
+  Optional[String]                    $path        = undef,
   Optional[String]                    $source      = undef,
   String                              $branch      = 'HEAD',
-  String                              $syncscript  = '',
-  String                              $linkdir     = '',
-  String                              $link_subdir = '',
+  Optional[String]                    $syncscript  = undef,
+  Optional[String]                    $linkdir     = undef,
+  Optional[String]                    $link_subdir = undef,
   Boolean                             $force       = false,
 )
 inherits slurm::params {

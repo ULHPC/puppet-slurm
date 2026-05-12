@@ -37,7 +37,7 @@
 define slurm::download (
   Enum['present', 'absent'] $ensure          = $slurm::params::ensure,
   String                    $target          = $slurm::params::srcdir,
-  String                    $checksum        = '',
+  Optional[String]          $checksum        = undef,
   String                    $checksum_type   = $slurm::params::src_checksum_type,
   Boolean                   $checksum_verify = false,
 ) {
