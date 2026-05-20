@@ -15,7 +15,7 @@
 #
 # More details on <https://slurm.schedmd.com/slurm.conf.html>
 #
-class slurm::plugins::lua inherits slurm::plugins {
+class slurm::plugins::lua inherits slurm {
   $lua_content = $slurm::lua_content ? {
     undef   => $slurm::lua_source ? {
       undef   => $slurm::lua_target ? {
