@@ -19,6 +19,7 @@
 class slurm::config {
   include slurm
   include slurm::params
+  include slurm::config::namespace_plugins
 
   # Prepare the directory structure
   $pluginsdir = "${slurm::configdir}/${slurm::params::pluginsdir}"
