@@ -9,7 +9,7 @@ class slurm::config::namespace_plugins (
   Boolean $auto_base_path = true,
   String $base_path = '/tmp',
 ) inherits slurm::config {
-  case (slurm::namespacetype) {
+  case ($slurm::namespacetype) {
     'linux': {
       file { "${slurm::configdir}/namespace.yaml":
         ensure  => file,
