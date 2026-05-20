@@ -761,11 +761,11 @@ Default value: `$slurm::params::epilogslurmctld`
 
 ##### <a name="-slurm--getenvtimeout"></a>`getenvtimeout`
 
-Data type: `Integer`
+Data type: `Optional[Integer]`
 
 
 
-Default value: `$slurm::params::getenvtimeout`
+Default value: `undef`
 
 ##### <a name="-slurm--grestypes"></a>`grestypes`
 
