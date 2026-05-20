@@ -305,6 +305,7 @@
 #           For use with Slurm's built-in X11 forwarding implementation.
 #           Elligible values in [ 'home_xauthority' ]
 #
+# @param getenvtimeout            [Optional[Integer]] default: undef - deprecated
 ############################                          ################################
 ############################ topology.conf attributes ################################
 ############################                          ################################
@@ -581,7 +582,7 @@ class slurm (
   String  $enforcepartlimits              = $slurm::params::enforcepartlimits,
   String  $epilog                         = $slurm::params::epilog,
   String  $epilogslurmctld                = $slurm::params::epilogslurmctld,
-  Integer $getenvtimeout                  = $slurm::params::getenvtimeout,
+  Optional[Integer] $getenvtimeout        = undef,
   Array   $grestypes                      = $slurm::params::grestypes,
   Integer $healthcheckinterval            = $slurm::params::healthcheckinterval,
   String  $healthchecknodestate           = $slurm::params::healthchecknodestate,

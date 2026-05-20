@@ -157,7 +157,6 @@ class slurm::params {
   $acctgatherinterconnecttype = 'none'
   $acctgatherprofiletype    = 'none'
   $batchstarttimeout       = 10
-  $getenvtimeout           = 2
   $checkpointtype          = 'none'  # in ['none', 'ompi']
   $completewait            = 0
   $corespecplugin          = 'none'
