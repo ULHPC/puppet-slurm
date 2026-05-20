@@ -208,7 +208,9 @@ CompleteWait=<%= scope['slurm::completewait'] %>
 <% end -%>
 
 #EpilogMsgTime=2000
+<% if scope['slurm::getenvtimeout'] -%>
 GetEnvTimeout=<%= scope['slurm::getenvtimeout'] %>
+<% end -%>
 <% if scope['slurm::healthcheckprogram'].empty? %>
 #HealthCheckProgram=/usr/sbin/nhc
 #HealthCheckInterval=30
