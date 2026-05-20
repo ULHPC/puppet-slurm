@@ -305,6 +305,7 @@
 #           For use with Slurm's built-in X11 forwarding implementation.
 #           Elligible values in [ 'home_xauthority' ]
 #
+# @param namespacetype            [Optional[Enum['linux', 'tmpfs']]] default: undef
 ############################                          ################################
 ############################ topology.conf attributes ################################
 ############################                          ################################
@@ -686,6 +687,8 @@ class slurm (
   Integer $waittime                       = $slurm::params::waittime,
   Integer $unkillablesteptimeout          = $slurm::params::unkillablesteptimeout,
   String  $x11parameters                  = $slurm::params::x11parameters,
+
+  Optional[Enum['linux', 'tmpfs']] $namespacetype = undef,
 
   # Trackable RESources (TRES)
   String  $accountingstoragetres          = $slurm::params::accountingstoragetres,

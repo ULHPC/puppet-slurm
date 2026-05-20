@@ -14,6 +14,7 @@
 * [`slurm::config`](#slurm--config): Time-stamp: <Wed 2020-09-23 20:43 svarrette>  File::      <tt>config.pp</tt> Author::    UL HPC Team (hpc-sysadmins@uni.lu) Copyright:: Copyr
 * [`slurm::config::cgroup`](#slurm--config--cgroup): Time-stamp: <Fri 2019-10-11 01:06 svarrette>  File::      <tt>config/cgroup.pp</tt> Author::    UL HPC Team (hpc-sysadmins@uni.lu) Copyright:
 * [`slurm::config::gres`](#slurm--config--gres): Time-stamp: <Fri 2017-09-01 10:52 svarrette>  File::      <tt>config/gres.pp</tt> Author::    UL HPC Team (hpc-sysadmins@uni.lu) Copyright:: 
+* [`slurm::config::namespace_plugins`](#slurm--config--namespace_plugins): Class: slurm::config::namespace_plugins     Configure slurm Namespace Plugins.     see: https://slurm.schedmd.com/namespace.html
 * [`slurm::config::plugstack`](#slurm--config--plugstack): Time-stamp: <Thu 2022-06-30 14:41 svarrette>  File::      <tt>config/plugstack.pp</tt> Author::    UL HPC Team (hpc-sysadmins@uni.lu) Copyrig
 * [`slurm::config::topology`](#slurm--config--topology): Time-stamp: <Thu 2022-06-30 14:41 svarrette>  File::      <tt>config/topology.pp</tt> Author::    UL HPC Team (hpc-sysadmins@uni.lu) Copyrigh
 * [`slurm::install`](#slurm--install): Time-stamp: <Thu 2022-06-30 14:37 svarrette>  File::      <tt>install.pp</tt> Author::    UL HPC Team (hpc-sysadmins@uni.lu) Copyright:: Copy
@@ -160,7 +161,6 @@ The following parameters are available in the `slurm` class:
 * [`jobcomphost`](#-slurm--jobcomphost)
 * [`jobcomploc`](#-slurm--jobcomploc)
 * [`jobcomptype`](#-slurm--jobcomptype)
-* [`jobcontainertype`](#-slurm--jobcontainertype)
 * [`jobrequeue`](#-slurm--jobrequeue)
 * [`jobsubmitplugins`](#-slurm--jobsubmitplugins)
 * [`killwait`](#-slurm--killwait)
@@ -245,6 +245,7 @@ The following parameters are available in the `slurm` class:
 * [`waittime`](#-slurm--waittime)
 * [`unkillablesteptimeout`](#-slurm--unkillablesteptimeout)
 * [`x11parameters`](#-slurm--x11parameters)
+* [`namespacetype`](#-slurm--namespacetype)
 * [`accountingstoragetres`](#-slurm--accountingstoragetres)
 * [`priorityweighttres`](#-slurm--priorityweighttres)
 * [`topology`](#-slurm--topology)
@@ -862,14 +863,6 @@ Data type: `String`
 
 
 Default value: `$slurm::params::jobcomptype`
-
-##### <a name="-slurm--jobcontainertype"></a>`jobcontainertype`
-
-Data type: `String`
-
-
-
-Default value: `$slurm::params::jobcontainertype`
 
 ##### <a name="-slurm--jobrequeue"></a>`jobrequeue`
 
@@ -1543,6 +1536,14 @@ Data type: `String`
 
 Default value: `$slurm::params::x11parameters`
 
+##### <a name="-slurm--namespacetype"></a>`namespacetype`
+
+Data type: `Optional[Enum['linux', 'tmpfs']]`
+
+
+
+Default value: `undef`
+
 ##### <a name="-slurm--accountingstoragetres"></a>`accountingstoragetres`
 
 Data type: `String`
@@ -2073,6 +2074,35 @@ This PRIVATE class handles the Slurm configuration file for  generic resource
 management i.e. 'gres.conf'
 
 More details: see <https://slurm.schedmd.com/gres.conf.html>
+
+### <a name="slurm--config--namespace_plugins"></a>`slurm::config::namespace_plugins`
+
+Class: slurm::config::namespace_plugins
+    Configure slurm Namespace Plugins.
+    see: https://slurm.schedmd.com/namespace.html
+
+#### Parameters
+
+The following parameters are available in the `slurm::config::namespace_plugins` class:
+
+* [`auto_base_path`](#-slurm--config--namespace_plugins--auto_base_path)
+* [`base_path`](#-slurm--config--namespace_plugins--base_path)
+
+##### <a name="-slurm--config--namespace_plugins--auto_base_path"></a>`auto_base_path`
+
+Data type: `Boolean`
+
+
+
+Default value: `true`
+
+##### <a name="-slurm--config--namespace_plugins--base_path"></a>`base_path`
+
+Data type: `String`
+
+
+
+Default value: `'/tmp/slurm/namespaces'`
 
 ### <a name="slurm--config--plugstack"></a>`slurm::config::plugstack`
 
