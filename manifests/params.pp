@@ -187,7 +187,6 @@ class slurm::params {
   $jobcomphost             = ''          # machine hosting the job completion database
   $jobcomploc              = 'slurmjobs' # where job completion records are written (DB name, filename...)
   $jobcomptype             = 'none'      # in ["none", "elasticsearch", "filetxt", "mysql", "script"]
-  $jobcontainertype        = 'none'      # In ['cncu', 'none'] (CNCU = Compute Node Clean Up on Cray)
   $jobrequeue              = true
   $jobsubmitplugins        = ['lua']   #
   $killwait                = 30          # sec. interval given to a job's processes between the SIGTERM and SIGKILL
