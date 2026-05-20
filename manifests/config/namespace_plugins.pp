@@ -7,7 +7,7 @@
 #
 class slurm::config::namespace_plugins (
   Boolean $auto_base_path = true,
-  String $base_path = '/tmp',
+  String $base_path = '/tmp/slurm/namespaces',
 ) inherits slurm::config {
   case ($slurm::namespacetype) {
     'linux': {
