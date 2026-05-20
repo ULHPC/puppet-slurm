@@ -2096,6 +2096,20 @@ built without access to Slurm source code. They need only be compiled against
 Slurm's spank.h header file, added to the SPANK config file plugstack.conf,
 and they will be loaded at runtime during the next job launch
 
+#### Parameters
+
+The following parameters are available in the `slurm::config::plugstack` class:
+
+* [`ensure`](#-slurm--config--plugstack--ensure)
+
+##### <a name="-slurm--config--plugstack--ensure"></a>`ensure`
+
+Data type: `Boolean`
+
+Should the spank config file be present
+
+Default value: `true`
+
 ### <a name="slurm--config--topology"></a>`slurm::config::topology`
 
 Time-stamp: <Thu 2022-06-30 14:41 svarrette>
