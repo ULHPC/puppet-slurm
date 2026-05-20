@@ -16,7 +16,7 @@ define slurm::firewall (
   Enum['present', 'absent'] $ensure   = 'present',
   String                    $zone     = 'public',
   Optional[String]          $port     = undef,
-  String                    $seltype  = '',
+  Optional[String]          $seltype  = undef,
   String                    $protocol = 'tcp',
 ) {
   include slurm::params

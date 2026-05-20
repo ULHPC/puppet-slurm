@@ -44,8 +44,8 @@
 define slurm::acct::mgr (
   Enum['present','absent'] $ensure  = $slurm::params::ensure,
   Slurm::Entity            $entity  = '',
-  String                   $value   = '',
-  String                   $content = '',
+  Optional[String]         $value   = undef,
+  Optional[String]         $content = undef,
   Optional[Hash]           $options = undef,
 ) {
   include slurm

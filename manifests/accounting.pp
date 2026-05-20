@@ -67,7 +67,7 @@ inherits slurm::params {
   $qoses.each |$qosname, $h| {
     unless $slurm::partitions[regsubst($qosname, '^qos-', '')] {
       slurm::acct::qos { $qosname:
-        ensure  => $ensure,
+        ensure => $ensure,
       }
       if $h.is_a(String) {
         Slurm::Acct::Qos[$qosname] {

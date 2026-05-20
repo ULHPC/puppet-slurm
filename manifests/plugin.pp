@@ -27,7 +27,7 @@
 #
 define slurm::plugin (
   Enum['present', 'absent']      $ensure  = $slurm::params::ensure,
-  Optional[Stdlib::Absolutepath] $path    = '/usr/local/src',
+  Stdlib::Absolutepath           $path    = '/usr/local/src',
   Optional[Stdlib::Absolutepath] $target  = undef,
   Optional[String]               $source  = undef,
   Optional[String]               $content = undef,

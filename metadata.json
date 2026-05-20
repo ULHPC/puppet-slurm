@@ -83,13 +83,9 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 4.10.0 < 9.0.0"
+      "version_requirement": ">= 8.0.0 < 9.0.0"
     }
   ],
-  "mail": "hpc-team@uni.lu",
-  "description": "Slurm is an open source, fault-tolerant, and highly scalable cluster management and job scheduling system for large and small Linux clusters. This puppet module is designed to configure and manage the different daemons (slurmd, slurmctld, slurmdbd) and components of a typical Slurm architecture",
-  "docs_project": "ulhpc-puppet-slurm",
-  "forge_url": "https://forge.puppet.com/ULHPC/slurm",
   "tags": [
     "slurm",
     "munge",
@@ -97,8 +93,5 @@
     "slurmd",
     "slurmctld",
     "slurmdbd"
-  ],
-  "pdk-version": "3.2.0",
-  "template-url": "pdk-default#3.2.0",
-  "template-ref": "tags/3.2.0-0-gb257ef1"
+  ]
 }

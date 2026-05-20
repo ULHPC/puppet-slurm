@@ -22,8 +22,8 @@
 #          If set, rsync will use '--delete'
 define slurm::repo::syncto (
   Enum['present', 'absent'] $ensure = $slurm::params::ensure,
-  String                    $target = '',
-  String                    $subdir = '',
+  Optional[String]          $target = undef,
+  Optional[String]          $subdir = undef,
   Boolean                   $purge  = false,
 ) {
   include slurm::params

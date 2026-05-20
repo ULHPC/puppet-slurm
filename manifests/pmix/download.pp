@@ -41,8 +41,8 @@
 define slurm::pmix::download (
   Enum['present', 'absent'] $ensure          = $slurm::params::ensure,
   String                    $target          = $slurm::params::srcdir,
-  String                    $url             = '',
-  String                    $checksum        = '',
+  Optional[String]          $url             = undef,
+  Optional[String]          $checksum        = undef,
   String                    $checksum_type   = $slurm::params::pmix_src_checksum_type,
   Boolean                   $checksum_verify = false,
 ) {

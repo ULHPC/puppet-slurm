@@ -151,7 +151,7 @@ inherits slurm::params {
       require => [
         File[dirname($key_filename)],
         Package['munge'],
-        Class['rngd']
+        Class['rngd'],
       ],
     }
   }
@@ -194,7 +194,7 @@ inherits slurm::params {
         File[$key_filename],
         File[$slurm::params::munge_configdir],
         File[$slurm::params::munge_logdir],
-        File[$slurm::params::munge_piddir]
+        File[$slurm::params::munge_piddir],
       ],
       subscribe  => File[$key_filename],
     }

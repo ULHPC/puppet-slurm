@@ -33,7 +33,7 @@
 #                          and QosLevel=
 define slurm::acct::account (
   Enum['present', 'absent'] $ensure  = $slurm::params::ensure,
-  String                    $cluster = '',
+  Optional[String]          $cluster = undef,
   Hash                      $options = {},
 ) {
   $real_clustername = empty($slurm::clustername) ? {

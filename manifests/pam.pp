@@ -47,17 +47,9 @@ class slurm::pam (
 )
 inherits slurm::params {
   # PAM access
-  # Detect vagrant environment to include 'vagrant' in the list of allowed host otherwise
-  # the application of this class will prevent the vagrant user to work as expected
-  # Trick is to detect ::is_virtual facter + the presence of the /vagrant directory
-  # See custom fact 'lib/facter/is_vagrant.rb'
-  $default_allowed_users = $facts['is_vagrant'] ? {
-    true    => ['root', 'vagrant'],
-    default => ['root'],
-  }
   $__allowed_users = empty($allowed_users) ? {
-    true    => $default_allowed_users,
-    default => concat( $allowed_users, $default_allowed_users),
+    true    => ['root'],
+    default => concat( $allowed_users, ['root']),
   }
   #notice($__allowed_users)
   # if (! defined(Class['pam'])) {
