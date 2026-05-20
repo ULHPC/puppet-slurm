@@ -77,6 +77,12 @@ AuthAltParameters=<%= scope['slurm::authaltparameters'].join(',') %>
 
 CredType=cred/<%= scope['slurm::credtype'] %>
 
+<% if scope['slurm::namespacetype'] -%>
+# Namespace Plugins
+PrologFlags=contain
+NamespaceType=namespace/<%= scope['slurm::namespacetype'] %>
+<% end -%>
+
 <% if scope['slurm::checkpointtype'] == 'none' -%>
 #CheckpointType=checkpoint/none
 <% else -%>
