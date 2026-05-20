@@ -2,7 +2,7 @@
 
 # Slurm Puppet Module
 
-[![Puppet Forge](http://img.shields.io/puppetforge/v/ULHPC/slurm.svg)](https://forge.puppet.com/ULHPC/slurm) [![License](http://img.shields.io/:license-Apache2.0-blue.svg)](LICENSE) ![Supported Platforms](http://img.shields.io/badge/platform-centos-lightgrey.svg) [![Documentation Status](https://readthedocs.org/projects/ulhpc-puppet-slurm/badge/?version=latest)](http://ulhpc-puppet-slurm.readthedocs.io) [![Build Status](https://travis-ci.org/ULHPC/puppet-slurm.svg?branch=devel)](https://travis-ci.org/ULHPC/puppet-slurm)
+[![Puppet Forge](http://img.shields.io/puppetforge/v/ULHPC/slurm.svg)](https://forge.puppet.com/ULHPC/slurm) [![License](http://img.shields.io/:license-Apache2.0-blue.svg)](LICENSE) ![Supported Platforms](http://img.shields.io/badge/platform-centos-lightgrey.svg) [![Documentation Status](https://readthedocs.org/projects/ulhpc-puppet-slurm/badge/?version=latest)](http://ulhpc-puppet-slurm.readthedocs.io) [![Build Status](https://travis-ci.org/ULHPC/puppet-slurm.svg?branch=master)](https://travis-ci.org/ULHPC/puppet-slurm)
 
 Configure and manage [Slurm](https://slurm.schedmd.com/): A Highly Scalable Resource Manager
 
@@ -69,7 +69,7 @@ Also, a couple of extra definition in used in our infrastructure:
 
 * `slurm::repo::syncto`: synchronize the control repository of the slurm configuration (which is cloned using the '`slurm::repo`' class) toward a directory (typically a shared GPFS/NFS mountpoint to make it available to all login and compute nodes)
 
-All these components are configured through a set of variables you will find in [`manifests/params.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/manifests/params.pp).
+All these components are configured through a set of variables you will find in [`manifests/params.pp`](https://github.com/ULHPC/puppet-slurm/blob/master/manifests/params.pp).
 
 _Note_: the various operations that can be conducted from this repository are piloted from a [`Rakefile`](https://github.com/ruby/rake) and assumes you have a running [Ruby](https://www.ruby-lang.org/en/) installation.
 See `docs/contributing.md` for more details on the steps you shall follow to have this `Rakefile` working properly.
@@ -100,7 +100,7 @@ By default, some key configuration decisions are configured, namely:
 
 ## Forge Module Dependencies
 
-See [`metadata.json`](https://github.com/ULHPC/puppet-slurm/blob/devel/metadata.json). In particular, this module depends on
+See [`metadata.json`](https://github.com/ULHPC/puppet-slurm/blob/master/metadata.json). In particular, this module depends on
 
 * [puppetlabs/stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib)
 * [puppetlabs/mysql](https://forge.puppetlabs.com/puppetlabs/mysql)
@@ -114,35 +114,19 @@ See [`metadata.json`](https://github.com/ULHPC/puppet-slurm/blob/devel/metadata.
 ## Overview and Usage
 
 The best way to use this module in a flexible way is to rely on [Hiera](https://puppet.com/docs/puppet/5.4/hiera_intro.html) coupled with a [role and profile](https://puppet.com/docs/pe/2017.1/r_n_p_intro.html).
-
-* See the generic manifest [`default.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/manifests/default.pp)
-* See the [`hiera.yaml`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/hiera.yaml) and the associated [`hieradata/`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/hieradata/), aimed at taking advantage of a custom `role` [facts](https://puppet.com/docs/facter/3.9/fact_overview.html)
-* sample/simple profiles for each type of deployment can be found in [site/profiles/manifests/](site/profiles/manifests/)
-    - [`profiles::slurm`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm.pp): Profile (base) class used for slurm general settings
-    - [`profiles::slurm::slurmctld`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm/slurmctld.pp): Profile class used for setting up a Slurm Head node (where the slurmctld daemon runs)
-    - [`profiles::slurm::slurmdbd`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm/slurmdbd.pp): Profile class used for setting up a Slurm DBD (DataBase Daemon) node
-    - [`profiles::slurm::slurmd`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm/slurmd.pp): Profile class used for setting up a Slurm Compute node
-    - [`profiles::slurm::login`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm/login.pp): Profile class used for setting up a Login node (cluster frontend/access) i.e. without any daemon.
-
-
 The main classes are now detailed.
 
 ### Class `slurm`
 
 This is the main class defined in this module.
-It accepts so many parameters that they are not listed here -- see the [puppet strings `@param`] comments of [`manifests/init.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/manifests/init.pp)
+It accepts so many parameters that they are not listed here -- see the [puppet strings `@param`] comments of [`manifests/init.pp`](https://github.com/ULHPC/puppet-slurm/blob/master/manifests/init.pp)
 Use it as follows:
 
 ```ruby
 include ::slurm
 ```
 
-In which case you can define the class parameters using [Hiera](https://puppet.com/docs/puppet/5.4/hiera_intro.html) -- see for instance the default hiera configuration (used effectively in the vagrant deployment) in [`hieradata/default.yaml`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/hieradata/defaults.yaml).
-
-You can also prefer a profile-based approach -- see [`profiles::slurm`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm.pp) as a sample profile (base) class used for slurm general settings.
-
-Other usage examples are proposed in [`tests/init.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/init.pp), a more advanced usage (defining the network topology, the computing nodes and the SLURM partitions) in [`tests/advanced.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/advanced.pp).
-
+In which case you can define the class parameters using [Hiera](https://puppet.com/docs/puppet/5.4/hiera_intro.html). You can also prefer a profile-based approach.
 
 ### Class `slurm::slurmdbd`
 
@@ -164,11 +148,9 @@ class { '::slurm':
 }
 ```
 
-See also [`tests/slurmdbd.pp`](tests/slurmdbd.pp), the sample profile [`profiles::slurm::slurmdbd`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm/slurmdbd.pp).
+See also [`tests/slurmdbd.pp`](tests/slurmdbd.pp), the sample profile [`profiles::slurm::slurmdbd`](https://github.com/ULHPC/puppet-slurm/blob/master/tests/vagrant/puppet/site/profiles/manifests/slurm/slurmdbd.pp).
 
-The `slurm::slurmdbd` accepts also so many parameters that they are not listed here -- see the [puppet strings `@param`] comments of [`manifests/slurmdbd.pp`](https://github.com/ULHPC/puppet-slurm/blob/devel/manifests/slurmdbd.pp) for more details.
-
-For a sample [Hiera](https://puppet.com/docs/puppet/5.4/hiera_intro.html), see [`hieradata/default.yaml`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/hieradata/defaults.yaml#L19-L25) (effectively used in the vagrant-based deployment).
+The `slurm::slurmdbd` accepts also so many parameters that they are not listed here -- see the [puppet strings `@param`] comments of [`manifests/slurmdbd.pp`](https://github.com/ULHPC/puppet-slurm/blob/master/manifests/slurmdbd.pp) for more details.
 
 
 ### Class `slurm::slurmctld`
@@ -187,8 +169,6 @@ class { '::slurm':
     with_slurmctld => true,
 }
 ```
-
-See also [`tests/slurmctld.pp`](tests/slurmctld.pp), the sample profile [`profiles::slurm::slurmctld`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm/slurmctld.pp).
 
 
 ### Class `slurm::slurmd`
@@ -216,8 +196,6 @@ The main helper class specializing the main slurm class for setting up __ Slurm 
 include ::slurm
 include ::slurm::login
 ```
-
-See also [`tests/login_node.pp`](tests/login_node.pp), the sample profile [`profiles::slurm::login`](https://github.com/ULHPC/puppet-slurm/blob/devel/tests/vagrant/puppet/site/profiles/manifests/slurm/login.pp).
 
 
 ### Class `slurm::munge`
@@ -354,68 +332,18 @@ or, if you prefer to work on the git version:
 
 ## Hiera
 
-You can see example of hiera configurations for this module under [`tests/vagrant/puppet/hieradata`](https://github.com/ULHPC/puppet-slurm/tree/devel/tests/vagrant/puppet/hieradata).
+This module can be configured with hiera.
 
 ## Issues / Feature request
 
 You can submit bug / issues / feature request using the [slurm Puppet Module Tracker](https://github.com/ULHPC/puppet-slurm/issues).
 
-## Developments / Contributing to the code
+## Developments / Issues / Contributing to the code
 
-If you want to contribute to the code, you shall be aware of the way this module is organized.
-These elements are detailed on [`docs/contributing.md`](contributing/index.md).
+This Puppet Module has been implemented in the context of the [UL HPC](http://hpc.uni.lu) Platform of the [University of Luxembourg](http://www.uni.lu).
+It relies on [Vox Pupuli modulesync](https://github.com/voxpupuli/modulesync) for its organization.
 
 You are more than welcome to contribute to its development by [sending a pull request](https://help.github.com/articles/using-pull-requests).
-
-## Puppet modules tests within a Vagrant box
-
-The best way to test this module in a non-intrusive way is to rely on [Vagrant](http://www.vagrantup.com/).
-The `Vagrantfile` at the root of the repository pilot the provisioning of a virtual cluster configuring Slurm from the puppet provisionning capability of Vagrant over _this_ module.
-
-```
-$> vagrant status
-Current machine states:
-
-slurm-master   not created (virtualbox)
-access         not created (virtualbox)
-node-1         not created (virtualbox)
-node-2         not created (virtualbox)
-
-This environment represents multiple VMs. The VMs are all listed
-above with their current state. For more information about a specific
-VM, run `vagrant status NAME`.
-
-$> vagrant up
-[...]
-+--------------|--------------------------|---------|----------|------------|-------------------------------|-------------+
-|                                    Puppet Testing infrastructure deployed on Vagrant                                    |
-+--------------|--------------------------|---------|----------|------------|-------------------------------|-------------+
-| Name         | Hostname                 | OS      | vCPU/RAM | Role       | Description                   | IP          |
-+--------------|--------------------------|---------|----------|------------|-------------------------------|-------------+
-| slurm-master | slurm-master.vagrant.dev | centos7 | 2/2048   | controller | Slurm Controller #1 (primary) | 10.10.1.11  |
-| access       | access.vagrant.dev       | centos7 | 1/1024   | login      | Cluster frontend              | 10.10.1.2   |
-| node-1       | node-1.vagrant.dev       | centos7 | 2/512    | node       | Computing Node #1             | 10.10.1.101 |
-| node-2       | node-2.vagrant.dev       | centos7 | 2/512    | node       | Computing Node #2             | 10.10.1.102 |
-+--------------|--------------------------|---------|----------|------------|-------------------------------|-------------+
-- Virtual Puppet Testing infrastructure deployed deployed!
-```
-
-_Note_: it takes roughly 38 minutes to deploy the full cluster from scratch. So be patient ;)
-
-You can then test modifications of each configuration in the hiera file `tests/vagrant/puppet/custom.yaml` and
-see the result by applying  for instance:
-
-```
-$> vagrant provision --provision-with puppet slurm-master
-```
-
-See [`docs/vagrant.md`](vagrant.md) for more details.
-
-## Online Documentation
-
-[Read the Docs](https://readthedocs.org/) aka RTFD hosts documentation for the open source community and the [slurm](https://github.com/ULHPC/puppet-slurm) puppet module has its documentation (see the `docs/` directly) hosted on [readthedocs](http://ulhpc-puppet-slurm.rtfd.org).
-
-See [`docs/rtfd.md`](rtfd.md) for more details.
 
 ## Licence
 
