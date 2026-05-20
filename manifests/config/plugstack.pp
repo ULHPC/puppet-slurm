@@ -19,7 +19,13 @@
 # Slurm's spank.h header file, added to the SPANK config file plugstack.conf,
 # and they will be loaded at runtime during the next job launch
 #
-class slurm::config::plugstack inherits slurm::config {
+#
+# @param ensure
+#   Should the spank config file be present
+#
+class slurm::config::plugstack (
+  Boolean $ensure = true
+) inherits slurm::config {
   $plugstack_content = $slurm::plugstack_content ? {
     undef   => $slurm::plugstack_source ? {
       undef   => $slurm::plugstack_target ? {
@@ -30,15 +36,19 @@ class slurm::config::plugstack inherits slurm::config {
     },
     default => $slurm::plugstack_content,
   }
-  $ensure = $slurm::plugstack_target ? {
-    undef   => $slurm::ensure,
-    default => 'link',
+
+  $plugstack_configfile_ensure = absent
+  if $ensure {
+    $plugstack_configfile_ensure = $slurm::plugstack_target ? {
+      undef   => $slurm::ensure,
+      default => 'link',
+    }
   }
 
   $plugstack_filename = "${slurm::configdir}/${slurm::params::plugstack_configfile}"
 
   file { $slurm::params::plugstack_configfile:
-    ensure  => $ensure,
+    ensure  => $plugstack_configfile_ensure,
     path    => $plugstack_filename,
     owner   => $slurm::username,
     group   => $slurm::group,
