@@ -164,7 +164,6 @@
 #           where job completion records are written (DB name, filename...)
 # @param jobcomptype              [String]      Default: 'none'
 #           Elligible values in ["none", "elasticsearch", "filetxt", "mysql", "script"]
-# @param jobcontainertype         [String]      Default: 'none'
 #           Elligible values in ['cncu', 'none'] (CNCU = Compute Node Clean Up on Cray)
 # @param jobrequeue               [Boolean]     Default: true
 # @param jobsubmitplugins         [Array]       Default: [ 'lua' ]
@@ -595,7 +594,6 @@ class slurm (
   String  $jobcomphost                    = $slurm::params::jobcomphost,
   String  $jobcomploc                     = $slurm::params::jobcomploc,
   String  $jobcomptype                    = $slurm::params::jobcomptype,
-  String  $jobcontainertype               = $slurm::params::jobcontainertype,
   Boolean $jobrequeue                     = $slurm::params::jobrequeue,
   Array   $jobsubmitplugins               = $slurm::params::jobsubmitplugins,
   Integer $killwait                       = $slurm::params::killwait,
