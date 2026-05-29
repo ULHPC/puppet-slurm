@@ -161,7 +161,6 @@ The following parameters are available in the `slurm` class:
 * [`jobcomphost`](#-slurm--jobcomphost)
 * [`jobcomploc`](#-slurm--jobcomploc)
 * [`jobcomptype`](#-slurm--jobcomptype)
-* [`jobcontainertype`](#-slurm--jobcontainertype)
 * [`jobrequeue`](#-slurm--jobrequeue)
 * [`jobsubmitplugins`](#-slurm--jobsubmitplugins)
 * [`killwait`](#-slurm--killwait)
@@ -864,14 +863,6 @@ Data type: `String`
 
 
 Default value: `$slurm::params::jobcomptype`
-
-##### <a name="-slurm--jobcontainertype"></a>`jobcontainertype`
-
-Data type: `String`
-
-
-
-Default value: `$slurm::params::jobcontainertype`
 
 ##### <a name="-slurm--jobrequeue"></a>`jobrequeue`
 
@@ -2111,7 +2102,7 @@ Data type: `String`
 
 
 
-Default value: `'/tmp'`
+Default value: `'/var/slurm/namespaces'`
 
 ### <a name="slurm--config--plugstack"></a>`slurm::config::plugstack`
 
