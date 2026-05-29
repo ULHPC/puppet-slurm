@@ -77,6 +77,12 @@ AuthAltParameters=<%= scope['slurm::authaltparameters'].join(',') %>
 
 CredType=cred/<%= scope['slurm::credtype'] %>
 
+<% if scope['slurm::namespacetype'] -%>
+# Namespace Plugins
+PrologFlags=contain
+NamespaceType=namespace/<%= scope['slurm::namespacetype'] %>
+<% end -%>
+
 <% if scope['slurm::checkpointtype'] == 'none' -%>
 #CheckpointType=checkpoint/none
 <% else -%>
@@ -165,7 +171,6 @@ JobCompLoc=<%= scope['slurm::jobcomploc'] %>
 #JobCompPort=
 JobCompType=jobcomp/<%= scope['slurm::jobcomptype'] %>
 #JobCompUser=
-JobContainerType=job_container/<%= scope['slurm::jobcontainertype'] %>
 SlurmctldDebug=<%= scope['slurm::slurmctlddebug'] %>
 SlurmctldLogFile=<%= scope['slurm::params::logdir'] %>/slurmctld.log
 SlurmdDebug=<%= scope['slurm::slurmddebug'] %>

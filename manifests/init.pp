@@ -164,7 +164,6 @@
 #           where job completion records are written (DB name, filename...)
 # @param jobcomptype              [String]      Default: 'none'
 #           Elligible values in ["none", "elasticsearch", "filetxt", "mysql", "script"]
-# @param jobcontainertype         [String]      Default: 'none'
 #           Elligible values in ['cncu', 'none'] (CNCU = Compute Node Clean Up on Cray)
 # @param jobrequeue               [Boolean]     Default: true
 # @param jobsubmitplugins         [Array]       Default: [ 'lua' ]
@@ -305,6 +304,7 @@
 #           For use with Slurm's built-in X11 forwarding implementation.
 #           Elligible values in [ 'home_xauthority' ]
 #
+# @param namespacetype            [Optional[Enum['linux', 'tmpfs']]] default: undef
 ############################                          ################################
 ############################ topology.conf attributes ################################
 ############################                          ################################
@@ -594,7 +594,6 @@ class slurm (
   String  $jobcomphost                    = $slurm::params::jobcomphost,
   String  $jobcomploc                     = $slurm::params::jobcomploc,
   String  $jobcomptype                    = $slurm::params::jobcomptype,
-  String  $jobcontainertype               = $slurm::params::jobcontainertype,
   Boolean $jobrequeue                     = $slurm::params::jobrequeue,
   Array   $jobsubmitplugins               = $slurm::params::jobsubmitplugins,
   Integer $killwait                       = $slurm::params::killwait,
@@ -686,6 +685,8 @@ class slurm (
   Integer $waittime                       = $slurm::params::waittime,
   Integer $unkillablesteptimeout          = $slurm::params::unkillablesteptimeout,
   String  $x11parameters                  = $slurm::params::x11parameters,
+
+  Optional[Enum['linux', 'tmpfs']] $namespacetype = undef,
 
   # Trackable RESources (TRES)
   String  $accountingstoragetres          = $slurm::params::accountingstoragetres,
